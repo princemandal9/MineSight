@@ -1,0 +1,56 @@
+Streamlined System Blueprint (2-Role MVP)
+
+> 1. Core Modules & User Portals
+>> Module 1: The Contractor Portal (Simple & Mobile-Friendly)
+Digital License & Certificate Wallet: Contractors upload their labor licenses, equipment fitness papers, and worker insurance documents. The system tracks expiry dates automatically and flags expired items.
+
+Digital Attendance Register: Replaces physical paper registers with a quick daily headcount entry portal for workers present on-site.
+
+Unresolved Action Center: Displays active safety remarks or warnings assigned by the supervisor in clear, bold red text so illiterate or busy contractors instantly see what needs to be fixed.
+
+>> Module 2: The Supervisor Portal
+Contractor Status Dashboard: A list of all active contractors under the supervisor's zone, highlighting any invalid certifications or open penalties.
+
+Quick Observation Logger ("Report Issue"): Supervisors walk the site, select a category (PPE, Blasting, Dust, Equipment), snap/upload a photo, type a short remark, and tag severity (Low, Medium, High, Critical). This locks an unresolved warning onto the contractor's profile.
+
+Daily Yield & Environment Tracker: Inputs daily coal tonnage collected and monitors environmental metrics (air pollution/dust levels, waste water/effluent limits).
+
+Platform-Wide Warning System: If environmental limits or safety thresholds are exceeded, warning flags trigger instantly across the dashboard so supervisors can take immediate action.
+
+Closure Verification: Once the contractor uploads proof that an issue has been resolved, the supervisor reviews and verifies it, clearing the red alert and creating a permanent audit trail.
+
+> 2. Updated End-to-End Demo Workflow (Without Compliance Officer)
+The Setup: A contractor profile shows a license expiring soon or a clean status.
+
+The Field Check: The supervisor visits a mining pit or blasting site, spots a safety violation (e.g., workers without required PPE or excessive dust), and logs an observation with a photo and severity tag using their portal.
+
+The Warning Trigger: The system instantly flags an open issue on the contractor's profile in bright red text.
+
+The Resolution Loop: The contractor uploads the corrected work proof or renewed document. The supervisor checks it, clicks "Verify & Approve," and the red warning disappears, sealing the audit trail.
+
+
+> AI Safety & Data Privacy Guidelines (MineSight Blueprint)
+To ensure enterprise-grade security, prevent data breaches, and maintain absolute accountability, all AI features and coding workflows within MineSight must strictly adhere to the following rules:
+
+1. Zero-Data-Leakage & Privacy Compliance
+No PII Exposure: The AI models or OCR document extractors processing contractor licenses, worker counts, or safety records must never leak Personally Identifiable Information (PII) or sensitive operational data to external logging systems.
+
+Secure Document Handling: Any certificate or document uploaded for parsing (e.g., labor licenses, equipment fitness papers) must be processed securely. Raw files must be scrubbed of unauthorized credentials before being indexed.
+
+2. Deterministic AI (No Hallucinated Compliance)
+Explainable Output Only: The AI risk-scoring engine must rely solely on deterministic rules combined with real data inputs (e.g., open supervisor observations + actual expiration dates). Black-box AI guessing is strictly prohibited. If a mine is flagged as "High Risk," the system must explicitly state the exact data points driving that score.
+
+No Unverified Fabrication: The AI must never invent, estimate, or hallucinate safety inspection data, environmental metrics (like dust or water effluent levels), or worker attendance numbers. If data is missing, it must be flagged as "Pending" or "Not Logged."
+
+3. Role-Based Access Control (RBAC) Enforcement
+Strict Permission Boundaries: The AI agent / backend logic must enforce strict authorization barriers.
+
+Contractors can only view and edit their own profile, license status, and assigned tasks.
+
+Supervisors can view contractors in their designated zone, log observations, and verify closures, but cannot alter system-wide compliance definitions without authorization.
+
+4. Guardrails Against Malicious Prompt Injection & Harm
+Restricted Tool Actions: AI code assistants (like Claude Code) operating on this repository are restricted from executing unauthorized shell commands, altering system environment variables, or introducing third-party dependencies with known security vulnerabilities.
+
+Safe Failure Handling: If an AI service (like a document parser) encounters an unreadable file or an error, it must fail gracefully with a descriptive error message rather than crashing the application or exposing backend stack traces.
+
