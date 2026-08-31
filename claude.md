@@ -24,3 +24,7 @@ It focuses on a 2-Role MVP: **Contractor** and **Supervisor**.
 - Keep components modular, lightweight, and clean.
 - Do not add complex unrequested third-party libraries or wander into future scope features (like full IoT hardware integrations).
 - Provide concise code snippets rather than overly verbose explanations.
+
+## Token & Verbosity Rules
+- Be strictly concise. Do not explain basic code logic or chat unnecessarily. 
+- Output only code snippets or direct file modifications unless asked for an explanation.
