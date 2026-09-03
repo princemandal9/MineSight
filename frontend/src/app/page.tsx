@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Eye, EyeOff, Check, Bomb, Truck, Pickaxe, ChevronRight } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -87,7 +86,7 @@ export default function LoginPage() {
                 </div>
                 <p className="text-sm text-neutral-500 mb-10">
                   {loginRole === 'contractor' ? (
-                    <>Register as Contractor? <Link href="#" className="text-mine-700 font-semibold hover:underline">Click Here</Link></>
+                    <>Contractor registration is not yet available.</>
                   ) : (
                     <>Supervisors must be registered by an administrator.</>
                   )}
@@ -142,9 +141,6 @@ export default function LoginPage() {
                       />
                       <span className="text-sm text-neutral-600 font-medium select-none">Remember me</span>
                     </label>
-                    <Link href="#" className="text-sm font-medium text-mine-700 hover:underline">
-                      Forgot password?
-                    </Link>
                   </div>
 
                   {/* Submit Button */}

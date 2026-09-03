@@ -7,7 +7,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -213,11 +213,15 @@
   border: 2px solid var(--color-mine-950);
   border-radius: 30px 100px 100px 100px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  outline: none;
   cursor: pointer;
   position: relative;
   transition: all 0.5s;
   margin: 0;
+}
+
+.checkbox-wrapper-41 input[type="checkbox"]:focus-visible {
+  outline: 3px solid var(--color-mine-700);
+  outline-offset: 3px;
 }
 
 .checkbox-wrapper-41 input[type="checkbox"]::before {
