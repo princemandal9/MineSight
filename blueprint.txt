@@ -1,56 +1,491 @@
-Streamlined System Blueprint (2-Role MVP)
-
-> 1. Core Modules & User Portals
->> Module 1: The Contractor Portal (Simple & Mobile-Friendly)
-Digital License & Certificate Wallet: Contractors upload their labor licenses, equipment fitness papers, and worker insurance documents. The system tracks expiry dates automatically and flags expired items.
-
-Digital Attendance Register: Replaces physical paper registers with a quick daily headcount entry portal for workers present on-site.
-
-Unresolved Action Center: Displays active safety remarks or warnings assigned by the supervisor in clear, bold red text so illiterate or busy contractors instantly see what needs to be fixed.
-
->> Module 2: The Supervisor Portal
-Contractor Status Dashboard: A list of all active contractors under the supervisor's zone, highlighting any invalid certifications or open penalties.
-
-Quick Observation Logger ("Report Issue"): Supervisors walk the site, select a category (PPE, Blasting, Dust, Equipment), snap/upload a photo, type a short remark, and tag severity (Low, Medium, High, Critical). This locks an unresolved warning onto the contractor's profile.
-
-Daily Yield & Environment Tracker: Inputs daily coal tonnage collected and monitors environmental metrics (air pollution/dust levels, waste water/effluent limits).
-
-Platform-Wide Warning System: If environmental limits or safety thresholds are exceeded, warning flags trigger instantly across the dashboard so supervisors can take immediate action.
-
-Closure Verification: Once the contractor uploads proof that an issue has been resolved, the supervisor reviews and verifies it, clearing the red alert and creating a permanent audit trail.
-
-> 2. Updated End-to-End Demo Workflow (Without Compliance Officer)
-The Setup: A contractor profile shows a license expiring soon or a clean status.
-
-The Field Check: The supervisor visits a mining pit or blasting site, spots a safety violation (e.g., workers without required PPE or excessive dust), and logs an observation with a photo and severity tag using their portal.
-
-The Warning Trigger: The system instantly flags an open issue on the contractor's profile in bright red text.
-
-The Resolution Loop: The contractor uploads the corrected work proof or renewed document. The supervisor checks it, clicks "Verify & Approve," and the red warning disappears, sealing the audit trail.
+================================================================================
+MINESIGHT — SYSTEM BLUEPRINT
+AI-Based Smart Governance & Compliance Monitoring System for Coal Mines
+Smart India Hackathon 2026 — Software Track
+2-Role MVP: Contractor + Supervisor
+================================================================================
 
 
-> AI Safety & Data Privacy Guidelines (MineSight Blueprint)
-To ensure enterprise-grade security, prevent data breaches, and maintain absolute accountability, all AI features and coding workflows within MineSight must strictly adhere to the following rules:
+--------------------------------------------------------------------------------
+SECTION 0 — THE PROBLEM, IN FULL
+--------------------------------------------------------------------------------
 
-1. Zero-Data-Leakage & Privacy Compliance
-No PII Exposure: The AI models or OCR document extractors processing contractor licenses, worker counts, or safety records must never leak Personally Identifiable Information (PII) or sensitive operational data to external logging systems.
+Indian coal mining operations involve mine management, multiple independent
+contractors, contract labour, safety inspection duties, and environmental
+monitoring, all running in parallel across one site. Today, most of the
+governance work behind this — statutory compliance, safety observations,
+license/certificate tracking, worker attendance, environmental readings — is
+handled through paper registers, spreadsheets, and email.
 
-Secure Document Handling: Any certificate or document uploaded for parsing (e.g., labor licenses, equipment fitness papers) must be processed securely. Raw files must be scrubbed of unauthorized credentials before being indexed.
+This causes five concrete failures:
+  1. Data inconsistency — the same fact (e.g. a contractor's license status)
+     exists in multiple places and can disagree with itself.
+  2. Delayed decision-making — a supervisor may not learn about a problem
+     until days after it happened.
+  3. Limited transparency — management cannot see real-time site conditions.
+  4. Compliance gaps — expired licenses or overdue inspections go unnoticed
+     until an audit or incident forces the issue.
+  5. Weak field-level monitoring — verbal warnings are given but never
+     formally tracked to resolution.
 
-2. Deterministic AI (No Hallucinated Compliance)
-Explainable Output Only: The AI risk-scoring engine must rely solely on deterministic rules combined with real data inputs (e.g., open supervisor observations + actual expiration dates). Black-box AI guessing is strictly prohibited. If a mine is flagged as "High Risk," the system must explicitly state the exact data points driving that score.
+MineSight's job is to replace the fragmented paper/spreadsheet layer with one
+connected system, without pretending to solve problems outside its scope
+(it does not replace real IoT hardware, it does not automate legal judgment,
+and it does not manage production/finance).
 
-No Unverified Fabrication: The AI must never invent, estimate, or hallucinate safety inspection data, environmental metrics (like dust or water effluent levels), or worker attendance numbers. If data is missing, it must be flagged as "Pending" or "Not Logged."
 
-3. Role-Based Access Control (RBAC) Enforcement
-Strict Permission Boundaries: The AI agent / backend logic must enforce strict authorization barriers.
+--------------------------------------------------------------------------------
+SECTION 1 — WHY ONLY TWO ROLES
+--------------------------------------------------------------------------------
 
-Contractors can only view and edit their own profile, license status, and assigned tasks.
+Earlier drafts of this platform considered up to seven roles (Mine Manager,
+Compliance Officer, Field Inspector, Supervisor, Contractor, Regional
+Management, Admin). For a student team building a working hackathon
+prototype, that scope was not realistic — a fully working 2-role system beats
+a half-built 7-role system in judging every time.
 
-Supervisors can view contractors in their designated zone, log observations, and verify closures, but cannot alter system-wide compliance definitions without authorization.
+MineSight is deliberately reduced to:
+  - CONTRACTOR — the party responsible for one specific work package
+    (e.g. blasting, transportation, excavation/overburden removal,
+    maintenance), including their own workers, machinery, and documents.
+  - SUPERVISOR — the party overseeing all contractors and all task types
+    on a site, responsible for field observations, environmental/yield
+    tracking, and verifying that flagged issues are actually fixed.
 
-4. Guardrails Against Malicious Prompt Injection & Harm
-Restricted Tool Actions: AI code assistants (like Claude Code) operating on this repository are restricted from executing unauthorized shell commands, altering system environment variables, or introducing third-party dependencies with known security vulnerabilities.
+There is no separate "Field Inspector" role — that function is merged into
+Supervisor. There is no separate "Compliance Officer" or "Mine Manager" role
+in this MVP — the Supervisor's dashboard and the Platform-Wide Warning
+System together cover the oversight function those roles would have
+performed, without the added build cost of a third portal.
 
-Safe Failure Handling: If an AI service (like a document parser) encounters an unreadable file or an error, it must fail gracefully with a descriptive error message rather than crashing the application or exposing backend stack traces.
+Everything in this document is scoped to what these two roles need.
 
+
+--------------------------------------------------------------------------------
+SECTION 2 — CONTRACTOR PORTAL
+--------------------------------------------------------------------------------
+
+The Contractor Portal is designed to be simple and mobile-friendly, because
+the people using it on the ground are often busy, on-site, and not sitting
+at a desk. Every module below is something the Contractor's own team
+(Project Manager, Site Supervisor, Accountant, Store/Logistics — the
+Contractor's internal staff) maintains for their own work package.
+
+2.1  Digital License & Certificate Wallet
+--------------------------------------------------------------------------
+What it does:
+  Contractors upload their labour licenses, equipment fitness papers, and
+  worker insurance documents. The system extracts and tracks each
+  document's expiry date automatically, and flags anything expired or
+  nearing expiry.
+
+Why it exists:
+  Certificate expiry is one of the most common real compliance failures in
+  contracted operations — not because the certificate was never obtained,
+  but because nobody was tracking the date. A spreadsheet cell that says
+  "expires 12 Sep" is easy to miss; a system that turns red on 12 Sep is not.
+
+What it actually tracks (grounded in real Indian mining-contractor
+requirements, not invented):
+  - Contract Labour License — mandatory once a contractor employs 20 or
+    more workers on any day, issued by the state/central Labour
+    Department under the Contract Labour (Regulation & Abolition) Act.
+  - Blaster's / Shot-firer's Certificate (DGMS) — held by a named
+    individual, required for anyone conducting blasting. Only relevant
+    for contractors whose task_type is "blasting."
+  - Explosives License — separate from the Blaster's Certificate,
+    required for storing/handling explosives. Only relevant for
+    "blasting" task_type.
+  - Equipment fitness / approval certificates — DGMS approval and/or BIS
+    license required for many categories of mining machinery before they
+    can legally be used.
+  - Worker insurance documents — proof of coverage for the contractor's
+    labour force.
+
+Each document has: document type, holder (person or equipment ID), a
+document/certificate number, an expiry date, and a status
+(Valid / Expiring soon / Expired). Expired or expiring documents are what
+feed the Supervisor's Contractor Status Dashboard and the red-flag system
+described in Section 3.
+
+2.2  Digital Attendance Register
+--------------------------------------------------------------------------
+What it does:
+  Replaces the physical paper attendance register with a quick daily
+  headcount entry: total workers, present, absent, on leave.
+
+Why it exists:
+  Attendance is one of the simplest and most frequently-needed pieces of
+  operational data, and it is currently one of the most commonly faked or
+  delayed pieces of paperwork (a register filled in after the fact, not
+  during the shift). A same-day digital entry closes that gap without
+  requiring biometric hardware, which is out of scope for a student
+  prototype.
+
+What it is NOT:
+  It is not a proof of safety compliance on its own — it is one signal
+  among several. It does not replace the more detailed Worker Roster
+  (below) which tracks training and PPE status per worker.
+
+2.3  Worker Roster (per-worker detail, distinct from attendance)
+--------------------------------------------------------------------------
+What it does:
+  A record for each worker under the contractor, separate from the
+  Team Roster of management staff. Tracks: worker ID/name, role
+  (helper, machine operator, etc.), training status
+  (Complete / Missing), and PPE issued status (Yes / Pending).
+
+Why it exists:
+  Attendance tells you someone showed up. It does not tell you whether
+  that person is trained or equipped to be there safely. This roster is
+  the missing link between attendance data and the Supervisor's safety
+  observations — if a Supervisor logs a PPE violation against a specific
+  worker, this roster shows whether that worker's training was already a
+  known gap, which makes the eventual warning/audit trail far more
+  informative than a bare "PPE issue found."
+
+Who maintains it:
+  The Contractor's own staff (Project Manager / Site Supervisor role
+  within the contractor's team) — not the platform's Supervisor role.
+  This keeps the RBAC boundary clean: the Supervisor can view this data
+  during a site walk but does not edit it.
+
+2.4  Machinery Register (with maintenance tracking)
+--------------------------------------------------------------------------
+What it does:
+  Lists every machine assigned to this contractor's work package:
+  machine type, quantity, ownership status (owned / financed / rented),
+  last serviced date, next maintenance due date, and current status
+  (Active / Due soon / Overdue / Under maintenance). Each machine is also
+  linked to its fitness/approval certificate from the License Wallet.
+
+Why it exists:
+  Machinery in active use (hydraulic excavators, dumpers, drilling
+  machines, water tankers, graders, dozers) requires periodic maintenance
+  and a valid approval certificate to be legally and safely operated. A
+  machine running past its "next due" maintenance date with no record of
+  service is a real operational risk, not a cosmetic detail — and it is
+  exactly the kind of thing a fragmented paper system loses track of.
+
+Which machines apply to which contractor:
+  This is where task_type (Section 4) matters — a blasting contractor's
+  machinery list (excavators, drilling machines) is different from a
+  transport contractor's (dumpers, water tankers). The register only
+  shows the machines relevant to that contractor's actual work.
+
+2.5  Explosives Stock Register (blasting contractors only)
+--------------------------------------------------------------------------
+What it does:
+  Tracks explosives procured, used, and remaining balance, by type
+  (e.g. site-mix emulsion, detonators).
+
+Why it exists:
+  Unaccounted-for explosives is a genuinely serious real-world compliance
+  and safety issue in blasting operations — this is not a feature added
+  for novelty points, it is one of the most operationally meaningful
+  things this platform tracks. It only appears for contractors whose
+  task_type is "blasting"; it is irrelevant and hidden for all other
+  contractor types.
+
+2.6  Unresolved Action Center
+--------------------------------------------------------------------------
+What it does:
+  A read-only feed, visible on the Contractor's home screen, showing any
+  active safety remarks or warnings the Supervisor has logged against
+  them. Displayed in clear, bold red text specifically so it is
+  impossible to miss — including for a busy or non-technical contractor
+  who may not read every notification carefully.
+
+Why it exists:
+  This is the other half of the Observation Logger (Section 3.2). A
+  warning that only the Supervisor can see is not useful — the point of
+  the loop is that the Contractor is immediately and unmissably aware
+  something needs fixing, without needing to be told separately by phone
+  or in person.
+
+What the Contractor can do from here:
+  Upload proof of correction (photo, renewed document, etc.) against the
+  specific open remark, which sends it to the Supervisor for Closure
+  Verification (Section 3.5).
+
+
+--------------------------------------------------------------------------------
+SECTION 3 — SUPERVISOR PORTAL
+--------------------------------------------------------------------------------
+
+The Supervisor oversees every contractor and every task type on the site.
+This role absorbs what would otherwise be a separate "Field Inspector"
+role — one person visits sites, logs observations, and later verifies that
+issues are actually resolved, rather than splitting that into two handoffs.
+
+3.1  Contractor Status Dashboard
+--------------------------------------------------------------------------
+What it does:
+  A list of every active contractor under the Supervisor's zone, with
+  invalid/expiring certifications and open penalties surfaced at a
+  glance — not buried inside each contractor's individual profile.
+
+Why it exists:
+  Without this, a Supervisor would need to open every contractor's
+  profile individually to notice a problem. This view exists specifically
+  so risk is visible without hunting for it — the same principle behind
+  every "explain why" style feature elsewhere in the platform: don't make
+  the user go looking for bad news.
+
+3.2  Quick Observation Logger ("Report Issue")
+--------------------------------------------------------------------------
+What it does:
+  The Supervisor walks the site, selects a category (PPE, Blasting, Dust,
+  Equipment, or Other), attaches a photo, writes a short remark, and tags
+  a severity level (Low / Medium / High / Critical). Submitting this
+  immediately locks an unresolved warning onto the relevant contractor's
+  profile.
+
+Why it exists:
+  This is the single most important data-entry action in the whole
+  system — it is the moment a real-world problem becomes a tracked,
+  timestamped, evidenced record instead of a verbal warning that may or
+  may not be remembered or acted on.
+
+What happens automatically on submit:
+  - An Observation ID is generated.
+  - The relevant contractor's profile is red-flagged (visible instantly
+    in their Unresolved Action Center).
+  - The entry is timestamped and photo-evidenced for the eventual audit
+    trail.
+  - Status is set to OPEN until Closure Verification (3.5) clears it.
+
+3.3  Daily Yield & Environment Tracker
+--------------------------------------------------------------------------
+What it does:
+  Logs daily coal tonnage collected, and records environmental readings —
+  air pollution/dust levels, waste water/effluent levels — against
+  defined acceptable limits.
+
+Why it exists:
+  Production output (yield) and environmental compliance are normally
+  tracked in entirely separate systems, if they are tracked digitally at
+  all. Putting them in the same daily log as the Supervisor's other
+  duties means environmental monitoring doesn't require separate
+  hardware or a separate workflow — it is simply another data point
+  logged on the same visit.
+
+Important honesty note carried over from earlier design work:
+  For the student prototype, environmental readings are entered manually
+  or from clearly-labelled simulated data — this platform does not claim
+  to have deployed real IoT sensors. What matters for the MVP is that the
+  reading, once entered (by any means), is compared against a defined
+  threshold and acted on consistently — not that the reading itself came
+  from real hardware.
+
+3.4  Platform-Wide Warning System
+--------------------------------------------------------------------------
+What it does:
+  If an environmental reading or safety threshold is exceeded anywhere in
+  the system, a warning flag triggers instantly and is visible across the
+  dashboard — not just on the specific contractor's profile where it
+  originated.
+
+Why it exists:
+  This is what replaces the "explainable risk score" concept from the
+  earlier 3-role design (which had a dedicated Compliance Officer role).
+  Without a separate compliance/risk-scoring role, the Supervisor still
+  needs a way to see "something is wrong somewhere" without having to
+  check every contractor and every reading manually. This feature is
+  the load-bearing replacement for that missing role — deterministic,
+  rule-based (threshold exceeded → flag), never a black-box AI number.
+
+3.5  Closure Verification
+--------------------------------------------------------------------------
+What it does:
+  Once a Contractor uploads proof that a flagged issue has been resolved
+  (a corrected photo, a renewed certificate, etc.), the Supervisor reviews
+  it and clicks Verify & Approve. This clears the red warning from the
+  Contractor's profile and writes a permanent entry to the audit trail.
+
+Why it exists:
+  This is what actually closes the loop — the difference between a
+  system that just collects reports and one that proves problems get
+  fixed. A permanent audit trail (who raised it, when, what evidence was
+  given, who verified it, when) is what makes the platform's governance
+  claim credible rather than cosmetic.
+
+
+--------------------------------------------------------------------------------
+SECTION 4 — THE task_type FIELD (HOW ONE SYSTEM SERVES DIFFERENT CONTRACTORS)
+--------------------------------------------------------------------------------
+
+Different contractors do fundamentally different work — a blasting
+contractor's needs (explosives stock, blaster's certificate) are not the
+same as a transportation contractor's (dumper fleet, trip logs) or an
+excavation contractor's (overburden volume tracking).
+
+Rather than building separate portals or separate logins per contractor
+type, MineSight uses a single field on the Contractor's profile:
+
+    task_type: blasting | transportation | excavation | maintenance
+
+This field is set ONCE, at the time the contractor is onboarded into the
+system (i.e. when their contract/tender is awarded and a Supervisor or
+admin creates their profile) — it is not something the contractor is
+asked to choose every time they log in, because it is a fixed property
+of the contract itself, not a session preference.
+
+From then on:
+  - The Contractor simply logs in and sees the sections relevant to their
+    task_type automatically (e.g. Explosives Stock Register only appears
+    for "blasting").
+  - The Machinery Register filters to show only the machine types
+    relevant to that task.
+  - The Daily Work Log (if built into the Contractor Portal) shows the
+    right output metric for the job — blasting rounds fired, tonnage
+    moved, or cubic meters of overburden removed.
+  - Core sections that apply to every contractor regardless of task type
+    (Team Roster, License Wallet, Attendance, Worker Roster, Unresolved
+    Action Center) remain visible for all.
+
+Edge case to decide before building, not after:
+  If a single contractor genuinely performs more than one task type under
+  one contract, task_type can be made a multi-select field instead of a
+  single value, so the profile shows the union of relevant sections. This
+  is a minor schema decision now versus a larger rework later if left
+  until the build is underway.
+
+
+--------------------------------------------------------------------------------
+SECTION 5 — END-TO-END DEMO WORKFLOW (2-ROLE VERSION)
+--------------------------------------------------------------------------------
+
+This is the single story to run live at the internal round demo.
+
+  1. THE SETUP
+     A contractor's profile shows either a clean status or a license
+     expiring soon, visible in their License & Certificate Wallet.
+
+  2. THE FIELD CHECK
+     The Supervisor visits a mining pit or blasting site, spots a safety
+     violation (e.g. workers without required PPE, or dust levels beyond
+     the acceptable limit), and logs an observation with a photo and
+     severity tag through the Observation Logger.
+
+  3. THE WARNING TRIGGER
+     The system instantly flags an open issue on the contractor's
+     profile, shown in bold red text in their Unresolved Action Center.
+     If the issue is environmental and crosses a defined threshold, the
+     Platform-Wide Warning System also fires.
+
+  4. THE RESOLUTION LOOP
+     The Contractor uploads corrected work proof or a renewed document.
+     The Supervisor reviews it, clicks "Verify & Approve." The red
+     warning disappears, and the action is permanently sealed into the
+     audit trail.
+
+Why this is the right demo scenario: it requires nothing fabricated (no
+fake hardware claims), it touches both roles, and it shows the platform's
+actual differentiator — a warning that is raised, tracked, and provably
+resolved, not just logged and forgotten.
+
+
+--------------------------------------------------------------------------------
+SECTION 6 — AI SAFETY & DATA PRIVACY RULES
+--------------------------------------------------------------------------------
+
+These rules govern any AI or automated component built into MineSight —
+document parsers, OCR extraction, or any rule engine driving warnings.
+
+6.1  Zero Data Leakage & Privacy Compliance
+  - No AI model or OCR document extractor processing contractor licenses,
+    worker counts, or safety records may leak personally identifiable
+    information (PII) or sensitive operational data to external logging
+    systems.
+  - Any uploaded certificate or document must be processed securely —
+    raw files are scrubbed of unauthorized credentials before being
+    indexed or stored.
+
+6.2  Deterministic AI — No Hallucinated Compliance
+  - Any warning, flag, or "risk" signal the system produces must be
+    driven solely by deterministic rules applied to real data inputs
+    (e.g. an actual expiry date has passed; an actual observation is
+    still open; an actual reading exceeded an actual threshold).
+    Black-box AI guessing is not permitted anywhere in this system.
+  - If a warning is shown, the system must be able to state exactly which
+    data point caused it — never an unexplained flag.
+  - The system must never invent, estimate, or hallucinate safety
+    inspection data, environmental readings, or attendance numbers. If a
+    data point has not been entered, it is shown as "Pending" or "Not
+    Logged" — never filled in with a guess.
+
+6.3  Role-Based Access Control (RBAC) Enforcement
+  - Contractors may only view and edit their own profile, license status,
+    worker roster, and machinery register — never another contractor's
+    data.
+  - Supervisors may view all contractors in their zone, log observations,
+    and verify closures — but may not alter system-wide compliance
+    definitions (e.g. what counts as an acceptable dust threshold)
+    without separate authorization.
+
+6.4  Guardrails Against Malicious Prompt Injection & Harm
+  - Any AI coding assistant operating on this repository is restricted
+    from executing unauthorized shell commands, altering environment
+    variables, or introducing third-party dependencies with known
+    security vulnerabilities.
+  - Any AI service (e.g. a document parser) that encounters an unreadable
+    file or an internal error must fail gracefully with a descriptive
+    error message — never crash the application or expose backend stack
+    traces to the user.
+
+
+--------------------------------------------------------------------------------
+SECTION 7 — MVP SCOPE VS. FUTURE SCOPE
+--------------------------------------------------------------------------------
+
+MUST BUILD (MVP):
+  - Contractor: License Wallet, Attendance Register, Worker Roster,
+    Machinery Register, Unresolved Action Center
+  - Supervisor: Contractor Status Dashboard, Observation Logger, Daily
+    Yield & Environment Tracker, Platform-Wide Warning System, Closure
+    Verification
+  - task_type-driven conditional rendering (blasting/transport/
+    excavation/maintenance)
+  - Full audit trail for every observation → action → verification cycle
+
+SHOULD BUILD IF TIME ALLOWS:
+  - Explosives Stock Register (blasting contractors)
+  - Document field extraction (auto-reading expiry dates off uploaded
+    certificate PDFs)
+  - Notification system (push/SMS alerts on new warnings)
+
+EXPLICITLY OUT OF SCOPE FOR THIS BUILD:
+  - Real IoT sensor hardware (all environmental data is manual/simulated
+    and clearly labelled as such)
+  - A separate Compliance Officer, Mine Manager, or Regional/HQ role
+  - Grievance management module
+  - Production/financial reporting beyond daily tonnage
+  - Any AI-generated (non-deterministic) risk scoring
+
+
+--------------------------------------------------------------------------------
+SECTION 8 — WHAT MAKES THIS PLATFORM ACTUALLY DIFFERENT
+--------------------------------------------------------------------------------
+
+Being direct about this, since "AI + dashboard + compliance" is not
+automatically novel — plenty of generic GRC (governance, risk, compliance)
+software already does variations of this for other industries.
+
+What MineSight actually claims as its differentiator:
+  1. It closes the loop. Most fragmented paper/spreadsheet systems stop
+     at "issue noted somewhere." MineSight tracks issue -> red flag ->
+     contractor evidence -> supervisor verification -> permanent audit
+     trail, end to end, for every single observation.
+  2. It adapts to contractor type without splitting into separate
+     products. One schema (task_type), not three separate builds.
+  3. It connects licenses, machinery, and field observations into one
+     place instead of three separate spreadsheets that never talk to
+     each other.
+  4. It is honest about what is real. No fabricated IoT hardware claims,
+     no black-box AI scores — every flag traces back to an actual data
+     point a person can check.
+
+================================================================================
+END OF BLUEPRINT
+================================================================================

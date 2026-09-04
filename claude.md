@@ -1,30 +1,36 @@
 # CLAUDE.md - MineSight Project Guidelines
 
-## Project Overview
-MineSight is an AI-powered Smart Governance & Compliance Monitoring System for Coal Mines (Smart India Hackathon 2026 MVP). 
-It focuses on a 2-Role MVP: **Contractor** and **Supervisor**.
+## Project
+Coal mine governance platform. 2 roles: Contractor, Supervisor.
+Core loop: observation → corrective action → verified closure → audit trail → risk score updates.
 
-## Core MVP Scope (Strictly Stick to This)
-1. **Contractor Portal:**
-   - Digital License & Certificate Wallet (tracks expiry dates).
-   - Digital Attendance Register (replaces paper registers).
-   - Unresolved Action Center (displays supervisor safety remarks in red text).
-2. **Supervisor Portal:**
-   - Contractor Status Dashboard.
-   - Quick Observation Logger (category, photo upload, severity tag, auto-locks warning on contractor profile).
-   - Daily Yield & Environment Tracker (logs coal tonnage, monitors dust/effluent limits, triggers warning flags).
-   - Closure Verification (verifies contractor proof, clears red alert, creates audit trail).
+## Roles & Boundaries (enforce strictly — no cross-role writes)
 
-## AI Safety & Data Privacy Rules
-- **No PII/Data Leaks:** Never expose sensitive operational data or personal credentials.
-- **Deterministic AI Only:** Risk scores and alerts must be driven by actual logic and data inputs (e.g., expired dates, open remarks). No black-box hallucinations.
-- **Role-Based Boundaries:** Enforce strict permission boundaries between Contractors and Supervisors.
+**Contractor** (writes own data only)
+- Profile: ID, task_type (blasting/transport/excavation/maintenance), license/cert wallet w/ expiry
+- Digital attendance register (per worker: training status, PPE issued)
+- Machinery register: type, ownership, last serviced, next due, cert expiry
+- Explosives stock (procured/used/remaining) — visible only if task_type = blasting
+- Unresolved Action Center: read-only view of Supervisor's open remarks, red-flagged
 
-## Coding & Token Efficiency Rules
-- Keep components modular, lightweight, and clean.
-- Do not add complex unrequested third-party libraries or wander into future scope features (like full IoT hardware integrations).
-- Provide concise code snippets rather than overly verbose explanations.
+**Supervisor** (writes observations/actions only, not contractor profiles)
+- Contractor status dashboard (all contractors, aggregated)
 
-## Token & Verbosity Rules
-- Be strictly concise. Do not explain basic code logic or chat unnecessarily. 
-- Output only code snippets or direct file modifications unless asked for an explanation.
+- Observation logger: category, photo, severity → auto-creates action, red-flags contractor
+- Daily yield/environment log: tonnage, dust/effluent readings vs. threshold → flag on breach
+- Closure verification: checks evidence, clears red flag, writes audit trail entry
+
+## task_type field
+Set once at contractor onboarding, not per-login. Drives conditional rendering
+(e.g., explosives stock only for blasting). Don't build a login-time picker.
+
+## AI / Data Rules
+- No PII exposed across role boundaries (e.g. Contractor A never sees Contractor B's data)
+- Risk scores/alerts: deterministic, rule-based only. No LLM-generated scores or unexplained flags.
+- LLM use limited to: document field extraction (cert expiry dates from uploaded PDFs). Nothing else.
+
+## Code Rules
+- Modular, minimal deps. No new libraries without explicit ask.
+- No unrequested scope (IoT hardware, features outside the 3 roles above).
+- Snippets/diffs only — no prose explanation unless asked.
+- No restating requirements already in this file before coding — just build.
