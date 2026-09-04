@@ -40,6 +40,14 @@ const buttonVariants = cva(
   }
 )
 
+/**
+ * Button component - Versatile button with multiple variants and sizes.
+ * Built on Base UI primitives with CVA for variant styling and full accessibility support.
+ * Supports default, outline, secondary, ghost, destructive, and link variants.
+ *
+ * @param props - Button props including className, variant, size, and all native button attributes
+ * @returns React button component with variant styling and accessibility features
+ */
 function Button({
   className,
   variant = "default",
