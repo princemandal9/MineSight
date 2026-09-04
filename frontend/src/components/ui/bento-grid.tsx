@@ -1,5 +1,14 @@
 import { cn } from "@/lib/utils";
 
+/**
+ * BentoGrid component - Responsive grid container for Bento-style card layouts.
+ * Uses CSS Grid with automatic rows and responsive columns (1 column mobile, 3 columns desktop).
+ *
+ * @param props - Component props
+ * @param props.className - Optional CSS class names to apply to the grid
+ * @param props.children - Child elements (typically BentoGridItem components)
+ * @returns React component rendering a grid layout
+ */
 export const BentoGrid = ({
   className,
   children,
@@ -19,6 +28,18 @@ export const BentoGrid = ({
   );
 };
 
+/**
+ * BentoGridItem component - Individual card item for BentoGrid layout.
+ * Features hover effects, optional header, icon, title, and description sections.
+ *
+ * @param props - Component props
+ * @param props.className - Optional CSS class names for styling
+ * @param props.title - Title text or React node
+ * @param props.description - Description text or React node
+ * @param props.header - Optional header content (typically images or media)
+ * @param props.icon - Optional icon element
+ * @returns React component rendering a grid item card
+ */
 export const BentoGridItem = ({
   className,
   title,

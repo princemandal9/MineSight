@@ -18,6 +18,13 @@ export const metadata: Metadata = {
     "The enterprise contractor & supervisor portal for open-pit mines. Zero-data leakage, deterministic compliance, role-based access control.",
 };
 
+/**
+ * RootLayout component - Root layout wrapper for the entire Next.js application.
+ * Configures global fonts, dark mode class, and establishes the base HTML structure.
+ *
+ * @param props - Layout props containing children to render
+ * @returns React component wrapping application content with HTML and body tags
+ */
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html

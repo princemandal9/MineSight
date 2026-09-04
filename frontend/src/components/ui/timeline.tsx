@@ -12,6 +12,15 @@ interface TimelineEntry {
   content: React.ReactNode;
 }
 
+/**
+ * Timeline component - Vertical timeline with scroll-based progress animation.
+ * Displays a series of timeline entries with animated progress line that fills based on scroll position.
+ * Features sticky entry titles and responsive layout.
+ *
+ * @param props - Component props
+ * @param props.data - Array of timeline entries with title and content
+ * @returns React component rendering an animated vertical timeline
+ */
 export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const ref = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);

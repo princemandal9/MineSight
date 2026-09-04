@@ -3,6 +3,17 @@ import { cn } from "@/lib/utils";
 import { useMotionValue, motion, useMotionTemplate } from "motion/react";
 import React from "react";
 
+/**
+ * HeroHighlight component - Interactive hero section with mouse-tracking dot pattern effect.
+ * Features dynamic background patterns that change on hover, following mouse position with radial gradient mask.
+ * Supports light and dark mode themes.
+ *
+ * @param props - Component props
+ * @param props.children - Child content to display in the hero section
+ * @param props.className - Optional CSS class names for the content wrapper
+ * @param props.containerClassName - Optional CSS class names for the container
+ * @returns React component rendering an interactive hero section
+ */
 export const HeroHighlight = ({
   children,
   className,
@@ -27,6 +38,12 @@ export const HeroHighlight = ({
     },
   };
 
+  /**
+   * Handles mouse movement to update motion values for radial gradient tracking.
+   * Calculates relative mouse position within the component bounds.
+   *
+   * @param event - React mouse event with currentTarget, clientX, and clientY
+   */
   function handleMouseMove({
     currentTarget,
     clientX,
@@ -104,6 +121,15 @@ export const HeroHighlight = ({
   );
 };
 
+/**
+ * Highlight component - Animated text highlight effect with gradient background.
+ * Creates a gradient background that animates from 0% to 100% width on mount.
+ *
+ * @param props - Component props
+ * @param props.children - Text or content to highlight
+ * @param props.className - Optional CSS class names for styling
+ * @returns React component rendering highlighted text with animation
+ */
 export const Highlight = ({
   children,
   className,

@@ -6,6 +6,13 @@ import { CheckCircle2, AlertTriangle, XCircle, Clock, CheckCircle, Truck, Bomb, 
 
 type TaskType = "blasting" | "transport" | "excavation";
 
+/**
+ * ContractorProfileContent component - Displays contractor profile information and task-specific data.
+ * Shows licenses, machinery, work logs, and contextual data based on the active task type.
+ * Requires Suspense boundary to handle search params reading.
+ *
+ * @returns React component rendering complete contractor profile dashboard
+ */
 function ContractorProfileContent() {
   const searchParams = useSearchParams();
   const taskQuery = searchParams.get('task');
@@ -469,6 +476,12 @@ function ContractorProfileContent() {
   );
 }
 
+/**
+ * ContractorProfile component - Wrapper component for contractor profile page.
+ * Provides Suspense boundary with loading fallback for search params handling.
+ *
+ * @returns React component with Suspense-wrapped ContractorProfileContent
+ */
 export default function ContractorProfile() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#f8faf8] flex flex-col items-center justify-center font-sans text-mine-950 font-bold">Loading...</div>}>

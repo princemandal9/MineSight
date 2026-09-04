@@ -3,6 +3,15 @@ import React from "react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 
+/**
+ * BackgroundBeams component - Renders animated SVG beam paths with gradient effects.
+ * Creates a dynamic background with multiple animated linear gradients flowing through curved paths.
+ * Memoized for performance optimization.
+ *
+ * @param props - Component props
+ * @param props.className - Optional CSS class names to apply to the container
+ * @returns Memoized React component rendering animated background beams
+ */
 export const BackgroundBeams = React.memo(
   ({ className }: { className?: string }) => {
     const paths = [

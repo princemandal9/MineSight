@@ -5,6 +5,12 @@ import { Eye, EyeOff, Check, Bomb, Truck, Pickaxe, ChevronRight } from "lucide-r
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+/**
+ * LoginPage component - Main authentication page for MineSight portal.
+ * Supports both contractor and supervisor login flows with task selection for contractors.
+ *
+ * @returns React component rendering the login interface with role toggle and task selection
+ */
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -24,6 +30,12 @@ export default function LoginPage() {
     { id: "excavation", label: "Excavation / OB", icon: Pickaxe },
   ];
 
+  /**
+   * Handles form submission for login authentication.
+   * For contractors, advances to task selection; supervisors see an alert placeholder.
+   *
+   * @param e - Form submission event
+   */
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (loginRole === 'contractor') {
@@ -35,6 +47,12 @@ export default function LoginPage() {
     }
   };
 
+  /**
+   * Handles task selection after successful contractor login.
+   * Navigates to contractor page with selected task as query parameter.
+   *
+   * @param taskId - The ID of the selected task (blasting, transport, excavation)
+   */
   const handleTaskSelect = (taskId: string) => {
     // Navigate to contractor page with the selected task
     router.push(`/contractor?task=${taskId}`);

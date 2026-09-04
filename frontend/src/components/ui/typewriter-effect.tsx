@@ -4,6 +4,17 @@ import { cn } from "@/lib/utils";
 import { motion, stagger, useAnimate, useInView } from "motion/react";
 import { useEffect } from "react";
 
+/**
+ * TypewriterEffect component - Animated text that appears character by character when in view.
+ * Creates a typewriter animation effect with staggered character reveals and a blinking cursor.
+ * Triggers animation when component enters viewport.
+ *
+ * @param props - Component props
+ * @param props.words - Array of word objects with text and optional className
+ * @param props.className - Optional CSS class names for the container
+ * @param props.cursorClassName - Optional CSS class names for the cursor
+ * @returns React component rendering typewriter-animated text
+ */
 export const TypewriterEffect = ({
   words,
   className,
@@ -99,6 +110,17 @@ export const TypewriterEffect = ({
   );
 };
 
+/**
+ * TypewriterEffectSmooth component - Smooth typewriter animation with width expansion effect.
+ * Creates a typewriter animation by expanding container width from 0% to fit-content.
+ * Includes a blinking cursor and animates when component is in viewport.
+ *
+ * @param props - Component props
+ * @param props.words - Array of word objects with text and optional className
+ * @param props.className - Optional CSS class names for the container
+ * @param props.cursorClassName - Optional CSS class names for the cursor
+ * @returns React component rendering smooth typewriter-animated text
+ */
 export const TypewriterEffectSmooth = ({
   words,
   className,
