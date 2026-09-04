@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, Check, Bomb, Truck, Pickaxe, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
