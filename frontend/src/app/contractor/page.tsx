@@ -449,7 +449,7 @@ export default function ContractorDashboard() {
   // ------------------------------------
 
   const renderProfile = () => (
-    <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
       
       {/* Header */}
       <div className="flex items-center gap-6 mb-8 border-b border-neutral-100 dark:border-mine-800 pb-8">
@@ -465,7 +465,7 @@ export default function ContractorDashboard() {
       <form onSubmit={saveProfile} className="space-y-6">
         
         {/* Personal Information Card */}
-        <div className="bg-white dark:bg-mine-950 p-6 rounded-[1.5rem] border border-neutral-100 dark:border-mine-800 shadow-sm">
+        <div className="bg-white dark:bg-mine-900 p-6 rounded-[1.5rem] border border-neutral-100 dark:border-mine-800 shadow-sm">
           <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider border-b border-neutral-100 dark:border-mine-800 pb-2 mb-6">Personal Information</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             <div className="uiverse-input-container">
@@ -482,7 +482,7 @@ export default function ContractorDashboard() {
         </div>
 
         {/* Company Information Card */}
-        <div className="bg-white dark:bg-mine-950 p-6 rounded-[1.5rem] border border-neutral-100 dark:border-mine-800 shadow-sm">
+        <div className="bg-white dark:bg-mine-900 p-6 rounded-[1.5rem] border border-neutral-100 dark:border-mine-800 shadow-sm">
           <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider border-b border-neutral-100 dark:border-mine-800 pb-2 mb-6">Company Information</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8">
             <div className="uiverse-input-container md:col-span-2">
@@ -530,7 +530,7 @@ export default function ContractorDashboard() {
       </div>
 
       {/* ACCOUNT CARD */}
-      <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800">
+      <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800">
         <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-6 border-b border-neutral-100 dark:border-mine-800 pb-2">Account</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -547,7 +547,7 @@ export default function ContractorDashboard() {
       </div>
 
       {/* NOTIFICATIONS CARD */}
-      <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800">
+      <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800">
         <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-6 border-b border-neutral-100 dark:border-mine-800 pb-2">Notification Preferences</h4>
         
         <div className="flex flex-col">
@@ -599,7 +599,7 @@ export default function ContractorDashboard() {
       </div>
 
       {/* SECURITY CARD */}
-      <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800">
+      <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800">
         <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-6 border-b border-neutral-100 dark:border-mine-800 pb-2">Security</h4>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -637,7 +637,7 @@ export default function ContractorDashboard() {
 
       {/* 2FA & SESSIONS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 flex flex-col">
+        <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 flex flex-col">
           <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-2 border-b border-neutral-100 dark:border-mine-800 pb-2">Two-Factor Authentication</h4>
           <p className="text-xs text-neutral-500 mb-6">Add an additional layer of protection to your account.</p>
           <div className="flex items-center justify-between mt-auto bg-neutral-50 dark:bg-mine-900/30 p-4 rounded-xl border border-neutral-100 dark:border-mine-800">
@@ -649,7 +649,7 @@ export default function ContractorDashboard() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 flex flex-col">
+        <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 flex flex-col">
           <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-2 border-b border-neutral-100 dark:border-mine-800 pb-2">Active Sessions</h4>
           <div className="space-y-4 mt-4">
             <div className="flex justify-between items-center">
@@ -671,7 +671,7 @@ export default function ContractorDashboard() {
       </div>
 
       {/* ACCOUNT MANAGEMENT */}
-      <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800">
+      <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800">
         <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-6 border-b border-neutral-100 dark:border-mine-800 pb-2">Account Management</h4>
         
         <div className="space-y-6">
@@ -710,13 +710,13 @@ export default function ContractorDashboard() {
 
   const renderMessages = () => (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-white dark:bg-mine-950 rounded-3xl p-8 border border-neutral-100 dark:border-mine-900 shadow-sm">
+      <div className="bg-white dark:bg-mine-900 rounded-3xl p-8 border border-neutral-100 dark:border-mine-900 shadow-sm">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold text-mine-950 dark:text-white">Messages Inbox</h2>
         </div>
         <div className="flex flex-col gap-4">
           {appMessages.map(msg => (
-            <div key={msg.id} className={`p-6 border rounded-2xl transition-all hover:shadow-md ${!msg.read ? 'bg-mine-50/50 border-mine-200 dark:bg-mine-900/20 dark:border-mine-800' : 'bg-white border-neutral-100 dark:bg-mine-950 dark:border-mine-900'}`}>
+            <div key={msg.id} className={`p-6 border rounded-2xl transition-all hover:shadow-md ${!msg.read ? 'bg-mine-50/50 border-mine-200 dark:bg-mine-900/20 dark:border-mine-800' : 'bg-white border-neutral-100 dark:bg-mine-900 dark:border-mine-900'}`}>
               <div className="flex justify-between items-start mb-2">
                 <h3 className={`text-lg ${!msg.read ? 'font-bold text-mine-950 dark:text-white' : 'font-semibold text-neutral-800 dark:text-neutral-200'}`}>{msg.subject}</h3>
                 <span className="text-sm font-medium text-neutral-400">{msg.timestamp}</span>
@@ -739,7 +739,7 @@ export default function ContractorDashboard() {
 
   const renderNotificationCenter = () => (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-white dark:bg-mine-950 rounded-3xl p-8 border border-neutral-100 dark:border-mine-900 shadow-sm">
+      <div className="bg-white dark:bg-mine-900 rounded-3xl p-8 border border-neutral-100 dark:border-mine-900 shadow-sm">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold text-mine-950 dark:text-white">Notification Center</h2>
           {unreadNotifCount > 0 && (
@@ -748,7 +748,7 @@ export default function ContractorDashboard() {
         </div>
         <div className="flex flex-col gap-4">
           {appNotifications.map(notif => (
-            <div key={notif.id} className={`p-6 border rounded-2xl transition-all hover:shadow-md ${!notif.read ? 'bg-mine-50/50 border-mine-200 dark:bg-mine-900/20 dark:border-mine-800' : 'bg-white border-neutral-100 dark:bg-mine-950 dark:border-mine-900'}`}>
+            <div key={notif.id} className={`p-6 border rounded-2xl transition-all hover:shadow-md ${!notif.read ? 'bg-mine-50/50 border-mine-200 dark:bg-mine-900/20 dark:border-mine-800' : 'bg-white border-neutral-100 dark:bg-mine-900 dark:border-mine-900'}`}>
               <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center gap-3">
                   <span className={`text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full ${
@@ -787,7 +787,7 @@ export default function ContractorDashboard() {
       {/* KPI CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Ended Projects */}
-        <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 relative group overflow-hidden flex flex-col justify-between hover:border-mine-300 dark:hover:border-mine-700 transition-colors">
+        <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 relative group overflow-hidden flex flex-col justify-between hover:border-mine-300 dark:hover:border-mine-700 transition-colors">
           <div className="flex justify-between items-start mb-6">
             <h3 className="text-mine-950 dark:text-white font-semibold text-base">Ended Projects</h3>
             <button 
@@ -809,7 +809,7 @@ export default function ContractorDashboard() {
         </div>
 
         {/* Running Projects */}
-        <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 relative group overflow-hidden flex flex-col justify-between hover:border-mine-300 dark:hover:border-mine-700 transition-colors">
+        <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 relative group overflow-hidden flex flex-col justify-between hover:border-mine-300 dark:hover:border-mine-700 transition-colors">
           <div className="flex justify-between items-start mb-6">
             <h3 className="text-mine-950 dark:text-white font-semibold text-base">Running Projects</h3>
             <button 
@@ -831,7 +831,7 @@ export default function ContractorDashboard() {
         </div>
 
         {/* Pending Project */}
-        <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 relative group overflow-hidden flex flex-col justify-between hover:border-mine-300 dark:hover:border-mine-700 transition-colors">
+        <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 relative group overflow-hidden flex flex-col justify-between hover:border-mine-300 dark:hover:border-mine-700 transition-colors">
           <div className="flex justify-between items-start mb-6">
             <h3 className="text-mine-950 dark:text-white font-semibold text-base">Pending Project</h3>
             <button 
@@ -854,7 +854,7 @@ export default function ContractorDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Project Analytics Chart */}
-        <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1">
+        <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1">
           <h3 className="text-mine-950 dark:text-white font-semibold mb-8 text-base">Project Analytics</h3>
           
           <div className="h-44 flex items-end justify-between px-2 gap-3 mb-4">
@@ -895,7 +895,7 @@ export default function ContractorDashboard() {
         </div>
 
         {/* Reminders */}
-        <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1 flex flex-col">
+        <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1 flex flex-col">
           <h3 className="text-mine-950 dark:text-white font-semibold mb-6 text-base">Reminders</h3>
           <div className="flex-1 flex flex-col justify-center">
             <h4 className="text-[22px] font-bold text-mine-900 dark:text-mine-100 mb-2 leading-tight">Safety Briefing<br/>Meeting</h4>
@@ -911,7 +911,7 @@ export default function ContractorDashboard() {
         </div>
 
         {/* Project List */}
-        <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1">
+        <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-mine-950 dark:text-white font-semibold text-base">Project</h3>
             <button 
@@ -945,7 +945,7 @@ export default function ContractorDashboard() {
 
       {/* BOTTOM ROW (Team Collaboration) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1">
+        <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-mine-950 dark:text-white font-semibold text-base">Team Collaboration</h3>
             <button 
@@ -984,7 +984,7 @@ export default function ContractorDashboard() {
   );
 
   const renderLicenses = () => (
-    <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h3 className="text-mine-950 dark:text-white font-semibold text-xl mb-1">Licenses & Certificates</h3>
@@ -1025,7 +1025,7 @@ export default function ContractorDashboard() {
   );
 
   const renderMachinery = () => (
-    <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h3 className="text-mine-950 dark:text-white font-semibold text-xl mb-1">Machinery Register</h3>
@@ -1068,7 +1068,7 @@ export default function ContractorDashboard() {
   );
 
   const renderDailyLog = () => (
-    <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-3xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-3xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h3 className="text-mine-950 dark:text-white font-semibold text-xl mb-1">Daily Work Log</h3>
@@ -1081,7 +1081,7 @@ export default function ContractorDashboard() {
 
       <div className="grid grid-cols-2 gap-4 mb-8">
         {initialDailyStats.map((stat, idx) => (
-          <div key={idx} className="bg-mine-50/50 dark:bg-mine-900/30 border border-mine-100 dark:border-mine-800 rounded-[1rem] p-5">
+          <div key={idx} className="bg-mine-50 dark:bg-mine-900/60 border border-mine-100 dark:border-mine-800 rounded-[1rem] p-5">
             <div className="text-3xl font-bold text-mine-800 dark:text-mine-100 mb-1 tracking-tight">{stat.value}</div>
             <div className="text-xs font-semibold text-mine-700 dark:text-mine-300 uppercase tracking-wide">{stat.label}</div>
           </div>
@@ -1091,7 +1091,7 @@ export default function ContractorDashboard() {
       <div className="space-y-4">
         <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-2">Recent Logs</h4>
         {dailyLogs.map((log) => (
-          <div key={log.id} className="p-4 border border-neutral-100 dark:border-mine-800 rounded-[1rem] hover:bg-neutral-50 dark:hover:bg-mine-900/30 transition-colors cursor-pointer" onClick={() => handleAction(`View Log: ${log.text}`)}>
+          <div key={log.id} className="p-4 bg-neutral-50/50 dark:bg-mine-900/40 border border-neutral-100 dark:border-mine-800 rounded-[1rem] hover:bg-neutral-100 dark:hover:bg-mine-800/60 transition-colors cursor-pointer" onClick={() => handleAction(`View Log: ${log.text}`)}>
             <div className="flex items-start gap-4">
               <div className="w-8 h-8 rounded-full bg-mine-100 dark:bg-mine-800 text-mine-700 dark:text-mine-300 flex items-center justify-center shrink-0">
                 <FileText size={14} />
@@ -1108,7 +1108,7 @@ export default function ContractorDashboard() {
   );
 
   const renderExplosives = () => (
-    <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h3 className="text-mine-950 dark:text-white font-semibold text-xl mb-1">Explosives Stock Register</h3>
@@ -1144,7 +1144,7 @@ export default function ContractorDashboard() {
   );
 
   const renderRoster = () => (
-    <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h3 className="text-mine-950 dark:text-white font-semibold text-xl mb-1">Worker Roster</h3>
@@ -1182,7 +1182,7 @@ export default function ContractorDashboard() {
   );
 
   const renderRequests = () => (
-    <div className="bg-white dark:bg-mine-950 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h3 className="text-mine-950 dark:text-white font-semibold text-xl mb-1">Supervisor Requests</h3>
@@ -1258,7 +1258,11 @@ export default function ContractorDashboard() {
               <button
                 key={item.id}
                 onClick={() => handleAction(item.label)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 text-neutral-500 dark:text-neutral-400 hover:text-mine-950 dark:hover:text-white hover:bg-mine-100/50 dark:hover:bg-mine-900/50 rounded-xl font-medium transition-colors"
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all ${
+                  activeTab === item.id 
+                    ? "bg-mine-700 text-white shadow-sm shadow-mine-700/20" 
+                    : "text-neutral-500 dark:text-neutral-400 hover:text-mine-950 dark:hover:text-white hover:bg-mine-100/50 dark:hover:bg-mine-900/50"
+                }`}
               >
                 <item.icon size={18} />
                 <span>{item.label}</span>
@@ -1307,7 +1311,7 @@ export default function ContractorDashboard() {
               </button>
 
               {isMailOpen && (
-                <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-mine-950 border border-neutral-200 dark:border-mine-800 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-mine-900 border border-neutral-200 dark:border-mine-800 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="flex items-center justify-between p-4 border-b border-neutral-100 dark:border-mine-800">
                     <h3 className="font-bold text-sm text-mine-950 dark:text-white">Messages</h3>
                     <button onClick={() => { closePopovers(); setActiveTab("messages"); }} className="text-xs font-semibold text-mine-700 dark:text-mine-300 hover:underline">View all</button>
@@ -1340,7 +1344,7 @@ export default function ContractorDashboard() {
               </button>
 
               {isNotifOpen && (
-                <div className="absolute right-0 mt-3 w-96 bg-white dark:bg-mine-950 border border-neutral-200 dark:border-mine-800 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute right-0 mt-3 w-96 bg-white dark:bg-mine-900 border border-neutral-200 dark:border-mine-800 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="flex items-center justify-between p-4 border-b border-neutral-100 dark:border-mine-800 bg-neutral-50/50 dark:bg-mine-900/10">
                     <h3 className="font-bold text-sm text-mine-950 dark:text-white flex items-center gap-2">Notifications {unreadNotifCount > 0 && <span className="bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 px-2 py-0.5 rounded-full text-[10px] font-bold">{unreadNotifCount}</span>}</h3>
                     <div className="flex items-center gap-4">
@@ -1399,7 +1403,7 @@ export default function ContractorDashboard() {
               </button>
 
               {isProfileOpen && (
-                <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-mine-950 border border-neutral-200 dark:border-mine-800 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 py-2">
+                <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-mine-900 border border-neutral-200 dark:border-mine-800 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 py-2">
                   <div className="px-4 py-3 border-b border-neutral-100 dark:border-mine-800 mb-2 sm:hidden">
                     <p className="text-sm font-bold text-mine-950 dark:text-white leading-none">ABC Infra</p>
                     <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 font-medium">abc@minesight.com</p>
@@ -1469,7 +1473,7 @@ export default function ContractorDashboard() {
       {/* 1. ADD PROJECT MODAL */}
       {isAddProjectOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-950 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
             <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">Add New Project</h2>
             <form onSubmit={submitAddProject}>
               <div className="uiverse-input-container">
@@ -1494,7 +1498,7 @@ export default function ContractorDashboard() {
       {/* 2. ADD MEMBER MODAL */}
       {isAddMemberOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-950 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
             <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">Add Team Member</h2>
             <form onSubmit={submitAddMember}>
               <div className="uiverse-input-container">
@@ -1519,7 +1523,7 @@ export default function ContractorDashboard() {
       {/* 3. UPLOAD LICENSE MODAL */}
       {isUploadLicenseOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-950 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
             <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">Upload License</h2>
             <form onSubmit={submitUploadLicense}>
               <div className="uiverse-input-container">
@@ -1549,7 +1553,7 @@ export default function ContractorDashboard() {
       {/* 4. REGISTER MACHINE MODAL */}
       {isRegisterMachineOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-950 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
             <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">Register Machine</h2>
             <form onSubmit={submitRegisterMachine}>
               <div className="uiverse-input-container">
@@ -1579,7 +1583,7 @@ export default function ContractorDashboard() {
       {/* 5. NEW LOG ENTRY MODAL */}
       {isNewLogOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-950 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
             <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">New Log Entry</h2>
             <form onSubmit={submitNewLog}>
               <div className="uiverse-input-container">
@@ -1604,7 +1608,7 @@ export default function ContractorDashboard() {
       {/* 6. UPDATE STOCK MODAL */}
       {isUpdateStockOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-950 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
             <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">Update Explosives Stock</h2>
             <form onSubmit={submitUpdateStock}>
               <div className="uiverse-input-container">
@@ -1634,7 +1638,7 @@ export default function ContractorDashboard() {
       {/* 7. ADD WORKER MODAL */}
       {isAddWorkerOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-950 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
             <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">Add Worker to Roster</h2>
             <form onSubmit={submitAddWorker}>
               <div className="uiverse-input-container">
@@ -1664,7 +1668,7 @@ export default function ContractorDashboard() {
       {/* 8. NEW REQUEST MODAL */}
       {isNewRequestOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-950 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
             <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">New Supervisor Request</h2>
             <form onSubmit={submitNewRequest}>
               <div className="uiverse-input-container">
@@ -1684,7 +1688,7 @@ export default function ContractorDashboard() {
       {/* 9. HELP MODAL */}
       {isHelpOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-950 p-8 rounded-[1.5rem] w-full max-w-lg shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200 overflow-y-auto max-h-[90vh]">
+          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-lg shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200 overflow-y-auto max-h-[90vh]">
             <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-2 tracking-tight">Help & Support</h2>
             <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">Find answers or contact the administrative team.</p>
             
@@ -1721,7 +1725,7 @@ export default function ContractorDashboard() {
       {/* 10. CONFIRM DEACTIVATE MODAL */}
       {isConfirmDeactivateOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-950 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200 text-center">
+          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200 text-center">
             <h2 className="text-xl font-bold text-mine-950 dark:text-white mb-2">Deactivate Account?</h2>
             <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-8">This will temporarily hide your profile and associated data until you sign in again.</p>
             <div className="flex flex-col gap-3">
@@ -1735,7 +1739,7 @@ export default function ContractorDashboard() {
       {/* 11. CONFIRM DELETE MODAL */}
       {isConfirmDeleteOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-950 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-red-200 dark:border-red-900/50 animate-in zoom-in-95 duration-200 text-center">
+          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-red-200 dark:border-red-900/50 animate-in zoom-in-95 duration-200 text-center">
             <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="font-bold text-xl">!</span>
             </div>
