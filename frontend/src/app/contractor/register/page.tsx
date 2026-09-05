@@ -253,7 +253,7 @@ export default function ContractorRegistrationPage() {
                     required
                   />
                 </div>
-                {!isPhoneVerified && formData.phone.replace(/\D/g, "").length >= 10 && (
+                {!isPhoneVerified && (
                   <div className="flex justify-end mt-2">
                     <button
                       type="button"
