@@ -1,15 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  Search, Bell, Mail, Command, Plus, ArrowUpRight,
-  LayoutDashboard, FileText, Settings, HelpCircle, LogOut,
-  HardHat, FileSignature, Truck, Bomb, MessageSquare, Video, User, Pencil, X
+import { Search, Bell, Mail, Command, Plus, ArrowUpRight, 
+  LayoutDashboard, FileText, Settings, HelpCircle, LogOut, 
+  HardHat, FileSignature, Truck, Bomb, MessageSquare, Video, User
 } from "lucide-react";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useRouter } from "next/navigation";
-import { ChangeEmailModal } from "@/components/ChangeEmailModal";
 
 // --- INITIAL DATA CONSTANTS ---
 
@@ -38,26 +36,18 @@ const initialProjectsData = [
 ];
 
 const initialTeamData = [
-  {
-    id: 1, name: "Alexandra Deff", initials: "AD", task: "Explosives Inventory", status: "Completed",
-    avatarClass: "bg-pink-100 text-pink-700 border-pink-50 dark:bg-pink-900/30 dark:text-pink-400 dark:border-pink-900/50",
-    badgeClass: "bg-mine-100 text-mine-800 border-mine-300 dark:bg-mine-900/50 dark:text-mine-300 dark:border-mine-700"
-  },
-  {
-    id: 2, name: "Edwin Adenike", initials: "EA", task: "Machinery Servicing", status: "In Progress",
-    avatarClass: "bg-lime-100 text-lime-700 border-lime-50 dark:bg-lime-900/30 dark:text-lime-400 dark:border-lime-900/50",
-    badgeClass: "bg-amber-50 text-amber-600 border-amber-100/50 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50"
-  },
-  {
-    id: 3, name: "Isaac Oluwatemilorun", initials: "IO", task: "Safety Compliance Report", status: "Pending",
-    avatarClass: "bg-blue-100 text-blue-700 border-blue-50 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-900/50",
-    badgeClass: "bg-red-50 text-red-600 border-red-100/50 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800/50"
-  },
-  {
-    id: 4, name: "David Oshodi", initials: "DO", task: "Daily Work Log Entry", status: "In Progress",
-    avatarClass: "bg-orange-100 text-orange-700 border-orange-50 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-900/50",
-    badgeClass: "bg-amber-50 text-amber-600 border-amber-100/50 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50"
-  },
+  { id: 1, name: "Alexandra Deff", initials: "AD", task: "Explosives Inventory", status: "Completed", 
+    avatarClass: "bg-pink-100 text-pink-700 border-pink-50 dark:bg-pink-900/30 dark:text-pink-400 dark:border-pink-900/50", 
+    badgeClass: "bg-mine-100 text-mine-800 border-mine-300 dark:bg-mine-900/50 dark:text-mine-300 dark:border-mine-700" },
+  { id: 2, name: "Edwin Adenike", initials: "EA", task: "Machinery Servicing", status: "In Progress", 
+    avatarClass: "bg-lime-100 text-lime-700 border-lime-50 dark:bg-lime-900/30 dark:text-lime-400 dark:border-lime-900/50", 
+    badgeClass: "bg-amber-50 text-amber-600 border-amber-100/50 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50" },
+  { id: 3, name: "Isaac Oluwatemilorun", initials: "IO", task: "Safety Compliance Report", status: "Pending", 
+    avatarClass: "bg-blue-100 text-blue-700 border-blue-50 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-900/50", 
+    badgeClass: "bg-red-50 text-red-600 border-red-100/50 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800/50" },
+  { id: 4, name: "David Oshodi", initials: "DO", task: "Daily Work Log Entry", status: "In Progress", 
+    avatarClass: "bg-orange-100 text-orange-700 border-orange-50 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-900/50", 
+    badgeClass: "bg-amber-50 text-amber-600 border-amber-100/50 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50" },
 ];
 
 const initialLicensesData = [
@@ -165,30 +155,29 @@ export default function ContractorDashboard() {
   const [isMailOpen, setIsMailOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-
+  
   // --- NOTIFICATION & MESSAGE STATES ---
   const [appNotifications, setAppNotifications] = useState(initialNotifications);
   const [appMessages, setAppMessages] = useState(initialMessages);
-
+  
   // --- PROFILE & SETTINGS STATES ---
   const [profileName, setProfileName] = useState("ABC Infra");
   const [profileDesignation, setProfileDesignation] = useState("Contractor / Lead Entity");
   const [profileCompany, setProfileCompany] = useState("ABC Infra Ltd.");
   const [profileLocation, setProfileLocation] = useState("Pit A, Sector 4");
   const [profileAddress, setProfileAddress] = useState("123 Mining Road, Industrial Area");
-  const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   const [toastMessage, setToastMessage] = useState("");
+  const [isConfirmDeactivateOpen, setIsConfirmDeactivateOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
 
   const [helpMessage, setHelpMessage] = useState("");
   const [settingsEmail, setSettingsEmail] = useState("abc@minesight.com");
   const [settingsPhone, setSettingsPhone] = useState("+1 234 567 8900");
-  const [isChangeEmailOpen, setIsChangeEmailOpen] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
+  
   const [notifSafety, setNotifSafety] = useState({ email: true, sms: true });
   const [notifCompliance, setNotifCompliance] = useState({ email: true, sms: true });
   const [notifBlasting, setNotifBlasting] = useState({ email: true, sms: true });
@@ -199,29 +188,29 @@ export default function ContractorDashboard() {
   // --- FORM INPUT STATES ---
   const [newProjectTitle, setNewProjectTitle] = useState("");
   const [newProjectDate, setNewProjectDate] = useState("");
-
+  
   const [newMemberName, setNewMemberName] = useState("");
   const [newMemberTask, setNewMemberTask] = useState("");
-
+  
   const [newLicenseDoc, setNewLicenseDoc] = useState("");
   const [newLicenseHolder, setNewLicenseHolder] = useState("");
   const [newLicenseExpiry, setNewLicenseExpiry] = useState("");
-
+  
   const [newMachineName, setNewMachineName] = useState("");
   const [newMachineOwnership, setNewMachineOwnership] = useState("");
   const [newMachineNextDue, setNewMachineNextDue] = useState("");
-
+  
   const [newLogDesc, setNewLogDesc] = useState("");
   const [newLogAuthor, setNewLogAuthor] = useState("");
-
+  
   const [newExplosiveType, setNewExplosiveType] = useState("");
   const [newExplosiveProcured, setNewExplosiveProcured] = useState("");
   const [newExplosiveUsed, setNewExplosiveUsed] = useState("");
-
+  
   const [newWorkerId, setNewWorkerId] = useState("");
   const [newWorkerTraining, setNewWorkerTraining] = useState("");
   const [newWorkerPPE, setNewWorkerPPE] = useState("");
-
+  
   const [newRequestTask, setNewRequestTask] = useState("");
 
   const closePopovers = () => {
@@ -234,11 +223,11 @@ export default function ContractorDashboard() {
   const unreadNotifCount = appNotifications.filter(n => !n.read).length;
 
   const markAllNotifsRead = () => {
-    setAppNotifications(appNotifications.map(n => ({ ...n, read: true })));
+    setAppNotifications(appNotifications.map(n => ({...n, read: true})));
   };
 
   const markNotifRead = (id: string) => {
-    setAppNotifications(appNotifications.map(n => n.id === id ? { ...n, read: true } : n));
+    setAppNotifications(appNotifications.map(n => n.id === id ? {...n, read: true} : n));
   };
 
   useEffect(() => {
@@ -253,7 +242,7 @@ export default function ContractorDashboard() {
 
   const handleAction = (actionName: string) => {
     closePopovers(); // Close popovers on any navigation
-    switch (actionName) {
+    switch(actionName) {
       case "Add Project":
       case "New Project":
         setIsAddProjectOpen(true);
@@ -316,11 +305,9 @@ export default function ContractorDashboard() {
     e.preventDefault();
     if (!newMemberName || !newMemberTask) return;
     setTeam([
-      {
-        id: Date.now(), name: newMemberName, initials: newMemberName.substring(0, 2).toUpperCase(), task: newMemberTask, status: "Just Assigned",
-        avatarClass: "bg-mine-100 text-mine-700 border-mine-50 dark:bg-mine-900/30 dark:text-mine-400 dark:border-mine-900/50",
-        badgeClass: "bg-blue-50 text-blue-600 border-blue-100/50 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50"
-      },
+      { id: Date.now(), name: newMemberName, initials: newMemberName.substring(0, 2).toUpperCase(), task: newMemberTask, status: "Just Assigned", 
+        avatarClass: "bg-mine-100 text-mine-700 border-mine-50 dark:bg-mine-900/30 dark:text-mine-400 dark:border-mine-900/50", 
+        badgeClass: "bg-blue-50 text-blue-600 border-blue-100/50 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50" },
       ...team
     ]);
     setIsAddMemberOpen(false);
@@ -371,7 +358,7 @@ export default function ContractorDashboard() {
   const submitUpdateStock = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newExplosiveType || !newExplosiveProcured || !newExplosiveUsed) return;
-
+    
     // Attempt parsing for 'remaining' if numbers are provided
     const procuredNum = parseFloat(newExplosiveProcured);
     const usedNum = parseFloat(newExplosiveUsed);
@@ -393,7 +380,7 @@ export default function ContractorDashboard() {
   const submitAddWorker = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newWorkerId || !newWorkerTraining || !newWorkerPPE) return;
-
+    
     const getStatusClass = (status: string) => {
       const lower = status.toLowerCase();
       if (lower.includes("miss") || lower.includes("no") || lower.includes("fail")) return "bg-red-50 text-red-600 border-red-200/50 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800/50";
@@ -435,7 +422,7 @@ export default function ContractorDashboard() {
     setTimeout(() => setToastMessage(""), 3000);
   };
 
-  const handleNotificationChange = (itemLabel: string, type: 'email' | 'sms', value: boolean, setter: any, state: any) => {
+  const handleNotificationChange = (itemLabel: string, type: 'email'|'sms', value: boolean, setter: any, state: any) => {
     setter({ ...state, [type]: value });
     showToast("Notification preferences updated");
   };
@@ -443,7 +430,6 @@ export default function ContractorDashboard() {
   const saveProfile = (e: React.FormEvent) => {
     e.preventDefault();
     showToast("Action recorded (Backend pending)");
-    setIsEditingProfile(false);
   };
 
   const updatePassword = (e: React.FormEvent) => {
@@ -464,105 +450,58 @@ export default function ContractorDashboard() {
 
   const renderProfile = () => (
     <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
-
+      
       {/* Header */}
-      <div className="flex items-center justify-between gap-6 mb-8 border-b border-neutral-100 dark:border-mine-800 pb-8">
-        <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-full bg-mine-100 dark:bg-mine-800 border-4 border-white dark:border-mine-900 shadow-sm overflow-hidden flex items-center justify-center text-mine-800 dark:text-mine-100 font-bold text-2xl">
-            AB
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-mine-950 dark:text-white leading-tight">{profileName}</h2>
-            <p className="text-mine-700 dark:text-mine-300 font-medium">{profileDesignation}</p>
-          </div>
+      <div className="flex items-center gap-6 mb-8 border-b border-neutral-100 dark:border-mine-800 pb-8">
+        <div className="w-20 h-20 rounded-full bg-mine-100 dark:bg-mine-800 border-4 border-white dark:border-mine-900 shadow-sm overflow-hidden flex items-center justify-center text-mine-800 dark:text-mine-100 font-bold text-2xl">
+          AB
         </div>
-        {!isEditingProfile && (
-          <button
-            type="button"
-            onClick={() => setIsEditingProfile(true)}
-            className="w-10 h-10 rounded-full flex items-center justify-center bg-neutral-100 hover:bg-mine-100 dark:bg-mine-800 dark:hover:bg-mine-700 text-neutral-600 dark:text-mine-300 transition-colors"
-          >
-            <Pencil size={18} />
-          </button>
-        )}
+        <div>
+          <h2 className="text-2xl font-bold text-mine-950 dark:text-white leading-tight">{profileName}</h2>
+          <p className="text-mine-700 dark:text-mine-300 font-medium">{profileDesignation}</p>
+        </div>
       </div>
 
       <form onSubmit={saveProfile} className="space-y-6">
-
+        
         {/* Personal Information Card */}
-        <div className="bg-white dark:bg-mine-900 p-6 rounded-[1.5rem] border border-neutral-100 dark:border-mine-800 shadow-sm relative">
+        <div className="bg-white dark:bg-mine-900 p-6 rounded-[1.5rem] border border-neutral-100 dark:border-mine-800 shadow-sm">
           <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider border-b border-neutral-100 dark:border-mine-800 pb-2 mb-6">Personal Information</h4>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-            {isEditingProfile ? (
-              <>
-                <div className="uiverse-input-container">
-                  <input id="profileName" type="text" required value={profileName} onChange={(e) => setProfileName(e.target.value)} />
-                  <label htmlFor="profileName" className="label">Full Name</label>
-                  <div className="underline"></div>
-                </div>
-                <div className="uiverse-input-container">
-                  <input id="profileDesignation" type="text" required value={profileDesignation} onChange={(e) => setProfileDesignation(e.target.value)} />
-                  <label htmlFor="profileDesignation" className="label">Designation / Role</label>
-                  <div className="underline"></div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div>
-                  <p className="text-xs font-semibold text-neutral-500 mb-1">Full Name</p>
-                  <p className="text-sm font-medium text-mine-950 dark:text-white">{profileName}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-neutral-500 mb-1">Designation / Role</p>
-                  <p className="text-sm font-medium text-mine-950 dark:text-white">{profileDesignation}</p>
-                </div>
-              </>
-            )}
+            <div className="uiverse-input-container">
+              <input id="profileName" type="text" required value={profileName} onChange={(e) => setProfileName(e.target.value)} />
+              <label htmlFor="profileName" className="label">Full Name</label>
+              <div className="underline"></div>
+            </div>
+            <div className="uiverse-input-container">
+              <input id="profileDesignation" type="text" required value={profileDesignation} onChange={(e) => setProfileDesignation(e.target.value)} />
+              <label htmlFor="profileDesignation" className="label">Designation / Role</label>
+              <div className="underline"></div>
+            </div>
           </div>
         </div>
 
         {/* Company Information Card */}
-        <div className="bg-white dark:bg-mine-900 p-6 rounded-[1.5rem] border border-neutral-100 dark:border-mine-800 shadow-sm relative">
+        <div className="bg-white dark:bg-mine-900 p-6 rounded-[1.5rem] border border-neutral-100 dark:border-mine-800 shadow-sm">
           <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider border-b border-neutral-100 dark:border-mine-800 pb-2 mb-6">Company Information</h4>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-8">
-            {isEditingProfile ? (
-              <>
-                <div className="uiverse-input-container md:col-span-2">
-                  <input id="profileCompany" type="text" required value={profileCompany} onChange={(e) => setProfileCompany(e.target.value)} />
-                  <label htmlFor="profileCompany" className="label">Company / Contractor Name</label>
-                  <div className="underline"></div>
-                </div>
-                <div className="uiverse-input-container">
-                  <input id="profileLocation" type="text" required value={profileLocation} onChange={(e) => setProfileLocation(e.target.value)} />
-                  <label htmlFor="profileLocation" className="label">Work Location</label>
-                  <div className="underline"></div>
-                </div>
-                <div className="uiverse-input-container">
-                  <input id="profileAddress" type="text" required value={profileAddress} onChange={(e) => setProfileAddress(e.target.value)} />
-                  <label htmlFor="profileAddress" className="label">Company Address</label>
-                  <div className="underline"></div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="md:col-span-2">
-                  <p className="text-xs font-semibold text-neutral-500 mb-1">Company / Contractor Name</p>
-                  <p className="text-sm font-medium text-mine-950 dark:text-white">{profileCompany}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-neutral-500 mb-1">Work Location</p>
-                  <p className="text-sm font-medium text-mine-950 dark:text-white">{profileLocation}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-neutral-500 mb-1">Company Address</p>
-                  <p className="text-sm font-medium text-mine-950 dark:text-white">{profileAddress}</p>
-                </div>
-              </>
-            )}
+            <div className="uiverse-input-container md:col-span-2">
+              <input id="profileCompany" type="text" required value={profileCompany} onChange={(e) => setProfileCompany(e.target.value)} />
+              <label htmlFor="profileCompany" className="label">Company / Contractor Name</label>
+              <div className="underline"></div>
+            </div>
+            <div className="uiverse-input-container">
+              <input id="profileLocation" type="text" required value={profileLocation} onChange={(e) => setProfileLocation(e.target.value)} />
+              <label htmlFor="profileLocation" className="label">Work Location</label>
+              <div className="underline"></div>
+            </div>
+            <div className="uiverse-input-container">
+              <input id="profileAddress" type="text" required value={profileAddress} onChange={(e) => setProfileAddress(e.target.value)} />
+              <label htmlFor="profileAddress" className="label">Company Address</label>
+              <div className="underline"></div>
+            </div>
           </div>
-
+          
           <div className="bg-neutral-50 dark:bg-mine-900/30 p-4 rounded-xl border border-neutral-100 dark:border-mine-800">
             <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-4">Account Information</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-neutral-700 dark:text-neutral-300">
@@ -573,23 +512,18 @@ export default function ContractorDashboard() {
           </div>
         </div>
 
-        {isEditingProfile && (
-          <div className="flex justify-end pt-4 gap-4">
-            <button type="button" onClick={() => setIsEditingProfile(false)} className="px-6 py-3 border border-neutral-200 dark:border-mine-700 text-mine-700 dark:text-mine-300 hover:bg-neutral-50 dark:hover:bg-mine-800 rounded-xl font-bold transition-colors">
-              Cancel
-            </button>
-            <button type="submit" className="uiverse-btn !w-auto !px-8">
-              Save Profile
-            </button>
-          </div>
-        )}
+        <div className="flex justify-end pt-4">
+          <button type="submit" className="uiverse-btn !w-auto !px-8">
+            Save Profile
+          </button>
+        </div>
       </form>
     </div>
   );
 
   const renderSettings = () => (
     <div className="max-w-4xl mx-auto w-full space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
-
+      
       <div>
         <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-2">Account Settings</h2>
         <p className="text-sm text-neutral-500 dark:text-neutral-400">Manage your account preferences, notifications, and security.</p>
@@ -602,11 +536,12 @@ export default function ContractorDashboard() {
           <div>
             <p className="text-xs text-neutral-500 mb-1">Email Address</p>
             <p className="font-medium text-mine-950 dark:text-white mb-3">{settingsEmail}</p>
-            <button type="button" onClick={() => setIsChangeEmailOpen(true)} className="px-4 py-2 border border-neutral-200 dark:border-mine-700 text-mine-700 dark:text-mine-300 hover:bg-neutral-50 dark:hover:bg-mine-800 rounded-xl text-xs font-semibold transition-colors">Change Email</button>
+            <button type="button" className="px-4 py-2 border border-neutral-200 dark:border-mine-700 text-mine-700 dark:text-mine-300 hover:bg-neutral-50 dark:hover:bg-mine-800 rounded-xl text-xs font-semibold transition-colors">Change Email</button>
           </div>
           <div>
             <p className="text-xs text-neutral-500 mb-1">Phone Number</p>
             <p className="font-medium text-mine-950 dark:text-white mb-3">{settingsPhone}</p>
+            <button type="button" className="px-4 py-2 border border-neutral-200 dark:border-mine-700 text-mine-700 dark:text-mine-300 hover:bg-neutral-50 dark:hover:bg-mine-800 rounded-xl text-xs font-semibold transition-colors">Change Phone</button>
           </div>
         </div>
       </div>
@@ -614,14 +549,14 @@ export default function ContractorDashboard() {
       {/* NOTIFICATIONS CARD */}
       <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800">
         <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-6 border-b border-neutral-100 dark:border-mine-800 pb-2">Notification Preferences</h4>
-
+        
         <div className="flex flex-col">
           <div className="hidden sm:grid grid-cols-12 gap-4 pb-3 border-b border-neutral-100 dark:border-mine-800 text-sm font-semibold text-neutral-500">
             <div className="col-span-8">Notification</div>
             <div className="col-span-2 text-center">Email</div>
             <div className="col-span-2 text-center">SMS</div>
           </div>
-
+          
           <div className="divide-y divide-neutral-50 dark:divide-mine-900/50">
             {[
               { label: "Safety Alerts", state: notifSafety, setter: setNotifSafety },
@@ -666,7 +601,7 @@ export default function ContractorDashboard() {
       {/* SECURITY CARD */}
       <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800">
         <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-6 border-b border-neutral-100 dark:border-mine-800 pb-2">Security</h4>
-
+        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <form onSubmit={updatePassword} className="space-y-2">
             <p className="text-sm text-neutral-500 mb-6">Keep your account secure by regularly updating your password.</p>
@@ -700,10 +635,45 @@ export default function ContractorDashboard() {
         </div>
       </div>
 
+      {/* 2FA & SESSIONS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 flex flex-col">
+          <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-2 border-b border-neutral-100 dark:border-mine-800 pb-2">Two-Factor Authentication</h4>
+          <p className="text-xs text-neutral-500 mb-6">Add an additional layer of protection to your account.</p>
+          <div className="flex items-center justify-between mt-auto bg-neutral-50 dark:bg-mine-900/30 p-4 rounded-xl border border-neutral-100 dark:border-mine-800">
+            <div>
+              <p className="text-xs text-neutral-500">Status</p>
+              <p className="text-sm font-semibold text-mine-950 dark:text-white">Disabled</p>
+            </div>
+            <button type="button" className="uiverse-btn !w-auto !px-4 !h-8 !text-xs !line-height-8 !m-0">Enable 2FA</button>
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 flex flex-col">
+          <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-2 border-b border-neutral-100 dark:border-mine-800 pb-2">Active Sessions</h4>
+          <div className="space-y-4 mt-4">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-sm font-medium text-mine-950 dark:text-white">MacBook · Chrome</p>
+                <p className="text-xs text-mine-700 dark:text-mine-300">Last active: Now [This device]</p>
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300">iPhone · Safari</p>
+                <p className="text-xs text-neutral-500">Last active: 2 hours ago</p>
+              </div>
+              <button type="button" className="text-xs font-semibold text-neutral-400 hover:text-mine-700 dark:hover:text-mine-300 transition-colors">Sign out</button>
+            </div>
+          </div>
+          <button type="button" className="mt-6 text-sm font-semibold text-mine-700 dark:text-mine-300 hover:underline self-start">Sign out all other sessions</button>
+        </div>
+      </div>
+
       {/* ACCOUNT MANAGEMENT */}
       <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800">
         <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-6 border-b border-neutral-100 dark:border-mine-800 pb-2">Account Management</h4>
-
+        
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -712,10 +682,18 @@ export default function ContractorDashboard() {
             </div>
             <button type="button" className="uiverse-btn !w-auto !px-4 !h-8 !text-xs !line-height-8 !m-0 bg-white dark:bg-mine-900">Export Data</button>
           </div>
-
+          
           <div className="pt-4 border-t border-red-100 dark:border-red-900/30">
             <p className="text-xs font-semibold text-red-500 uppercase tracking-wider mb-4">Danger Zone</p>
-
+            
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+              <div>
+                <p className="text-sm font-medium text-mine-950 dark:text-white">Deactivate Account</p>
+                <p className="text-xs text-neutral-500">Temporarily disable your account.</p>
+              </div>
+              <button type="button" onClick={() => setIsConfirmDeactivateOpen(true)} className="px-4 py-2 border border-neutral-200 dark:border-mine-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-mine-800 rounded-xl text-xs font-semibold transition-colors">Deactivate Account</button>
+            </div>
+            
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-medium text-mine-950 dark:text-white">Delete Account</p>
@@ -745,10 +723,10 @@ export default function ContractorDashboard() {
               </div>
               <p className="text-sm font-medium text-mine-600 dark:text-mine-400 mb-4">From: {msg.sender}</p>
               <p className="text-sm text-neutral-600 dark:text-neutral-400">{msg.preview}</p>
-
+              
               {!msg.read && (
                 <div className="mt-4 flex gap-3">
-                  <button onClick={() => setAppMessages(appMessages.map(m => m.id === msg.id ? { ...m, read: true } : m))} className="text-xs font-semibold text-mine-700 dark:text-mine-300 hover:underline">Mark as read</button>
+                  <button onClick={() => setAppMessages(appMessages.map(m => m.id === msg.id ? {...m, read: true} : m))} className="text-xs font-semibold text-mine-700 dark:text-mine-300 hover:underline">Mark as read</button>
                 </div>
               )}
             </div>
@@ -773,18 +751,19 @@ export default function ContractorDashboard() {
             <div key={notif.id} className={`p-6 border rounded-2xl transition-all hover:shadow-md ${!notif.read ? 'bg-mine-50/50 border-mine-200 dark:bg-mine-900/20 dark:border-mine-800' : 'bg-white border-neutral-100 dark:bg-mine-900 dark:border-mine-900'}`}>
               <div className="flex justify-between items-start mb-3">
                 <div className="flex items-center gap-3">
-                  <span className={`text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full ${notif.severity === 'CRITICAL' ? 'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400' :
-                      notif.severity === 'WARNING' ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400' :
-                        notif.severity === 'SYSTEM' ? 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400' :
-                          'bg-mine-100 text-mine-800 dark:bg-mine-900/50 dark:text-mine-300'
-                    }`}>{notif.type}</span>
+                  <span className={`text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full ${
+                    notif.severity === 'CRITICAL' ? 'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400' : 
+                    notif.severity === 'WARNING' ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400' : 
+                    notif.severity === 'SYSTEM' ? 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400' : 
+                    'bg-mine-100 text-mine-800 dark:bg-mine-900/50 dark:text-mine-300'
+                  }`}>{notif.type}</span>
                   {!notif.read && <span className="flex w-2 h-2 rounded-full bg-mine-500"></span>}
                 </div>
                 <span className="text-sm font-medium text-neutral-400">{notif.timestamp}</span>
               </div>
               <h3 className={`text-lg mb-2 ${!notif.read ? 'font-bold text-mine-950 dark:text-white' : 'font-semibold text-neutral-800 dark:text-neutral-200'}`}>{notif.title}</h3>
               <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">{notif.message}</p>
-
+              
               <div className="flex items-center gap-4">
                 {notif.actionLabel && notif.actionTab && (
                   <button onClick={() => { markNotifRead(notif.id); setActiveTab(notif.actionTab!); }} className="text-sm font-semibold text-mine-700 dark:text-mine-300 hover:underline">
@@ -811,7 +790,7 @@ export default function ContractorDashboard() {
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 relative group overflow-hidden flex flex-col justify-between hover:border-mine-300 dark:hover:border-mine-700 transition-colors">
           <div className="flex justify-between items-start mb-6">
             <h3 className="text-mine-950 dark:text-white font-semibold text-base">Ended Projects</h3>
-            <button
+            <button 
               onClick={() => handleAction("View Ended Projects")}
               className="w-8 h-8 rounded-full border border-neutral-200 dark:border-mine-800 flex items-center justify-center text-neutral-400 dark:text-mine-300 group-hover:bg-mine-100 dark:group-hover:bg-mine-800 group-hover:text-mine-800 dark:group-hover:text-white group-hover:border-mine-300 dark:group-hover:border-mine-700 transition-colors"
             >
@@ -833,7 +812,7 @@ export default function ContractorDashboard() {
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 relative group overflow-hidden flex flex-col justify-between hover:border-mine-300 dark:hover:border-mine-700 transition-colors">
           <div className="flex justify-between items-start mb-6">
             <h3 className="text-mine-950 dark:text-white font-semibold text-base">Running Projects</h3>
-            <button
+            <button 
               onClick={() => handleAction("View Running Projects")}
               className="w-8 h-8 rounded-full border border-neutral-200 dark:border-mine-800 flex items-center justify-center text-neutral-400 dark:text-mine-300 group-hover:bg-mine-100 dark:group-hover:bg-mine-800 group-hover:text-mine-800 dark:group-hover:text-white group-hover:border-mine-300 dark:group-hover:border-mine-700 transition-colors"
             >
@@ -855,7 +834,7 @@ export default function ContractorDashboard() {
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 relative group overflow-hidden flex flex-col justify-between hover:border-mine-300 dark:hover:border-mine-700 transition-colors">
           <div className="flex justify-between items-start mb-6">
             <h3 className="text-mine-950 dark:text-white font-semibold text-base">Pending Project</h3>
-            <button
+            <button 
               onClick={() => handleAction("View Pending Projects")}
               className="w-8 h-8 rounded-full border border-neutral-200 dark:border-mine-800 flex items-center justify-center text-neutral-400 dark:text-mine-300 group-hover:bg-mine-100 dark:group-hover:bg-mine-800 group-hover:text-mine-800 dark:group-hover:text-white group-hover:border-mine-300 dark:group-hover:border-mine-700 transition-colors"
             >
@@ -873,35 +852,35 @@ export default function ContractorDashboard() {
 
       {/* MIDDLE ROW */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
+        
         {/* Project Analytics Chart */}
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1">
           <h3 className="text-mine-950 dark:text-white font-semibold mb-8 text-base">Project Analytics</h3>
-
+          
           <div className="h-44 flex items-end justify-between px-2 gap-3 mb-4">
-            <div className="w-full relative h-[60%] rounded-t-full opacity-40 hover:opacity-70 transition-opacity cursor-pointer"
-              style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 3px, #235347 3px, #235347 5px)' }}
-              onClick={() => handleAction("View Sunday Analytics")}>
+            <div className="w-full relative h-[60%] rounded-t-full opacity-40 hover:opacity-70 transition-opacity cursor-pointer" 
+                 style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 3px, #235347 3px, #235347 5px)' }}
+                 onClick={() => handleAction("View Sunday Analytics")}>
             </div>
             <div className="w-full relative h-[80%] bg-mine-800 dark:bg-mine-700 hover:bg-mine-700 dark:hover:bg-mine-600 transition-colors cursor-pointer rounded-t-full"
-              onClick={() => handleAction("View Monday Analytics")}></div>
+                 onClick={() => handleAction("View Monday Analytics")}></div>
             <div className="w-full relative h-[65%] bg-mine-300 hover:bg-[#a5c7b0] transition-colors cursor-pointer rounded-t-full flex justify-center"
-              onClick={() => handleAction("View Tuesday Analytics")}>
+                 onClick={() => handleAction("View Tuesday Analytics")}>
               <div className="absolute -top-8 bg-white dark:bg-mine-800 shadow-sm border border-neutral-100 dark:border-mine-700 text-[10px] font-bold px-2.5 py-1 rounded-full text-mine-800 dark:text-white">74%</div>
             </div>
             <div className="w-full relative h-[100%] bg-mine-950 dark:bg-white hover:bg-mine-900 dark:hover:bg-neutral-200 transition-colors cursor-pointer rounded-t-full"
-              onClick={() => handleAction("View Wednesday Analytics")}></div>
+                 onClick={() => handleAction("View Wednesday Analytics")}></div>
             <div className="w-full relative h-[70%] rounded-t-full opacity-40 hover:opacity-70 transition-opacity cursor-pointer"
-              style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 3px, #235347 3px, #235347 5px)' }}
-              onClick={() => handleAction("View Thursday Analytics")}>
+                 style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 3px, #235347 3px, #235347 5px)' }}
+                 onClick={() => handleAction("View Thursday Analytics")}>
             </div>
             <div className="w-full relative h-[50%] rounded-t-full opacity-40 hover:opacity-70 transition-opacity cursor-pointer"
-              style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 3px, #235347 3px, #235347 5px)' }}
-              onClick={() => handleAction("View Friday Analytics")}>
+                 style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 3px, #235347 3px, #235347 5px)' }}
+                 onClick={() => handleAction("View Friday Analytics")}>
             </div>
             <div className="w-full relative h-[65%] rounded-t-full opacity-40 hover:opacity-70 transition-opacity cursor-pointer"
-              style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 3px, #235347 3px, #235347 5px)' }}
-              onClick={() => handleAction("View Saturday Analytics")}>
+                 style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 3px, #235347 3px, #235347 5px)' }}
+                 onClick={() => handleAction("View Saturday Analytics")}>
             </div>
           </div>
           <div className="flex justify-between px-3 text-xs font-bold text-neutral-300 dark:text-neutral-600">
@@ -919,10 +898,10 @@ export default function ContractorDashboard() {
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1 flex flex-col">
           <h3 className="text-mine-950 dark:text-white font-semibold mb-6 text-base">Reminders</h3>
           <div className="flex-1 flex flex-col justify-center">
-            <h4 className="text-[22px] font-bold text-mine-900 dark:text-mine-100 mb-2 leading-tight">Safety Briefing<br />Meeting</h4>
+            <h4 className="text-[22px] font-bold text-mine-900 dark:text-mine-100 mb-2 leading-tight">Safety Briefing<br/>Meeting</h4>
             <p className="text-xs text-neutral-400 dark:text-neutral-500 font-medium mb-8">Time : 02.00 pm - 04.00 pm</p>
-
-            <button
+            
+            <button 
               onClick={() => handleAction("Start Meeting")}
               className="uiverse-btn w-full mt-auto"
             >
@@ -935,18 +914,18 @@ export default function ContractorDashboard() {
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-mine-950 dark:text-white font-semibold text-base">Project</h3>
-            <button
+            <button 
               onClick={() => handleAction("New Project")}
               className="text-[11px] font-bold text-neutral-600 dark:text-neutral-400 border border-neutral-200 dark:border-mine-800 px-3 py-1 rounded-full flex items-center gap-1 hover:bg-mine-100 dark:hover:bg-mine-800 hover:text-mine-800 dark:hover:text-white hover:border-mine-300 dark:hover:border-mine-700 transition-colors uppercase tracking-wide"
             >
               <Plus size={12} /> New
             </button>
           </div>
-
+          
           <div className="space-y-5">
             {projects.map((project) => (
-              <div
-                key={project.id}
+              <div 
+                key={project.id} 
                 onClick={() => handleAction(`Open Project: ${project.title}`)}
                 className="flex items-center gap-4 group cursor-pointer p-2 -mx-2 hover:bg-neutral-50 dark:hover:bg-mine-900/50 rounded-xl transition-colors"
               >
@@ -969,7 +948,7 @@ export default function ContractorDashboard() {
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-mine-950 dark:text-white font-semibold text-base">Team Collaboration</h3>
-            <button
+            <button 
               onClick={() => handleAction("Add Team Member")}
               className="text-[11px] font-bold text-neutral-600 dark:text-neutral-400 border border-neutral-200 dark:border-mine-800 px-3 py-1 rounded-full flex items-center gap-1 hover:bg-mine-100 dark:hover:bg-mine-800 hover:text-mine-800 dark:hover:text-white hover:border-mine-300 dark:hover:border-mine-700 transition-colors uppercase tracking-wide"
             >
@@ -979,7 +958,7 @@ export default function ContractorDashboard() {
 
           <div className="space-y-2">
             {team.map((member) => (
-              <div
+              <div 
                 key={member.id}
                 onClick={() => handleAction(`View Member Profile: ${member.name}`)}
                 className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 p-2 hover:bg-neutral-50 dark:hover:bg-mine-900/50 rounded-xl transition-colors cursor-pointer group border border-transparent hover:border-neutral-100 dark:hover:border-mine-800"
@@ -1259,10 +1238,11 @@ export default function ContractorDashboard() {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all ${activeTab === item.id
-                    ? "bg-mine-700 text-white shadow-sm shadow-mine-700/20"
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all ${
+                  activeTab === item.id 
+                    ? "bg-mine-700 text-white shadow-sm shadow-mine-700/20" 
                     : "text-neutral-500 dark:text-neutral-400 hover:text-mine-950 dark:hover:text-white hover:bg-mine-100/50 dark:hover:bg-mine-900/50"
-                  }`}
+                }`}
               >
                 <item.icon size={18} />
                 <span>{item.label}</span>
@@ -1278,10 +1258,11 @@ export default function ContractorDashboard() {
               <button
                 key={item.id}
                 onClick={() => handleAction(item.label)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all ${activeTab === item.id
-                    ? "bg-mine-700 text-white shadow-sm shadow-mine-700/20"
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all ${
+                  activeTab === item.id 
+                    ? "bg-mine-700 text-white shadow-sm shadow-mine-700/20" 
                     : "text-neutral-500 dark:text-neutral-400 hover:text-mine-950 dark:hover:text-white hover:bg-mine-100/50 dark:hover:bg-mine-900/50"
-                  }`}
+                }`}
               >
                 <item.icon size={18} />
                 <span>{item.label}</span>
@@ -1297,31 +1278,31 @@ export default function ContractorDashboard() {
         <header className="sticky top-0 bg-[#f3f4f6]/80 dark:bg-neutral-950/80 backdrop-blur-md z-10 px-8 py-4 flex items-center justify-between border-b border-transparent dark:border-mine-900 transition-colors">
           <div className="relative w-full max-w-[320px]">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500" size={18} />
-            <input
-              type="text"
-              placeholder="Search task"
+            <input 
+              type="text" 
+              placeholder="Search task" 
               className="w-full pl-10 pr-12 py-2.5 bg-white dark:bg-mine-900 border border-neutral-200/50 dark:border-mine-800 rounded-full text-sm font-medium text-mine-950 dark:text-white focus:outline-none focus:ring-2 focus:ring-mine-300 shadow-sm placeholder:text-neutral-400 dark:placeholder:text-mine-300/50 transition-colors"
             />
-            <button
+            <button 
               onClick={() => handleAction("Search")}
               className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center gap-1 px-1.5 py-0.5 bg-neutral-100 dark:bg-mine-800 rounded text-xs text-neutral-400 dark:text-mine-300 font-bold border border-neutral-200 dark:border-mine-700 hover:bg-neutral-200 dark:hover:bg-mine-700 transition-colors"
             >
               <Command size={12} /> F
             </button>
           </div>
-
+          
           <div className="flex items-center gap-5 relative">
-
+            
             {/* INVISIBLE OVERLAY TO CLOSE POPOVERS */}
             {(isMailOpen || isNotifOpen || isProfileOpen) && (
               <div className="fixed inset-0 z-40" onClick={closePopovers}></div>
             )}
 
             <ThemeToggle />
-
+            
             {/* MAIL POPOVER CONTAINER */}
             <div className="relative z-50">
-              <button
+              <button 
                 onClick={(e) => { e.stopPropagation(); setIsNotifOpen(false); setIsProfileOpen(false); setIsMailOpen(!isMailOpen); }}
                 className={`relative p-2.5 rounded-full shadow-sm border border-neutral-200/50 dark:border-mine-800 transition-colors ${isMailOpen ? 'bg-mine-100 dark:bg-mine-800 text-mine-800 dark:text-white' : 'bg-white dark:bg-mine-900 text-neutral-500 dark:text-mine-300 hover:text-mine-700 dark:hover:text-white'}`}
               >
@@ -1354,7 +1335,7 @@ export default function ContractorDashboard() {
 
             {/* NOTIFICATIONS POPOVER CONTAINER */}
             <div className="relative z-50">
-              <button
+              <button 
                 onClick={(e) => { e.stopPropagation(); setIsMailOpen(false); setIsProfileOpen(false); setIsNotifOpen(!isNotifOpen); }}
                 className={`relative p-2.5 rounded-full shadow-sm border border-neutral-200/50 dark:border-mine-800 transition-colors ${isNotifOpen ? 'bg-mine-100 dark:bg-mine-800 text-mine-800 dark:text-white' : 'bg-white dark:bg-mine-900 text-neutral-500 dark:text-mine-300 hover:text-mine-700 dark:hover:text-white'}`}
               >
@@ -1377,16 +1358,17 @@ export default function ContractorDashboard() {
                           <div className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${!notif.read ? 'bg-mine-500' : 'bg-transparent'}`}></div>
                           <div className="flex-1">
                             <div className="flex justify-between items-start mb-1">
-                              <span className={`text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full ${notif.severity === 'CRITICAL' ? 'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400' :
-                                  notif.severity === 'WARNING' ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400' :
-                                    notif.severity === 'SYSTEM' ? 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400' :
-                                      'bg-mine-100 text-mine-800 dark:bg-mine-900/50 dark:text-mine-300'
-                                }`}>{notif.type}</span>
+                              <span className={`text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full ${
+                                notif.severity === 'CRITICAL' ? 'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400' : 
+                                notif.severity === 'WARNING' ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400' : 
+                                notif.severity === 'SYSTEM' ? 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400' : 
+                                'bg-mine-100 text-mine-800 dark:bg-mine-900/50 dark:text-mine-300'
+                              }`}>{notif.type}</span>
                               <span className="text-[10px] font-medium text-neutral-400">{notif.timestamp}</span>
                             </div>
                             <p className={`text-sm mb-1 ${!notif.read ? 'font-bold text-mine-950 dark:text-white' : 'font-medium text-neutral-800 dark:text-neutral-200'}`}>{notif.title}</p>
                             <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed mb-3">{notif.message}</p>
-
+                            
                             {notif.actionLabel && notif.actionTab && (
                               <button onClick={() => { markNotifRead(notif.id); closePopovers(); setActiveTab(notif.actionTab!); }} className="text-xs font-semibold text-mine-700 dark:text-mine-300 hover:underline flex items-center gap-1">
                                 {notif.actionLabel}
@@ -1407,7 +1389,7 @@ export default function ContractorDashboard() {
 
             {/* PROFILE MENU POPOVER CONTAINER */}
             <div className="relative z-50">
-              <button
+              <button 
                 onClick={(e) => { e.stopPropagation(); setIsMailOpen(false); setIsNotifOpen(false); setIsProfileOpen(!isProfileOpen); }}
                 className="flex items-center gap-3 pl-2 hover:opacity-80 transition-opacity text-left"
               >
@@ -1445,7 +1427,7 @@ export default function ContractorDashboard() {
 
         {/* PAGE CONTENT */}
         <div className="px-8 pb-12 pt-4 w-full">
-
+          
           {/* DYNAMIC HEADER SECTION BASED ON TAB */}
           {activeTab === "overview" && (
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 animate-in fade-in slide-in-from-top-2 duration-300">
@@ -1454,13 +1436,13 @@ export default function ContractorDashboard() {
                 <p className="text-sm text-neutral-500 dark:text-neutral-400 font-medium">Plan, prioritize, and accomplish your tasks with ease.</p>
               </div>
               <div className="flex items-center gap-3 mt-4 sm:mt-0">
-                <button
+                <button 
                   onClick={() => handleAction("Add Project")}
                   className="uiverse-btn"
                 >
                   <Plus size={16} /> Add Project
                 </button>
-                <button
+                <button 
                   onClick={() => handleAction("Import Data")}
                   className="uiverse-btn"
                 >
@@ -1487,7 +1469,7 @@ export default function ContractorDashboard() {
       </main>
 
       {/* MODALS */}
-
+      
       {/* 1. ADD PROJECT MODAL */}
       {isAddProjectOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
@@ -1709,10 +1691,10 @@ export default function ContractorDashboard() {
           <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-lg shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200 overflow-y-auto max-h-[90vh]">
             <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-2 tracking-tight">Help & Support</h2>
             <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">Find answers or contact the administrative team.</p>
-
+            
             <div className="space-y-4 mb-8">
               <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider border-b border-neutral-100 dark:border-mine-800 pb-2">Common FAQs</h4>
-
+              
               <div className="bg-neutral-50 dark:bg-mine-900/30 p-4 rounded-xl border border-neutral-100 dark:border-mine-800">
                 <p className="font-bold text-sm text-mine-950 dark:text-white mb-1">How do I renew a license?</p>
                 <p className="text-xs text-neutral-500 dark:text-neutral-400">Navigate to the 'Licenses &amp; Certs' tab, click 'Upload', and submit the updated document for admin approval.</p>
@@ -1740,7 +1722,19 @@ export default function ContractorDashboard() {
         </div>
       )}
 
-
+      {/* 10. CONFIRM DEACTIVATE MODAL */}
+      {isConfirmDeactivateOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200 text-center">
+            <h2 className="text-xl font-bold text-mine-950 dark:text-white mb-2">Deactivate Account?</h2>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-8">This will temporarily hide your profile and associated data until you sign in again.</p>
+            <div className="flex flex-col gap-3">
+              <button type="button" onClick={() => { setIsConfirmDeactivateOpen(false); showToast("Account deactivated (Backend pending)"); }} className="px-4 py-3 bg-neutral-900 dark:bg-white text-white dark:text-mine-950 hover:bg-neutral-800 dark:hover:bg-neutral-200 rounded-xl text-sm font-semibold transition-colors">Yes, deactivate account</button>
+              <button type="button" onClick={() => setIsConfirmDeactivateOpen(false)} className="px-4 py-3 text-sm text-neutral-500 font-semibold hover:text-mine-950 dark:hover:text-white transition-colors">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 11. CONFIRM DELETE MODAL */}
       {isConfirmDeleteOpen && (
@@ -1758,14 +1752,6 @@ export default function ContractorDashboard() {
           </div>
         </div>
       )}
-
-      {/* CHANGE EMAIL MODAL */}
-      <ChangeEmailModal
-        isOpen={isChangeEmailOpen}
-        onClose={() => setIsChangeEmailOpen(false)}
-        currentEmail={settingsEmail}
-        onSuccess={(newEmail) => setSettingsEmail(newEmail)}
-      />
 
     </div>
   );
