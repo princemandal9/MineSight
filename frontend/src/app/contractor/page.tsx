@@ -10,6 +10,7 @@ import Image from "next/image";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useRouter } from "next/navigation";
 import { ChangeEmailModal } from "@/components/ChangeEmailModal";
+import { auth } from '@/lib/auth';
 
 // --- INITIAL DATA CONSTANTS ---
 
@@ -171,6 +172,15 @@ export default function ContractorDashboard() {
   const [appMessages, setAppMessages] = useState(initialMessages);
 
   // --- PROFILE & SETTINGS STATES ---
+  const [currentUser, setCurrentUser] = useState<{
+    id?: string;
+    name?: string;
+    email?: string;
+    role?: string;
+    companyName?: string;
+    taskType?: string;
+  } | null>(null);
+
   const [profileName, setProfileName] = useState("ABC Infra");
   const [profileDesignation, setProfileDesignation] = useState("Contractor / Lead Entity");
   const [profileCompany, setProfileCompany] = useState("ABC Infra Ltd.");
@@ -242,6 +252,22 @@ export default function ContractorDashboard() {
   };
 
   useEffect(() => {
+    // Load logged in user details from session
+    if (typeof window !== "undefined") {
+      const rawUser = localStorage.getItem("minesight_auth_user");
+      if (rawUser) {
+        try {
+          const user = JSON.parse(rawUser);
+          setCurrentUser(user);
+          if (user.name) setProfileName(user.name);
+          if (user.email) setSettingsEmail(user.email);
+          if (user.companyName) setProfileCompany(user.companyName);
+        } catch (e) {
+          console.error("Error reading auth user session:", e);
+        }
+      }
+    }
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         closePopovers();
@@ -284,6 +310,10 @@ export default function ContractorDashboard() {
       case "Logout":
         router.push("/");
         break;
+        case "Logout":
+          auth.clearSession();
+          router.push("/");
+          break;
       case "Help":
         setIsHelpOpen(true);
         break;

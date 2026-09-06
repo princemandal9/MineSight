@@ -1,0 +1,82 @@
+[
+  {
+    "id": "AUTH-1788674306604-482",
+    "type": "LOGIN",
+    "timestamp": "2026-09-06T05:58:26.604Z",
+    "user": {
+      "id": "f7639e4b-d575-4ba4-a641-96096f17308a",
+      "name": "subarna",
+      "email": "jani45@gmail.com",
+      "role": "CONTRACTOR",
+      "companyName": "Bob limited",
+      "taskType": "blasting",
+      "phone": "9682483603"
+    },
+    "clientIp": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0"
+  },
+  {
+    "id": "AUTH-1788673963303-858",
+    "type": "LOGIN",
+    "timestamp": "2026-09-06T05:52:43.303Z",
+    "user": {
+      "id": "f7639e4b-d575-4ba4-a641-96096f17308a",
+      "name": "subarna",
+      "email": "jani45@gmail.com",
+      "role": "CONTRACTOR",
+      "companyName": "Bob limited",
+      "taskType": "blasting",
+      "phone": "9682483603"
+    },
+    "clientIp": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0"
+  },
+  {
+    "id": "AUTH-1788673937765-316",
+    "type": "REGISTRATION",
+    "timestamp": "2026-09-06T05:52:17.765Z",
+    "user": {
+      "id": "f7639e4b-d575-4ba4-a641-96096f17308a",
+      "name": "subarna",
+      "email": "jani45@gmail.com",
+      "role": "CONTRACTOR",
+      "companyName": "Bob limited",
+      "taskType": "blasting",
+      "phone": "9682483603"
+    },
+    "clientIp": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0"
+  },
+  {
+    "id": "AUTH-1788672993546-681",
+    "type": "LOGIN",
+    "timestamp": "2026-09-06T05:36:33.546Z",
+    "user": {
+      "id": "c2a8c6cd-d5cc-4b2d-9c80-87f011f56208",
+      "name": "Ramesh Gupta",
+      "email": "ramesh.gupta@miningtest.in",
+      "role": "CONTRACTOR",
+      "companyName": "Gupta Heavy Earthmoving Pvt Ltd",
+      "taskType": "excavation",
+      "phone": "+91 98300 12345"
+    },
+    "clientIp": "::1",
+    "userAgent": "node"
+  },
+  {
+    "id": "AUTH-1788672993488-642",
+    "type": "REGISTRATION",
+    "timestamp": "2026-09-06T05:36:33.488Z",
+    "user": {
+      "id": "c2a8c6cd-d5cc-4b2d-9c80-87f011f56208",
+      "name": "Ramesh Gupta",
+      "email": "ramesh.gupta@miningtest.in",
+      "role": "CONTRACTOR",
+      "companyName": "Gupta Heavy Earthmoving Pvt Ltd",
+      "taskType": "excavation",
+      "phone": "+91 98300 12345"
+    },
+    "clientIp": "::1",
+    "userAgent": "node"
+  }
+]

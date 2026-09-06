@@ -1,0 +1,5 @@
+[2026-09-06T05:36:33.488Z] [REGISTRATION] User: "Ramesh Gupta" (ramesh.gupta@miningtest.in) | Role: CONTRACTOR | Company: "Gupta Heavy Earthmoving Pvt Ltd" | TaskType: excavation | IP: ::1
+[2026-09-06T05:36:33.546Z] [LOGIN] User: "Ramesh Gupta" (ramesh.gupta@miningtest.in) | Role: CONTRACTOR | Company: "Gupta Heavy Earthmoving Pvt Ltd" | TaskType: excavation | IP: ::1
+[2026-09-06T05:52:17.765Z] [REGISTRATION] User: "subarna" (jani45@gmail.com) | Role: CONTRACTOR | Company: "Bob limited" | TaskType: blasting | IP: ::1
+[2026-09-06T05:52:43.303Z] [LOGIN] User: "subarna" (jani45@gmail.com) | Role: CONTRACTOR | Company: "Bob limited" | TaskType: blasting | IP: ::1
+[2026-09-06T05:58:26.604Z] [LOGIN] User: "subarna" (jani45@gmail.com) | Role: CONTRACTOR | Company: "Bob limited" | TaskType: blasting | IP: ::1

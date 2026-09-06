@@ -5,8 +5,8 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, User, Building, Mail, Phone, Lock, CheckCircle2, Bomb, Truck, Pickaxe, Camera, Upload } from "lucide-react";
-import { VerifyPhoneModal } from "@/components/VerifyPhoneModal";
+import { Eye, EyeOff, User, Building, Mail, Lock, CheckCircle2, Bomb, Truck, Pickaxe, Camera, Upload } from "lucide-react";
+
 
 export default function ContractorRegistrationPage() {
   const router = useRouter();
@@ -30,7 +30,7 @@ export default function ContractorRegistrationPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,10 +53,7 @@ export default function ContractorRegistrationPage() {
       return;
     }
 
-    if (!isPhoneVerified) {
-      alert("Please verify your phone number before registering.");
-      return;
-    }
+
 
     setIsSubmitting(true);
 
@@ -65,16 +62,32 @@ export default function ContractorRegistrationPage() {
       localStorage.setItem('contractorTask', formData.taskProfile);
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-
-      // Redirect after success
-      setTimeout(() => {
+    // Perform registration
+    setIsSubmitting(true);
+    (async () => {
+      try {
+        const { api } = await import("@/lib/api");
+        const { auth } = await import("@/lib/auth");
+        const res = await api.register({
+          name: formData.contactPerson || formData.companyName,
+          email: formData.email,
+          password: formData.password,
+          role: "CONTRACTOR",
+          companyName: formData.companyName,
+          taskType: formData.taskProfile,
+          phone: formData.phone,
+        });
+        if (res.data?.user && res.data?.token) {
+          auth.setSession(res.data.user, res.data.token);
+        }
+        setIsSuccess(true);
         router.push("/");
-      }, 2000);
-    }, 1500);
+      } catch (err: any) {
+        console.warn("Registration API error:", err.message);
+        setIsSubmitting(false);
+        alert(`Registration failed: ${err.message}`);
+      }
+    })();
   };
 
   if (isSuccess) {
@@ -226,51 +239,7 @@ export default function ContractorRegistrationPage() {
                 </div>
               </div>
 
-              {/* Phone Number */}
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <label className="text-sm font-semibold text-mine-950 dark:text-white">Phone Number</label>
-                  {isPhoneVerified && (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold rounded-lg">
-                      <CheckCircle2 className="w-3 h-3" /> Verified
-                    </span>
-                  )}
-                </div>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Phone className="h-5 w-5 text-neutral-400 dark:text-mine-400" />
-                  </div>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={(e) => {
-                      handleChange(e);
-                      setIsPhoneVerified(false);
-                    }}
-                    placeholder="+91 1234567890"
-                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-neutral-200 dark:border-mine-800 bg-white/50 dark:bg-mine-950/50 text-mine-950 dark:text-white focus:outline-none focus:ring-2 focus:ring-mine-400 focus:border-transparent transition-all placeholder:text-neutral-400 dark:placeholder:text-mine-500"
-                    required
-                  />
-                </div>
-                {!isPhoneVerified && (
-                  <div className="flex justify-end mt-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!formData.phone) {
-                          alert("Please enter a phone number first.");
-                          return;
-                        }
-                        setIsVerifyModalOpen(true);
-                      }}
-                      className="px-4 py-1.5 bg-mine-950 dark:bg-white text-white dark:text-mine-950 text-xs font-bold rounded-lg hover:bg-mine-800 dark:hover:bg-mine-100 transition-colors shadow-sm"
-                    >
-                      Verify
-                    </button>
-                  </div>
-                )}
-              </div>
+</div>
 
               {/* Task Profile Selection */}
               <div className="md:col-span-2 space-y-3 pt-2 pb-4">

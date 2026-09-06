@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String      @id @default(uuid())
+  name         String
+  email        String      @unique
+  password     String
+  role         String      @default("CONTRACTOR") // CONTRACTOR, SUPERVISOR
+  phone        String?
+  companyName  String?
+  taskType     String?     // blasting, transportation, excavation, maintenance
+  contractorId String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Contractor {
+  id              String            @id @default(uuid())
+  contractorCode  String            @unique
+  name            String
+  email           String?
+  phone           String?
+  taskType        String            // blasting, transportation, excavation, maintenance
+  riskLevel       String            @default("LOW") // LOW, MODERATE, HIGH, CRITICAL
+  violationCount  Int               @default(0)
+  isRestricted    Boolean           @default(false)
+  activeWorkers   Int               @default(0)
+  activeMachinery Int               @default(0)
+  complianceRate  Float             @default(100.0)
+  status          String            @default("ACTIVE") // ACTIVE, SUSPENDED, INACTIVE
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  observations    Observation[]
+  licenses        License[]
+  machinery       Machinery[]
+  workers         Worker[]
+  explosivesStock ExplosivesStock[]
+  dailyLogs       DailyLog[]
+}
+
+model Observation {
+  id              String     @id @default(uuid())
+  observationCode String     @unique
+  contractorId    String
+  contractor      Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  supervisorName  String
+  zone            String     // e.g. "Pit A", "Haul Road 2", "Zone B"
+  category        String     // PPE, DUST, EFFLUENT, EQUIPMENT, BLASTING, OTHER
+  severity        String     // LOW, MODERATE, CRITICAL
+  description     String
+  photoUrl        String?
+  gpsCoordinates  String?
+  status          String     @default("OPEN") // OPEN, EVIDENCE_SUBMITTED, RESOLVED
+  evidenceUrl     String?
+  evidenceNotes   String?
+  submittedAt     DateTime?
+  resolvedAt      DateTime?
+  resolutionNotes String?
+  verifiedBy      String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  auditLogs       AuditLog[]
+}
+
+model License {
+  id             String     @id @default(uuid())
+  contractorId   String
+  contractor     Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  documentType   String     // Contract Labour License, Blaster's Certificate (DGMS), Explosives License
+  documentNumber String
+  holder         String
+  expiryDate     DateTime
+  status         String     @default("VALID") // VALID, EXPIRING_SOON, EXPIRED
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model Machinery {
+  id           String     @id @default(uuid())
+  contractorId String
+  contractor   Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  machineName  String
+  ownership    String     // OWNED, RENTED, FINANCED
+  lastServiced DateTime?
+  nextDue      DateTime?
+  status       String     @default("ACTIVE") // ACTIVE, DUE_SOON, OVERDUE, UNDER_MAINTENANCE
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Worker {
+  id             String     @id @default(uuid())
+  contractorId   String
+  contractor     Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  workerCode     String
+  fullName       String?
+  role           String?
+  trainingStatus String     @default("COMPLETE") // COMPLETE, MISSING
+  ppeIssued      Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model ExplosivesStock {
+  id             String     @id @default(uuid())
+  contractorId   String
+  contractor     Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  explosiveType  String     // Site-mix emulsion, Detonators
+  procured       Float
+  used           Float
+  remaining      Float
+  unit           String     // kg, units
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model DailyLog {
+  id           String     @id @default(uuid())
+  contractorId String
+  contractor   Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  logText      String
+  zone         String?
+  loggedBy     String
+  timestamp    DateTime   @default(now())
+}
+
+model EnvironmentalLog {
+  id           String   @id @default(uuid())
+  date         DateTime @default(now())
+  dailyTonnage Float
+  pm10Dust     Float    // µg/m³
+  effluentPh   Float    // pH
+  noiseDb      Float    // dB
+  riskScore    Float    // Deterministic 0 - 100%
+  riskLabel    String   // Low, Moderate, Critical
+  loggedBy     String
+  notes        String?
+  createdAt    DateTime @default(now())
+}
+
+model AuditLog {
+  id            String       @id @default(uuid())
+  observationId String?
+  observation   Observation? @relation(fields: [observationId], references: [id], onDelete: SetNull)
+  action        String       // CREATED, EVIDENCE_SUBMITTED, VERIFIED_APPROVED, REJECTED
+  actorRole     String       // SUPERVISOR, CONTRACTOR, SYSTEM
+  actorName     String
+  details       String
+  timestamp     DateTime     @default(now())
+}
+
