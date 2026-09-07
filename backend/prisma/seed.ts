@@ -6,9 +6,12 @@ async function main() {
   console.log("🌱 Seeding MineSight Coal Mine Governance Database...");
 
   // Clean existing tables in reverse dependency order
+  await prisma.statutoryObligation.deleteMany();
+  await prisma.auditLog.deleteMany();
   await prisma.auditLog.deleteMany();
   await prisma.user.deleteMany();
   await prisma.observation.deleteMany();
+  await prisma.inspection.deleteMany();
   await prisma.license.deleteMany();
   await prisma.machinery.deleteMany();
   await prisma.worker.deleteMany();
@@ -225,7 +228,86 @@ async function main() {
     },
   });
 
-  // 4. Create Observations for Contractor 1 (Triggering the red-flag)
+  // 4. Create Demo Statutory Obligations (PS-26024)
+  const ob1 = await prisma.statutoryObligation.create({
+    data: {
+      title: "[DEMO] Weekly Safety Inspection Report",
+      description: "Submission of the weekly safety inspection report for active blasting zones as per mine safety regulations.",
+      domain: "SAFETY",
+      contractorId: contractor1.id,
+      taskType: "blasting",
+      frequency: "WEEKLY",
+      dueDate: new Date(new Date().setDate(new Date().getDate() + 2)), // DUE_SOON
+      status: "DUE_SOON",
+      evidenceRequired: true,
+      sourceReference: "Mines Rules, 1955 (Demo)",
+    },
+  });
+
+  const ob2 = await prisma.statutoryObligation.create({
+    data: {
+      title: "[DEMO] Monthly Environmental Dust Monitoring",
+      description: "Submit PM10 dust monitoring reports for excavation zones.",
+      domain: "ENVIRONMENT",
+      contractorId: contractor1.id,
+      frequency: "MONTHLY",
+      dueDate: new Date(new Date().setDate(new Date().getDate() - 5)), // OVERDUE
+      status: "OVERDUE",
+      evidenceRequired: true,
+      sourceReference: "EP Act 1986 (Demo)",
+    },
+  });
+
+  const ob3 = await prisma.statutoryObligation.create({
+    data: {
+      title: "[DEMO] Quarterly Production Yield Submission",
+      description: "Quarterly declaration of extracted and transported minerals.",
+      domain: "PRODUCTION",
+      contractorId: contractor2.id,
+      frequency: "QUARTERLY",
+      dueDate: new Date(new Date().setDate(new Date().getDate() - 2)),
+      status: "PENDING_VERIFICATION",
+      evidenceRequired: true,
+      evidenceUrl: "https://demo.minesight.in/evidence/prod-yield-Q3.pdf",
+      evidenceNotes: "Submitted Q3 yield report.",
+      sourceReference: "MCDR 2017 (Demo)",
+    },
+  });
+
+  const ob4 = await prisma.statutoryObligation.create({
+    data: {
+      title: "[DEMO] Contract Labour Register Verification",
+      description: "Maintain and present the register of contract labour employed.",
+      domain: "LABOUR",
+      contractorId: contractor1.id,
+      frequency: "MONTHLY",
+      dueDate: new Date(new Date().setDate(new Date().getDate() + 15)),
+      status: "COMPLIANT",
+      evidenceRequired: true,
+      evidenceUrl: "https://demo.minesight.in/evidence/labour-register.pdf",
+      lastCompletedAt: new Date(),
+      verifiedBy: "Inspector R. Verma",
+      verifiedAt: new Date(),
+      sourceReference: "CLRA 1970 (Demo)",
+    },
+  });
+
+  const ob5 = await prisma.statutoryObligation.create({
+    data: {
+      title: "[DEMO] Deep Hole Blasting Clearance",
+      description: "Special clearance and risk assessment for deep hole blasting.",
+      domain: "SAFETY",
+      contractorId: contractor1.id,
+      frequency: "EVENT",
+      dueDate: new Date(new Date().setDate(new Date().getDate() - 10)),
+      status: "NON_COMPLIANT",
+      evidenceRequired: true,
+      evidenceNotes: "Rejected. Incomplete risk assessment.",
+      sourceReference: "CMR 2017 (Demo)",
+    },
+  });
+
+  // 5. Create Observations for Contractor 1 (Triggering the red-flag)
   const obs1 = await prisma.observation.create({
     data: {
       observationCode: "OBS-2026-0001",
@@ -270,25 +352,91 @@ async function main() {
     },
   });
 
-  // 5. Environmental Log
+  // 6. Create Demo Field Inspection
+  const inspection = await prisma.inspection.create({
+    data: {
+      clientRefId: "demo-inspection-001",
+      inspectorId: "Inspector R. Verma",
+      zone: "Haul Road B",
+      contractorId: contractor2.id,
+      taskType: "ROUTINE",
+      latitude: 23.7942,
+      longitude: 86.4298,
+      locationAccuracy: 15.0,
+      status: "COMPLETED",
+      observations: {
+        create: [
+          {
+            observationCode: "OBS-2026-0003",
+            contractorId: contractor2.id,
+            supervisorName: "Inspector R. Verma",
+            zone: "Haul Road B",
+            category: "DUST",
+            severity: "MODERATE",
+            description: "Dust suppression water tanker not operating in designated zone.",
+            gpsCoordinates: "23.7942° N, 86.4298° E",
+            status: "OPEN",
+          },
+          {
+            observationCode: "OBS-2026-0004",
+            contractorId: contractor1.id,
+            supervisorName: "Inspector K. Sen",
+            zone: "Pit A - Sector 3",
+            category: "ENVIRONMENT",
+            severity: "CRITICAL",
+            description: "Excessive dust generation during drilling. Water sprinklers missing.",
+            gpsCoordinates: "23.7950° N, 86.4300° E",
+            status: "EVIDENCE_SUBMITTED",
+            correctiveAction: "Installed temporary sprinklers and watered the entire area.",
+            evidenceUrl: "https://demo.minesight.in/evidence/dust-resolved.jpg",
+            evidenceNotes: "Fixed as requested.",
+            submittedAt: new Date(),
+          }
+        ]
+      }
+    }
+  });
+
+  // 7. Environmental Logs (Synthetic Historical Baseline for Anomaly Detection)
+  const historicalLogs = [];
+  for (let i = 14; i >= 1; i--) {
+    const pastDate = new Date();
+    pastDate.setDate(pastDate.getDate() - i);
+    historicalLogs.push({
+      date: pastDate,
+      dailyTonnage: 1390 + Math.random() * 50, // 1390-1440
+      pm10Dust: 80 + Math.random() * 10,       // 80-90
+      effluentPh: 7.1 + Math.random() * 0.4,   // 7.1-7.5
+      noiseDb: 75 + Math.random() * 5,         // 75-80
+      riskScore: 25.0,
+      riskLabel: "Low",
+      loggedBy: "System (Synthetic Demo Data)",
+      notes: "[DEMO] Historical Baseline Data",
+    });
+  }
+  await prisma.environmentalLog.createMany({ data: historicalLogs });
+
+  // Current Log (Anomalous Spike in PM10 & Production drop)
   await prisma.environmentalLog.create({
     data: {
       date: new Date(),
-      dailyTonnage: 1420.5,
-      pm10Dust: 86.0,
+      dailyTonnage: 1105.0, // Anomaly drop
+      pm10Dust: 142.5,      // Anomaly spike
       effluentPh: 7.2,
-      noiseDb: 79.5,
-      riskScore: 28.0,
-      riskLabel: "Low",
+      noiseDb: 78.5,
+      riskScore: 65.0,
+      riskLabel: "Critical",
       loggedBy: "Supervisor R. Verma",
-      notes: "Weather clear, wind direction SW. Continuous dust suppression active.",
+      notes: "High dust levels recorded near Pit A. Visibility reduced.",
     },
   });
 
   console.log("✅ Database seeded successfully!");
   console.log(`- Created 3 Contractors (${contractor1.name}, ${contractor2.name}, ${contractor3.name})`);
   console.log(`- Created 2 Active Observations (${obs1.observationCode}, ${obs2.observationCode})`);
+  console.log(`- Created 2 Active Observations (${obs1.observationCode}, ${obs2.observationCode})`);
   console.log(`- Logged Daily Environmental & Yield readings`);
+  console.log(`- Created 5 Statutory Obligations for Compliance tracking`);
 }
 
 main()

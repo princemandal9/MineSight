@@ -23,6 +23,9 @@ router.post(
 // Current User Profile
 router.get("/me", authenticateToken, AuthController.getMe);
 
+// User Logout (records to file)
+router.post("/logout", authenticateToken, AuthController.logout);
+
 // View Logged In / Registered Users File Records
 router.get("/records", AuthController.getAuthRecords);
 

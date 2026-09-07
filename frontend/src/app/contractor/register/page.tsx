@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, User, Building, Mail, Lock, CheckCircle2, Bomb, Truck, Pickaxe, Camera, Upload } from "lucide-react";
-
+import { VerifyPhoneModal } from "@/components/VerifyPhoneModal";
 
 export default function ContractorRegistrationPage() {
   const router = useRouter();
@@ -32,7 +32,7 @@ export default function ContractorRegistrationPage() {
 
 
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
-
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -239,7 +239,6 @@ export default function ContractorRegistrationPage() {
                 </div>
               </div>
 
-</div>
 
               {/* Task Profile Selection */}
               <div className="md:col-span-2 space-y-3 pt-2 pb-4">

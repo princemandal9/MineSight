@@ -3,3 +3,22 @@
 [2026-09-06T05:52:17.765Z] [REGISTRATION] User: "subarna" (jani45@gmail.com) | Role: CONTRACTOR | Company: "Bob limited" | TaskType: blasting | IP: ::1
 [2026-09-06T05:52:43.303Z] [LOGIN] User: "subarna" (jani45@gmail.com) | Role: CONTRACTOR | Company: "Bob limited" | TaskType: blasting | IP: ::1
 [2026-09-06T05:58:26.604Z] [LOGIN] User: "subarna" (jani45@gmail.com) | Role: CONTRACTOR | Company: "Bob limited" | TaskType: blasting | IP: ::1
+[2026-09-07T11:12:33.189Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | IP: ::1
+[2026-09-07T11:26:26.046Z] [REGISTRATION] User: "Aryan Tiwari" (aryantiwari@gmail.com) | Role: CONTRACTOR | Company: "New company 1" | TaskType: blasting | IP: ::1
+[2026-09-07T11:26:47.433Z] [LOGIN] User: "Aryan Tiwari" (aryantiwari@gmail.com) | Role: CONTRACTOR | Company: "New company 1" | TaskType: blasting | IP: ::1
+[2026-09-07T11:55:41.578Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | IP: ::1
+[2026-09-07T11:56:36.698Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | IP: ::1
+[2026-09-07T13:54:52.961Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-07T14:01:53.138Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | IP: ::1
+[2026-09-07T14:34:59.414Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-07T14:41:18.720Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-07T15:36:57.591Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-07T16:29:18.167Z] [REGISTRATION] User: "Ramesh Gupta" (ramesh.gupta@miningtest.in) | Role: CONTRACTOR | Company: "Gupta Heavy Earthmoving Pvt Ltd" | TaskType: excavation | ContractorID: bba371f6-2bab-4d6a-998d-bb040c6c5f23 | IP: ::1
+[2026-09-07T16:29:18.226Z] [LOGIN] User: "Ramesh Gupta" (ramesh.gupta@miningtest.in) | Role: CONTRACTOR | Company: "Gupta Heavy Earthmoving Pvt Ltd" | TaskType: excavation | ContractorID: bba371f6-2bab-4d6a-998d-bb040c6c5f23 | IP: ::1
+[2026-09-07T17:39:51.332Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-07T19:59:53.758Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | IP: ::1
+[2026-09-07T20:27:51.684Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-07T20:33:33.716Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | IP: ::1
+[2026-09-07T20:33:47.621Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-07T20:34:07.569Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | IP: ::1
+[2026-09-07T20:34:24.306Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1

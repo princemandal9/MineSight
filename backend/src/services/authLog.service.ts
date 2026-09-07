@@ -3,7 +3,7 @@ import path from "path";
 
 export interface AuthEventRecord {
   id: string;
-  type: "REGISTRATION" | "LOGIN";
+  type: "REGISTRATION" | "LOGIN" | "LOGOUT";
   timestamp: string;
   user: {
     id: string;
@@ -13,6 +13,7 @@ export interface AuthEventRecord {
     companyName?: string | null;
     taskType?: string | null;
     phone?: string | null;
+    contractorId?: string | null;
   };
   clientIp?: string;
   userAgent?: string;
@@ -32,7 +33,7 @@ export class AuthLogService {
    * Appends an authentication event (registration or login) to both JSON and text log files
    */
   public static async recordAuthEvent(
-    type: "REGISTRATION" | "LOGIN",
+    type: "REGISTRATION" | "LOGIN" | "LOGOUT",
     userData: AuthEventRecord["user"],
     clientIp?: string,
     userAgent?: string
@@ -50,7 +51,7 @@ export class AuthLogService {
       // 1. Append to Human-Readable Text Log
       const textLine = `[${record.timestamp}] [${record.type}] User: "${record.user.name}" (${record.user.email}) | Role: ${record.user.role}${
         record.user.companyName ? ` | Company: "${record.user.companyName}"` : ""
-      }${record.user.taskType ? ` | TaskType: ${record.user.taskType}` : ""} | IP: ${record.clientIp}\n`;
+      }${record.user.taskType ? ` | TaskType: ${record.user.taskType}` : ""}${record.user.contractorId ? ` | ContractorID: ${record.user.contractorId}` : ""} | IP: ${record.clientIp}\n`;
 
       fs.appendFileSync(TEXT_LOG_FILE, textLine, "utf8");
 

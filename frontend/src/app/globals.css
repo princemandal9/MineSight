@@ -49,7 +49,7 @@
 
   --color-mine-950: #051F20;
   --color-mine-900: #0B2B26;
-  --color-mine-800: #163B32;
+  --color-mine-800: #163832;
   --color-mine-700: #235347;
   --color-mine-300: #8EB69B;
   --color-mine-100: #DAF1DE;
@@ -577,4 +577,80 @@
 .toggle-checkbox:checked ~ .toggle-slot .moon-icon-wrapper {
   opacity: 1;
   transform: translate(2em, 2em) rotate(-15deg);
+}
+
+
+/* Custom button hover from Uiverse.io */
+.btn-hover-effect {
+  border-radius: 6px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 500ms;
+  position: relative;
+  overflow: hidden;
+  outline: 2px solid #235347;
+  z-index: 1;
+}
+
+.btn-hover-effect:hover {
+  color: #ffffff;
+  transform: scale(1.05);
+  outline: 2px solid #0B2B26;
+  box-shadow: 4px 5px 17px -4px #235347;
+}
+
+.btn-hover-effect::before {
+  content: '';
+  position: absolute;
+  left: -50px;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background-color: #235347;
+  transform: skewX(45deg);
+  z-index: -1;
+  transition: width 500ms;
+}
+
+.btn-hover-effect:hover::before {
+  width: 250%;
+}
+
+
+.btn-hover-effect-red {
+  border-radius: 6px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 500ms;
+  position: relative;
+  overflow: hidden;
+  outline: 2px solid #991b1b;
+  z-index: 1;
+}
+
+.btn-hover-effect-red:hover {
+  background-color: #991b1b;
+  color: #ffffff;
+  transform: scale(1.02);
+  outline: 2px solid #7f1d1d;
+  box-shadow: 4px 5px 17px -4px #991b1b;
+}
+
+.btn-hover-effect-red::before {
+  content: '';
+  position: absolute;
+  left: -50px;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background-color: #991b1b;
+  transform: skewX(45deg);
+  z-index: -1;
+  transition: width 500ms;
+}
+
+.btn-hover-effect-red:hover::before {
+  width: 250%;
 }

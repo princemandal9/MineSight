@@ -31,6 +31,7 @@ export const createObservationSchema = z.object({
 export const submitEvidenceSchema = z.object({
   evidenceUrl: z.string().optional().or(z.literal("")),
   evidenceNotes: z.string().trim().min(3, "evidenceNotes must be at least 3 characters"),
+  correctiveAction: z.string().trim().optional(),
   submittedBy: z.string().trim().optional().default("Contractor Representative"),
 });
 

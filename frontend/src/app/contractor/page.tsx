@@ -4,18 +4,23 @@ import React, { useState, useEffect } from "react";
 import {
   Search, Bell, Mail, Command, Plus, ArrowUpRight,
   LayoutDashboard, FileText, Settings, HelpCircle, LogOut,
-  HardHat, FileSignature, Truck, Bomb, MessageSquare, Video, User, Pencil, X
+  HardHat, FileSignature, Truck, Bomb, MessageSquare, Video, User, Pencil, X,
+  FileCheck, CheckCircle2
 } from "lucide-react";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useRouter } from "next/navigation";
 import { ChangeEmailModal } from "@/components/ChangeEmailModal";
 import { auth } from '@/lib/auth';
-
+import { api } from '@/lib/api';
 // --- INITIAL DATA CONSTANTS ---
 
 const menuItems = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "action_center", label: "Action Center", icon: Bell },
+  { id: "compliance", label: "Statutory Compliance", icon: FileCheck },
+  { id: "observations", label: "Observations", icon: CheckCircle2 },
+  { id: "risk", label: "Risk Intelligence", icon: FileText },
   { id: "licenses", label: "Licenses & Certs", icon: FileSignature },
   { id: "machinery", label: "Machinery Register", icon: Truck },
   { id: "daily_log", label: "Daily Work Log", icon: FileText },
@@ -150,6 +155,11 @@ export default function ContractorDashboard() {
   const [workers, setWorkers] = useState(initialWorkerRosterData);
   const [requests, setRequests] = useState(initialRequestsData);
   const [dailyLogs, setDailyLogs] = useState(initialDailyLogs);
+  const [obligations, setObligations] = useState<any[]>([]);
+  const [actionItems, setActionItems] = useState<any[]>([]);
+  const [allObservations, setAllObservations] = useState<any[]>([]);
+  const [complianceRate, setComplianceRate] = useState<number>(100);
+  const [riskData, setRiskData] = useState<any>(null);
 
   // --- MODAL STATES ---
   const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
@@ -179,6 +189,9 @@ export default function ContractorDashboard() {
     role?: string;
     companyName?: string;
     taskType?: string;
+    contractorId?: string;
+    contractorCode?: string;
+    createdAt?: string;
   } | null>(null);
 
   const [profileName, setProfileName] = useState("ABC Infra");
@@ -242,6 +255,44 @@ export default function ContractorDashboard() {
 
   const unreadMailCount = appMessages.filter(m => !m.read).length;
   const unreadNotifCount = appNotifications.filter(n => !n.read).length;
+  const actionCenterCount = actionItems.filter(a => a.status === 'OPEN').length;
+
+  const loadData = async () => {
+    try {
+      const token = auth.getToken();
+      
+      const [obsRes, obsObligations, riskRes, complianceRes] = await Promise.all([
+        api.getObservations({ contractorId: currentUser?.contractorId || undefined }),
+        api.getObligations({ contractorId: currentUser?.contractorId || undefined }),
+        api.getContractorRisk(currentUser?.contractorId || ""),
+        api.getComplianceReport() // Could just calculate from obligations, but let's try getting real stats
+      ]);
+      
+      if (obsRes?.data) {
+         setAllObservations(obsRes.data);
+         setActionItems(obsRes.data.filter((o: any) => o.status !== "RESOLVED"));
+      }
+      if (obsObligations?.data) {
+         setObligations(obsObligations.data);
+      }
+      if (riskRes?.data) {
+         setRiskData(riskRes.data);
+      }
+      if (currentUser?.contractorId) {
+        // Find the specific contractor's compliance if possible, or just default to 100
+        const myCompliance = complianceRes?.data?.contractorBreakdown?.find((c: any) => c.contractorId === currentUser.contractorId);
+        setComplianceRate(myCompliance ? myCompliance.complianceRate : 100);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    if (currentUser?.contractorId) {
+      loadData();
+    }
+  }, [currentUser]);
 
   const markAllNotifsRead = () => {
     setAppNotifications(appNotifications.map(n => ({ ...n, read: true })));
@@ -274,10 +325,28 @@ export default function ContractorDashboard() {
       }
     };
     window.addEventListener("keydown", handleKeyDown);
+    
+    // Fetch obligations if user is logged in
+    const fetchObligations = async () => {
+      try {
+        const rawUser = localStorage.getItem("minesight_auth_user");
+        if (rawUser) {
+          const user = JSON.parse(rawUser);
+          if (user.contractorId) {
+            const res = await api.getObligations({ contractorId: user.contractorId });
+            setObligations(res.data || []);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load obligations", err);
+      }
+    };
+    fetchObligations();
+
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const handleAction = (actionName: string) => {
+  const handleAction = async (actionName: string) => {
     closePopovers(); // Close popovers on any navigation
     switch (actionName) {
       case "Add Project":
@@ -308,12 +377,15 @@ export default function ContractorDashboard() {
         setIsNewRequestOpen(true);
         break;
       case "Logout":
+        try {
+          const token = auth.getToken();
+          if (token) await api.logout(token);
+        } catch (err) {
+          console.error("Logout API failed", err);
+        }
+        auth.clearSession();
         router.push("/");
         break;
-        case "Logout":
-          auth.clearSession();
-          router.push("/");
-          break;
       case "Help":
         setIsHelpOpen(true);
         break;
@@ -492,14 +564,100 @@ export default function ContractorDashboard() {
   // TAB RENDERERS
   // ------------------------------------
 
+  const renderActionCenter = () => {
+    return (
+      <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="bg-white dark:bg-mine-900 p-6 rounded-[1.5rem] border border-neutral-100 dark:border-mine-800 shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <Bell className="text-amber-500" size={24} />
+              Action Center (Pending Correctives)
+            </h2>
+            <span className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold">
+              {actionCenterCount} Actions Required
+            </span>
+          </div>
+
+          <div className="space-y-4">
+            {actionItems.length === 0 ? (
+              <div className="text-center py-10 text-neutral-500">
+                You have no pending field actions. Great job!
+              </div>
+            ) : (
+              actionItems.map((obs) => (
+                <div key={obs.id} className="p-4 border border-rose-200 dark:border-rose-900/40 bg-rose-50/50 dark:bg-rose-950/20 rounded-xl space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-bold px-2 py-0.5 rounded bg-rose-200 text-rose-900 dark:bg-rose-900/60 dark:text-rose-200">
+                          {obs.severity} · {obs.category}
+                        </span>
+                        <span className="font-mono text-xs text-neutral-500">{obs.observationCode}</span>
+                      </div>
+                      <p className="text-sm font-semibold text-neutral-900 dark:text-mine-100">{obs.description}</p>
+                      <div className="text-xs text-neutral-500 mt-1">
+                        Reported by: {obs.supervisorName} | Zone: {obs.zone}
+                      </div>
+                    </div>
+                    {obs.status === "OPEN" ? (
+                      <span className="px-2 py-1 bg-rose-100 text-rose-700 text-xs font-bold rounded">ACTION REQUIRED</span>
+                    ) : (
+                      <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded">UNDER REVIEW</span>
+                    )}
+                  </div>
+
+                  {obs.status === "OPEN" && (
+                    <form onSubmit={async (e) => {
+                      e.preventDefault();
+                      const form = e.target as HTMLFormElement;
+                      const action = (form.elements.namedItem("correctiveAction") as HTMLTextAreaElement).value;
+                      const evidence = (form.elements.namedItem("evidenceUrl") as HTMLInputElement).value;
+                      try {
+                        const token = auth.getToken();
+                        await api.submitEvidence(obs.id, { 
+                          evidenceNotes: "Contractor responded via Action Center",
+                          correctiveAction: action,
+                          evidenceUrl: evidence,
+                          submittedBy: currentUser?.name || "Contractor"
+                        });
+                        alert("Corrective action submitted!");
+                        loadData();
+                      } catch (err) {
+                        alert("Failed to submit action.");
+                      }
+                    }} className="mt-4 pt-4 border-t border-rose-100 dark:border-rose-900/40 space-y-3">
+                      <div>
+                        <label className="block text-xs font-bold text-neutral-700 dark:text-mine-300 mb-1">Corrective Action Taken</label>
+                        <textarea name="correctiveAction" required placeholder="Describe what was done to fix this issue..." rows={2} className="w-full px-3 py-2 text-sm rounded border border-neutral-300 dark:border-mine-700 bg-white dark:bg-mine-900" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-neutral-700 dark:text-mine-300 mb-1">Evidence URL (Photo/Doc)</label>
+                        <input name="evidenceUrl" type="url" placeholder="https://..." className="w-full px-3 py-2 text-sm rounded border border-neutral-300 dark:border-mine-700 bg-white dark:bg-mine-900" />
+                      </div>
+                      <div className="flex justify-end">
+                        <button type="submit" className="px-4 py-2 bg-rose-600 text-white text-xs font-bold rounded-lg hover:bg-rose-700 transition">
+                          Submit Corrective Action
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderProfile = () => (
     <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
 
       {/* Header */}
       <div className="flex items-center justify-between gap-6 mb-8 border-b border-neutral-100 dark:border-mine-800 pb-8">
         <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-full bg-mine-100 dark:bg-mine-800 border-4 border-white dark:border-mine-900 shadow-sm overflow-hidden flex items-center justify-center text-mine-800 dark:text-mine-100 font-bold text-2xl">
-            AB
+          <div className="w-20 h-20 rounded-full bg-mine-100 dark:bg-mine-800 border-4 border-white dark:border-mine-900 shadow-sm overflow-hidden flex items-center justify-center text-mine-800 dark:text-mine-100 font-bold text-2xl uppercase">
+            {profileName ? profileName.substring(0, 2) : "US"}
           </div>
           <div>
             <h2 className="text-2xl font-bold text-mine-950 dark:text-white leading-tight">{profileName}</h2>
@@ -597,8 +755,8 @@ export default function ContractorDashboard() {
             <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-4">Account Information</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-neutral-700 dark:text-neutral-300">
               <div><p className="text-neutral-500 text-xs mb-1">Account Type</p><p className="font-medium text-mine-950 dark:text-white">Contractor</p></div>
-              <div><p className="text-neutral-500 text-xs mb-1">Account ID</p><p className="font-medium text-mine-950 dark:text-white">CNT-88218E</p></div>
-              <div><p className="text-neutral-500 text-xs mb-1">Joined Date</p><p className="font-medium text-mine-950 dark:text-white">Oct 12, 2025</p></div>
+              <div><p className="text-neutral-500 text-xs mb-1">Account ID</p><p className="font-medium text-mine-950 dark:text-white">{currentUser?.contractorCode || currentUser?.id?.substring(0, 8).toUpperCase() || "N/A"}</p></div>
+              <div><p className="text-neutral-500 text-xs mb-1">Joined Date</p><p className="font-medium text-mine-950 dark:text-white">{currentUser?.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "Just now"}</p></div>
             </div>
           </div>
         </div>
@@ -756,9 +914,102 @@ export default function ContractorDashboard() {
           </div>
         </div>
       </div>
-
     </div>
   );
+
+  const renderObservations = () => {
+    return (
+      <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="bg-white dark:bg-mine-900 p-6 rounded-[1.5rem] border border-neutral-100 dark:border-mine-800 shadow-sm max-w-4xl mx-auto">
+          <div className="mb-6">
+            <h2 className="text-xl font-bold flex items-center gap-2 mb-2">
+              <CheckCircle2 className="text-mine-600" size={24} />
+              All Observations
+            </h2>
+            <p className="text-sm text-neutral-500">History of observations reported by supervisors for your assigned zones.</p>
+          </div>
+
+          <div className="space-y-4">
+            {allObservations.length === 0 ? (
+              <div className="text-center py-10 text-neutral-500">No observations found.</div>
+            ) : (
+              allObservations.map((obs) => (
+                <div key={obs.id} className="p-4 border border-neutral-200 dark:border-mine-700 rounded-xl space-y-3 bg-neutral-50 dark:bg-mine-950">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded ${obs.severity === 'CRITICAL' ? 'bg-red-200 text-red-900' : 'bg-amber-200 text-amber-900'}`}>
+                          {obs.severity} · {obs.category}
+                        </span>
+                        <span className="font-mono text-xs text-neutral-500">{obs.observationCode}</span>
+                      </div>
+                      <p className="text-sm font-semibold text-neutral-900 dark:text-mine-100">{obs.description}</p>
+                      <div className="text-xs text-neutral-500 mt-1">
+                        Reported by: {obs.supervisorName} | Zone: {obs.zone}
+                      </div>
+                    </div>
+                    <span className={`px-2 py-1 text-xs font-bold rounded ${obs.status === 'RESOLVED' ? 'bg-green-100 text-green-700' : 'bg-neutral-200 text-neutral-700'}`}>
+                      {obs.status}
+                    </span>
+                  </div>
+                  {obs.correctiveAction && (
+                    <div className="mt-2 text-xs border-t border-neutral-200 dark:border-mine-800 pt-2">
+                      <span className="font-bold">Corrective Action: </span>{obs.correctiveAction}
+                    </div>
+                  )}
+                  {obs.resolutionNotes && (
+                    <div className="mt-1 text-xs">
+                      <span className="font-bold">Resolution Notes: </span>{obs.resolutionNotes}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderRisk = () => {
+    return (
+      <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="bg-white dark:bg-mine-900 p-6 rounded-[1.5rem] border border-neutral-100 dark:border-mine-800 shadow-sm max-w-4xl mx-auto">
+          <div className="mb-6">
+            <h2 className="text-xl font-bold flex items-center gap-2 mb-2">
+              <FileText className="text-mine-600" size={24} />
+              Risk Intelligence
+            </h2>
+            <p className="text-sm text-neutral-500">Your AI-analyzed risk factors based on compliance, observations, and environment.</p>
+          </div>
+          
+          {riskData ? (
+            <div className="space-y-6">
+              <div className="p-6 bg-neutral-50 dark:bg-mine-950 rounded-xl border border-neutral-200 dark:border-mine-700 text-center">
+                <div className="text-4xl font-bold mb-2 capitalize">{riskData.riskLevel?.toLowerCase()} Risk</div>
+                <div className="text-neutral-500 text-sm">Overall computed risk status</div>
+              </div>
+              <div>
+                <h3 className="font-bold mb-4">Risk Drivers</h3>
+                <ul className="space-y-3">
+                  {riskData.factors?.length > 0 ? riskData.factors.map((factor: string, idx: number) => (
+                    <li key={idx} className="flex items-start gap-2 text-sm">
+                      <ArrowUpRight size={16} className="mt-0.5 text-neutral-400 shrink-0" />
+                      <span>{factor}</span>
+                    </li>
+                  )) : (
+                    <li className="text-sm text-neutral-500">No active risk drivers found.</li>
+                  )}
+                </ul>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-10 text-neutral-500">No risk data available yet.</div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   const renderMessages = () => (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -837,65 +1088,61 @@ export default function ContractorDashboard() {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
       {/* KPI CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Ended Projects */}
+        {/* Compliance Rate */}
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 relative group overflow-hidden flex flex-col justify-between hover:border-mine-300 dark:hover:border-mine-700 transition-colors">
           <div className="flex justify-between items-start mb-6">
-            <h3 className="text-mine-950 dark:text-white font-semibold text-base">Ended Projects</h3>
+            <h3 className="text-mine-950 dark:text-white font-semibold text-base">Compliance Rate</h3>
             <button
-              onClick={() => handleAction("View Ended Projects")}
+              onClick={() => handleAction("View Compliance")}
               className="w-8 h-8 rounded-full border border-neutral-200 dark:border-mine-800 flex items-center justify-center text-neutral-400 dark:text-mine-300 group-hover:bg-mine-100 dark:group-hover:bg-mine-800 group-hover:text-mine-800 dark:group-hover:text-white group-hover:border-mine-300 dark:group-hover:border-mine-700 transition-colors"
             >
               <ArrowUpRight size={18} />
             </button>
           </div>
           <div>
-            <div className="text-5xl font-medium text-mine-950 dark:text-white mb-4 tracking-tighter">10</div>
+            <div className="text-5xl font-medium text-mine-950 dark:text-white mb-4 tracking-tighter">{complianceRate.toFixed(1)}%</div>
             <div className="flex items-center gap-2 text-xs font-semibold text-mine-800 dark:text-mine-300">
-              <span className="flex items-center justify-center px-1.5 py-0.5 rounded bg-mine-100 dark:bg-mine-800 border border-mine-300 dark:border-mine-700">
-                <ArrowUpRight size={12} className="mr-0.5" /> 6%
+              <span className={`text-neutral-400 dark:text-neutral-500 font-medium ${complianceRate < 90 ? 'text-red-500' : 'text-green-500'}`}>
+                {complianceRate < 90 ? 'Requires attention' : 'Good standing'}
               </span>
-              <span className="text-neutral-400 dark:text-neutral-500 font-medium">Increased from last month</span>
             </div>
           </div>
         </div>
 
-        {/* Running Projects */}
+        {/* Risk Level */}
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 relative group overflow-hidden flex flex-col justify-between hover:border-mine-300 dark:hover:border-mine-700 transition-colors">
           <div className="flex justify-between items-start mb-6">
-            <h3 className="text-mine-950 dark:text-white font-semibold text-base">Running Projects</h3>
+            <h3 className="text-mine-950 dark:text-white font-semibold text-base">Risk Level</h3>
             <button
-              onClick={() => handleAction("View Running Projects")}
+              onClick={() => handleAction("View Risk")}
               className="w-8 h-8 rounded-full border border-neutral-200 dark:border-mine-800 flex items-center justify-center text-neutral-400 dark:text-mine-300 group-hover:bg-mine-100 dark:group-hover:bg-mine-800 group-hover:text-mine-800 dark:group-hover:text-white group-hover:border-mine-300 dark:group-hover:border-mine-700 transition-colors"
             >
               <ArrowUpRight size={18} />
             </button>
           </div>
           <div>
-            <div className="text-5xl font-medium text-mine-950 dark:text-white mb-4 tracking-tighter">12</div>
+            <div className="text-5xl font-medium text-mine-950 dark:text-white mb-4 tracking-tighter capitalize">{riskData?.riskLevel?.toLowerCase() || 'Low'}</div>
             <div className="flex items-center gap-2 text-xs font-semibold text-mine-800 dark:text-mine-300">
-              <span className="flex items-center justify-center px-1.5 py-0.5 rounded bg-mine-100 dark:bg-mine-800 border border-mine-300 dark:border-mine-700">
-                <ArrowUpRight size={12} className="mr-0.5" /> 2%
-              </span>
-              <span className="text-neutral-400 dark:text-neutral-500 font-medium">Increased from last month</span>
+              <span className="text-neutral-400 dark:text-neutral-500 font-medium">{riskData?.factors?.length || 0} active risk drivers</span>
             </div>
           </div>
         </div>
 
-        {/* Pending Project */}
+        {/* Open Actions */}
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 relative group overflow-hidden flex flex-col justify-between hover:border-mine-300 dark:hover:border-mine-700 transition-colors">
           <div className="flex justify-between items-start mb-6">
-            <h3 className="text-mine-950 dark:text-white font-semibold text-base">Pending Project</h3>
+            <h3 className="text-mine-950 dark:text-white font-semibold text-base">Open Actions</h3>
             <button
-              onClick={() => handleAction("View Pending Projects")}
+              onClick={() => setActiveTab("action_center")}
               className="w-8 h-8 rounded-full border border-neutral-200 dark:border-mine-800 flex items-center justify-center text-neutral-400 dark:text-mine-300 group-hover:bg-mine-100 dark:group-hover:bg-mine-800 group-hover:text-mine-800 dark:group-hover:text-white group-hover:border-mine-300 dark:group-hover:border-mine-700 transition-colors"
             >
               <ArrowUpRight size={18} />
             </button>
           </div>
           <div>
-            <div className="text-5xl font-medium text-mine-950 dark:text-white mb-4 tracking-tighter">2</div>
+            <div className="text-5xl font-medium text-mine-950 dark:text-white mb-4 tracking-tighter">{actionCenterCount}</div>
             <div className="flex items-center gap-2 text-xs font-medium text-mine-800 dark:text-mine-300">
-              <span className="text-neutral-400 dark:text-neutral-500">On Discuss</span>
+              <span className="text-neutral-400 dark:text-neutral-500">Requires correction</span>
             </div>
           </div>
         </div>
@@ -904,9 +1151,9 @@ export default function ContractorDashboard() {
       {/* MIDDLE ROW */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        {/* Project Analytics Chart */}
+        {/* Compliance & Risk Analytics Chart */}
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1">
-          <h3 className="text-mine-950 dark:text-white font-semibold mb-8 text-base">Project Analytics</h3>
+          <h3 className="text-mine-950 dark:text-white font-semibold mb-8 text-base">Compliance & Risk</h3>
 
           <div className="h-44 flex items-end justify-between px-2 gap-3 mb-4">
             <div className="w-full relative h-[60%] rounded-t-full opacity-40 hover:opacity-70 transition-opacity cursor-pointer"
@@ -961,34 +1208,37 @@ export default function ContractorDashboard() {
           </div>
         </div>
 
-        {/* Project List */}
+        {/* Priority Actions List */}
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-mine-950 dark:text-white font-semibold text-base">Project</h3>
+            <h3 className="text-mine-950 dark:text-white font-semibold text-base">Priority Actions</h3>
             <button
-              onClick={() => handleAction("New Project")}
+              onClick={() => setActiveTab("action_center")}
               className="text-[11px] font-bold text-neutral-600 dark:text-neutral-400 border border-neutral-200 dark:border-mine-800 px-3 py-1 rounded-full flex items-center gap-1 hover:bg-mine-100 dark:hover:bg-mine-800 hover:text-mine-800 dark:hover:text-white hover:border-mine-300 dark:hover:border-mine-700 transition-colors uppercase tracking-wide"
             >
-              <Plus size={12} /> New
+              <ArrowUpRight size={12} /> View All
             </button>
           </div>
 
           <div className="space-y-5">
-            {projects.map((project) => (
+            {actionItems.slice(0, 4).map((action) => (
               <div
-                key={project.id}
-                onClick={() => handleAction(`Open Project: ${project.title}`)}
+                key={action.id}
+                onClick={() => setActiveTab("action_center")}
                 className="flex items-center gap-4 group cursor-pointer p-2 -mx-2 hover:bg-neutral-50 dark:hover:bg-mine-900/50 rounded-xl transition-colors"
               >
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform ${project.colorClass}`}>
-                  <project.icon size={18} />
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform ${action.severity === 'CRITICAL' ? 'bg-red-100 text-red-600' : 'bg-mine-100 text-mine-600'}`}>
+                  <Bell size={18} />
                 </div>
                 <div>
-                  <h4 className="text-[13px] font-bold text-mine-950 dark:text-white leading-tight mb-0.5 group-hover:text-mine-700 dark:group-hover:text-mine-300 transition-colors">{project.title}</h4>
-                  <p className="text-[11px] text-neutral-400 dark:text-neutral-500 font-medium">Due date: {project.date}</p>
+                  <h4 className="text-[13px] font-bold text-mine-950 dark:text-white leading-tight mb-0.5 group-hover:text-mine-700 dark:group-hover:text-mine-300 transition-colors">{action.category} Issue</h4>
+                  <p className="text-[11px] text-neutral-400 dark:text-neutral-500 font-medium">Zone: {action.zone}</p>
                 </div>
               </div>
             ))}
+            {actionItems.length === 0 && (
+              <div className="text-center text-sm text-neutral-500 mt-8">No open actions.</div>
+            )}
           </div>
         </div>
 
@@ -1257,6 +1507,138 @@ export default function ContractorDashboard() {
     </div>
   );
 
+  const renderCompliance = () => {
+    const currentUser = auth.getUser();
+    const sessionToken = auth.getToken();
+
+    const handleSubmitEvidence = async (id: string) => {
+      const evidenceUrl = prompt("Enter evidence URL (e.g., https://demo.minesight.in/evidence.pdf):");
+      if (!evidenceUrl) return;
+      const notes = prompt("Enter supporting notes:");
+      
+      try {
+        await api.submitComplianceEvidence(id, {
+          evidenceUrl,
+          evidenceNotes: notes || "Evidence submitted for supervisor verification",
+          submittedBy: currentUser?.name || "Contractor"
+        }, sessionToken || undefined);
+        
+        // Refresh obligations
+        if (currentUser?.contractorId) {
+          const res = await api.getObligations({ contractorId: currentUser.contractorId });
+          setObligations(res.data || []);
+        }
+        showToast("Evidence submitted. Status: Pending Verification — awaiting supervisor review.");
+      } catch (err: any) {
+        alert("Failed to submit evidence: " + err.message);
+      }
+    };
+
+    const statusColor = (s: string) => {
+      if (s === 'COMPLIANT') return 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800';
+      if (s === 'DUE_SOON' || s === 'DUE_TODAY') return 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800';
+      if (s === 'OVERDUE') return 'bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:border-rose-800';
+      if (s === 'PENDING_VERIFICATION') return 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800';
+      if (s === 'NON_COMPLIANT') return 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800';
+      return 'bg-neutral-100 text-neutral-600 border-neutral-300';
+    };
+
+    return (
+      <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-mine-950 dark:text-white font-semibold text-xl mb-1 flex items-center gap-2">
+              <FileCheck className="text-purple-600" size={24} /> Statutory Compliance
+            </h3>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              Track and fulfill your PS-26024 statutory obligations. Submit evidence for supervisor verification.
+            </p>
+          </div>
+        </div>
+        <div className="space-y-4">
+          {obligations.length === 0 ? (
+            <div className="text-center py-10 text-neutral-500">No statutory obligations found for your account.</div>
+          ) : (
+            obligations.map((ob: any) => (
+              <div key={ob.id} className="p-4 border border-neutral-100 dark:border-mine-800 rounded-xl bg-neutral-50/50 dark:bg-mine-900/50 space-y-3">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
+                  <div className="flex-1 space-y-1.5">
+                    <div className="flex gap-2 items-center">
+                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${statusColor(ob.status)}`}>
+                        {ob.status.replace(/_/g, ' ')}
+                      </span>
+                      <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider border border-purple-200 dark:border-purple-800 px-2 py-0.5 rounded">
+                        {ob.domain}
+                      </span>
+                      {ob.frequency && (
+                        <span className="text-[10px] text-neutral-400 uppercase">{ob.frequency}</span>
+                      )}
+                    </div>
+                    <h4 className="text-sm font-bold text-mine-950 dark:text-white leading-tight">{ob.title}</h4>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">{ob.description}</p>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-neutral-400">
+                      <span>Due: <strong className="text-neutral-600 dark:text-mine-300">{ob.dueDate ? new Date(ob.dueDate).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : 'N/A'}</strong></span>
+                      {ob.sourceReference && <span>Ref: <em>{ob.sourceReference}</em></span>}
+                      {ob.zone && <span>Zone: {ob.zone}</span>}
+                    </div>
+
+                    {/* Rejection reason — so contractor knows why and can resubmit */}
+                    {ob.status === 'NON_COMPLIANT' && ob.notes && (
+                      <div className="flex items-start gap-2 p-2 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 text-xs text-red-700 dark:text-red-400">
+                        <span className="font-bold shrink-0">⚠ Rejected:</span>
+                        <span>{ob.notes}</span>
+                      </div>
+                    )}
+
+                    {ob.status === 'COMPLIANT' && ob.verifiedBy && (
+                      <div className="text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                        <CheckCircle2 size={12} /> Verified by <strong>{ob.verifiedBy}</strong>
+                        {ob.verifiedAt && <span className="text-neutral-400"> · {new Date(ob.verifiedAt).toLocaleDateString()}</span>}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="shrink-0 flex flex-col gap-2 min-w-[140px]">
+                    {ob.status === 'COMPLIANT' ? (
+                      <div className="text-center px-3 py-2 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 rounded-lg text-xs font-bold flex items-center justify-center gap-1">
+                        <CheckCircle2 size={14} /> Verified
+                      </div>
+                    ) : ob.status === 'PENDING_VERIFICATION' ? (
+                      <div className="text-center px-3 py-2 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded-lg text-xs font-bold">
+                        ⏳ Awaiting Supervisor Review
+                      </div>
+                    ) : (
+                      // For OVERDUE, DUE_SOON, NON_COMPLIANT — allow (re)submission
+                      <button 
+                        onClick={() => handleSubmitEvidence(ob.id)}
+                        className="uiverse-btn !w-full !px-3 !py-2 !h-auto !text-xs"
+                      >
+                        {ob.status === 'NON_COMPLIANT' ? '↻ Resubmit Evidence' : 'Submit Evidence'}
+                      </button>
+                    )}
+                    {ob.evidenceUrl && (
+                      <a href={ob.evidenceUrl} target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 dark:text-blue-400 text-center hover:underline">
+                        View Submitted ↗
+                      </a>
+                    )}
+                  </div>
+                </div>
+
+                {ob.evidenceNotes && ob.status === 'PENDING_VERIFICATION' && (
+                  <div className="text-[11px] italic text-neutral-500 dark:text-mine-400 px-1">
+                    Your submitted notes: "{ob.evidenceNotes}"
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    );
+  };
+
+
+
   // ------------------------------------
   // MAIN COMPONENT RENDER
   // ------------------------------------
@@ -1441,20 +1823,20 @@ export default function ContractorDashboard() {
                 onClick={(e) => { e.stopPropagation(); setIsMailOpen(false); setIsNotifOpen(false); setIsProfileOpen(!isProfileOpen); }}
                 className="flex items-center gap-3 pl-2 hover:opacity-80 transition-opacity text-left"
               >
-                <div className="w-10 h-10 rounded-full bg-mine-100 dark:bg-mine-800 border-2 border-white dark:border-mine-900 shadow-sm overflow-hidden flex items-center justify-center text-mine-800 dark:text-mine-100 font-bold">
-                  AB
+                <div className="w-10 h-10 rounded-full bg-mine-100 dark:bg-mine-800 border-2 border-white dark:border-mine-900 shadow-sm overflow-hidden flex items-center justify-center text-mine-800 dark:text-mine-100 font-bold uppercase">
+                  {profileName ? profileName.substring(0, 2) : "US"}
                 </div>
                 <div className="hidden sm:block">
-                  <p className="text-sm font-bold text-mine-950 dark:text-white leading-none">ABC Infra</p>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 font-medium">abc@minesight.com</p>
+                  <p className="text-sm font-bold text-mine-950 dark:text-white leading-none truncate max-w-[120px]">{profileName}</p>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 font-medium truncate max-w-[120px]">{settingsEmail}</p>
                 </div>
               </button>
 
               {isProfileOpen && (
                 <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-mine-900 border border-neutral-200 dark:border-mine-800 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 py-2">
                   <div className="px-4 py-3 border-b border-neutral-100 dark:border-mine-800 mb-2 sm:hidden">
-                    <p className="text-sm font-bold text-mine-950 dark:text-white leading-none">ABC Infra</p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 font-medium">abc@minesight.com</p>
+                    <p className="text-sm font-bold text-mine-950 dark:text-white leading-none truncate">{profileName}</p>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 font-medium truncate">{settingsEmail}</p>
                   </div>
                   <button onClick={() => { closePopovers(); setActiveTab("profile"); }} className="w-full text-left px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-mine-900/50 transition-colors flex items-center gap-3">
                     <User size={16} /> View Profile
@@ -1502,6 +1884,10 @@ export default function ContractorDashboard() {
 
           {/* RENDER ACTIVE TAB CONTENT */}
           {activeTab === "overview" && renderOverview()}
+          {activeTab === "action_center" && renderActionCenter()}
+          {activeTab === "compliance" && renderCompliance()}
+          {activeTab === "observations" && renderObservations()}
+          {activeTab === "risk" && renderRisk()}
           {activeTab === "messages" && renderMessages()}
           {activeTab === "notification_center" && renderNotificationCenter()}
           {activeTab === "licenses" && renderLicenses()}

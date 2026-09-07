@@ -26,12 +26,13 @@ export class AuthService {
   /**
    * Generates JWT Token
    */
-  private static generateToken(user: { id: string; email: string; role: string }): string {
+  private static generateToken(user: { id: string; email: string; role: string; contractorId?: string | null }): string {
     return jwt.sign(
       {
         id: user.id,
         email: user.email,
         role: user.role,
+        contractorId: user.contractorId || null,
       },
       JWT_SECRET,
       { expiresIn: JWT_EXPIRES_IN }
@@ -68,8 +69,11 @@ export class AuthService {
       if (existingContractor) {
         contractorId = existingContractor.id;
       } else {
-        const count = await prisma.contractor.count();
-        const code = `CON-${String(count + 1).padStart(4, "0")}`;
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const nums = "0123456789";
+        let code = "";
+        for (let i = 0; i < 3; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+        for (let i = 0; i < 3; i++) code += nums.charAt(Math.floor(Math.random() * nums.length));
         const newContractor = await prisma.contractor.create({
           data: {
             contractorCode: code,
@@ -109,6 +113,7 @@ export class AuthService {
         companyName: user.companyName,
         taskType: user.taskType,
         phone: user.phone,
+        contractorId: user.contractorId,
       },
       clientIp,
       userAgent
@@ -125,6 +130,7 @@ export class AuthService {
         companyName: user.companyName,
         taskType: user.taskType,
         contractorId: user.contractorId,
+        contractorCode: contractorId ? (await prisma.contractor.findUnique({ where: { id: contractorId } }))?.contractorCode : undefined,
         createdAt: user.createdAt,
       },
       token,
@@ -163,6 +169,7 @@ export class AuthService {
         companyName: user.companyName,
         taskType: user.taskType,
         phone: user.phone,
+        contractorId: user.contractorId,
       },
       clientIp,
       userAgent
@@ -179,6 +186,7 @@ export class AuthService {
         companyName: user.companyName,
         taskType: user.taskType,
         contractorId: user.contractorId,
+        contractorCode: user.contractorId ? (await prisma.contractor.findUnique({ where: { id: user.contractorId } }))?.contractorCode : undefined,
         createdAt: user.createdAt,
       },
       token,
@@ -209,7 +217,13 @@ export class AuthService {
       throw new AppError("User not found", 404);
     }
 
-    return user;
+    let contractorCode = undefined;
+    if (user.contractorId) {
+      const contractor = await prisma.contractor.findUnique({ where: { id: user.contractorId } });
+      if (contractor) contractorCode = contractor.contractorCode;
+    }
+
+    return { ...user, contractorCode };
   }
 }
 

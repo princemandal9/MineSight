@@ -6,6 +6,7 @@ export interface AuthenticatedUser {
   id: string;
   email: string;
   role: string;
+  contractorId?: string | null;
 }
 
 declare global {
@@ -30,11 +31,13 @@ export const authenticateToken = (
     // Check fallback dev header
     const mockRole = req.headers["x-user-role"] as string;
     const mockId = req.headers["x-user-id"] as string;
+    const mockContractorId = req.headers["x-contractor-id"] as string;
     if (mockRole && mockId) {
       req.user = {
         id: mockId,
         email: "dev@minesight.in",
         role: mockRole.toUpperCase(),
+        contractorId: mockContractorId || null,
       };
       return next();
     }

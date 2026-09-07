@@ -51,6 +51,34 @@ export class AuthController {
     }
   }
 
+  public static async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (req.user?.id) {
+        const user = await AuthService.getMe(req.user.id);
+        const clientIp = req.ip || req.socket.remoteAddress;
+        const userAgent = req.headers["user-agent"];
+        
+        await AuthLogService.recordAuthEvent("LOGOUT", {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          companyName: user.companyName,
+          taskType: user.taskType,
+          phone: user.phone,
+          contractorId: user.contractorId
+        }, clientIp, userAgent);
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Logged out successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   public static async getAuthRecords(_req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const records = AuthLogService.getAuthRecords();

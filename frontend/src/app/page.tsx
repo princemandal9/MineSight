@@ -28,8 +28,13 @@ export default function LoginPage() {
   const handleRoleToggle = (newRole: "contractor" | "supervisor") => {
     setLoginRole(newRole);
     setErrorMessage(null);
-    setEmail("");
-    setPassword("");
+    if (newRole === "supervisor") {
+      setEmail("supervisor@minesight.in");
+      setPassword("admin123");
+    } else {
+      setEmail("");
+      setPassword("");
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -138,7 +143,16 @@ export default function LoginPage() {
                   </Link>
                 </>
               ) : (
-                <>Supervisors can login with their admin credentials.</>
+                <>
+                  Supervisors can login with their admin credentials.{" "}
+                  <button 
+                    type="button" 
+                    onClick={() => { setEmail("supervisor@minesight.in"); setPassword("admin123"); }}
+                    className="text-mine-700 dark:text-mine-100 font-semibold hover:underline"
+                  >
+                    Use Demo Credentials
+                  </button>
+                </>
               )}
             </p>
 

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ObservationController } from "../controllers/observation.controller";
 import { validate } from "../middleware/validate";
+import { authenticateToken } from "../middleware/auth.middleware";
 import {
   createObservationSchema,
   submitEvidenceSchema,
@@ -9,6 +10,8 @@ import {
 } from "../validators/observation.validator";
 
 const router = Router();
+
+router.use(authenticateToken);
 
 router.post(
   "/",

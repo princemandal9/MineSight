@@ -16,6 +16,7 @@ export interface CreateObservationInput {
 export interface SubmitEvidenceInput {
   evidenceUrl?: string;
   evidenceNotes: string;
+  correctiveAction?: string;
   submittedBy?: string;
 }
 
@@ -189,6 +190,7 @@ export class ObservationService {
           status: "EVIDENCE_SUBMITTED",
           evidenceUrl: data.evidenceUrl || null,
           evidenceNotes: data.evidenceNotes,
+          correctiveAction: data.correctiveAction,
           submittedAt: new Date(),
         },
       });
@@ -212,11 +214,41 @@ export class ObservationService {
   /**
    * Supervisor verifies evidence and clears the observation (Closes the loop)
    */
-  public static async verifyAndResolve(id: string, data: VerifyObservationInput) {
+  public static async verifyAndResolve(id: string, data: VerifyObservationInput & { isApproved?: boolean }) {
     const observation = await this.getById(id);
 
     if (observation.status === "RESOLVED") {
       throw new AppError("Observation is already resolved", 400);
+    }
+    
+    if (data.isApproved === false) {
+      const updated = await prisma.$transaction(async (tx) => {
+        const obs = await tx.observation.update({
+          where: { id: observation.id },
+          data: {
+            status: "OPEN", // Revert to OPEN
+            resolutionNotes: data.resolutionNotes || "Evidence rejected.",
+          },
+        });
+
+        await tx.auditLog.create({
+          data: {
+            observationId: obs.id,
+            action: "VERIFIED_REJECTED",
+            actorRole: "SUPERVISOR",
+            actorName: data.verifiedBy,
+            details: `Observation evidence rejected. Status reverted to OPEN. Reason: ${
+              data.resolutionNotes || "Not provided."
+            }`,
+          },
+        });
+
+        return obs;
+      });
+      
+      // Recalculate risk just in case
+      await ContractorService.recalculateRisk(observation.contractorId);
+      return updated;
     }
 
     const updated = await prisma.$transaction(async (tx) => {

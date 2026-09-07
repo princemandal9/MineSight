@@ -1,15 +1,18 @@
 import { prisma } from "../models/prisma";
+import { ComplianceService } from "./compliance.service";
 
 export class MetricService {
   /**
-   * Deterministically calculates system-wide governance & compliance metrics
+   * Deterministically calculates system-wide governance & compliance metrics.
+   * Compliance rate uses the SAME obligation-based formula as /compliance/report
+   * so the dashboard and reports page show identical numbers.
    */
   public static async getOverviewMetrics() {
     const [
       activeContractorsCount,
       criticalOpenObservationsCount,
-      contractors,
       latestEnvLog,
+      complianceStats,
     ] = await Promise.all([
       prisma.contractor.count({ where: { status: "ACTIVE" } }),
       prisma.observation.count({
@@ -18,24 +21,14 @@ export class MetricService {
           status: { in: ["OPEN", "EVIDENCE_SUBMITTED"] },
         },
       }),
-      prisma.contractor.findMany({
-        where: { status: "ACTIVE" },
-        select: { complianceRate: true },
-      }),
       prisma.environmentalLog.findFirst({
         orderBy: { date: "desc" },
       }),
+      ComplianceService.getComplianceStats(),
     ]);
 
-    // Average compliance rate
-    const overallComplianceRate =
-      contractors.length > 0
-        ? Math.round(
-            (contractors.reduce((acc, c) => acc + c.complianceRate, 0) /
-              contractors.length) *
-              10
-          ) / 10
-        : 100.0;
+    // Obligation-based compliance rate (same formula as /compliance/report)
+    const overallComplianceRate = complianceStats.summary.overallCompliancePercentage;
 
     // Environmental readings fallback or from latest log
     const environmental = latestEnvLog || {

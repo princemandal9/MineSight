@@ -2,6 +2,7 @@ import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import path from "path";
 import apiRouter from "./routes/index";
 import { errorHandler } from "./middleware/errorHandler";
 import { AppError } from "./utils/appError";
@@ -9,7 +10,9 @@ import { AppError } from "./utils/appError";
 const app: Application = express();
 
 // Security and utility middleware
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN || "*",
@@ -17,8 +20,11 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization", "x-user-role"],
   })
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+
+// Serve static files from the public directory (for photo uploads)
+app.use(express.static(path.join(__dirname, "../public")));
 
 if (process.env.NODE_ENV !== "test") {
   app.use(morgan("dev"));
