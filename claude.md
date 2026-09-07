@@ -2,138 +2,100 @@
 
 ## Project
 Coal mine governance platform. 2 roles: Contractor, Supervisor.
-Core loop: observation → corrective action → verified closure → audit trail → risk score updates.
+Core loop: observation -> corrective action -> verified closure -> audit trail -> risk score updates.
+Full reasoning behind every feature below lives in blueprint.txt — read it before proposing scope changes.
 
 ## Roles & Boundaries (enforce strictly — no cross-role writes)
 
 **Contractor** (writes own data only)
 - Profile: ID, task_type (blasting/transport/excavation/maintenance), license/cert wallet w/ expiry
 - Digital attendance register (per worker: training status, PPE issued)
+- Worker Roster: per-worker training + PPE status, separate from attendance headcount
 - Machinery register: type, ownership, last serviced, next due, cert expiry
 - Explosives stock (procured/used/remaining) — visible only if task_type = blasting
-- Unresolved Action Center: read-only view of Supervisor's open remarks, red-flagged
+- Unresolved Action Center: read-only view of Supervisor's open remarks, red-flagged, with
+  proof-upload to resolve
+- Rule-Breaking Track Record & Risk Indicator: total observations received, unresolved count,
+  calculated Risk Level (Low/Moderate/High) — deterministic, feeds contract-eligibility note
 
-#UPDATED SUPERVSIOR WORKFLOW
 **Supervisor** (writes observations/actions only, not contractor profiles)
-### Design System
-- Font: Inter (Google Fonts), fallback system-ui/sans-serif.
-- Background canvas: #F8FAFC. Primary text: #0F172A (ink). Secondary text: 
-  #475569 (subink) and #64748B (muted).
-- Cards: white background, 1px border #E2E8F0, 14px rounded corners, no 
-  drop shadows — flat, calm, corporate-safety aesthetic.
-- Status color system (used consistently everywhere — badges, borders, 
-  bars, backgrounds):
-  - Emerald (#DCFCE7 bg / #166534 text / #BBF7D0 border) = compliant/good
-  - Amber (#FEF3C7 bg / #92400E text / #FDE68A border) = moderate/warning
-  - Rose (#FEE2E2 bg / #991B1B text / #FECACA border) = critical/breach
-  - Sky (#E0F2FE bg / #075985 text / #BAE6FD border) = neutral/info tag
-- Small pill-shaped tags (rounded-full, ~12px font, bold) for every status 
-  label — never plain text for a status.
-- Zero generic filler metrics. Every number on the page must tie to safety, 
-  compliance, environmental risk, or active contractor status.
-
-### Layout — Section by Section (top to bottom)
-
-1. HEADER
-   Mine name + "Supervisor Portal" title, logged-in supervisor name, and a 
-   zone-coverage tag (e.g. "Zone Coverage: A · B · C").
-
-2. TOP METRICS BAR (4 cards, responsive 2-col mobile / 4-col desktop)
-   - Total Active Contractors Onsite (plain number)
-   - Critical Open Observations (rose accent border-left)
-   - Overall Compliance Rate % (emerald accent)
-   - Overall Mine Environmental Risk % (amber accent)
-
-3. ENVIRONMENTAL & YIELD LOG
-   - 4 small cards: Daily Tonnage (vs target), Air Quality/PM10 dust 
-     reading, Effluent/Water pH reading, Noise Level (dB) — each shows the 
-     reading plus a tag stating "Below Safety Limit (X)" or "Above Safety 
-     Limit (X)" with the actual threshold number shown.
-   - Below that: one full-width "Total Mine Environmental Risk" card — a 
-     percentage + label (e.g. "34% — Moderate"), a horizontal progress bar 
-     colored by severity, and a caption stating it's calculated 
-     deterministically from the readings above (not AI-guessed).
-
-4. DOCUMENT UPLOAD / SMART OCR INGESTION
-   A card with a file input labeled "Upload Environmental Report." On file 
-   select, JS shows "Analyzing document..." then after ~1s reveals an 
-   extracted-values summary (e.g. "Extracted: PM10 = 118 µg/m³ (Threshold: 
-   100)") with a Flagged/Verified tag, AND live-updates the matching widget 
-   and Total Risk bar/label from step 3 — this must actually work via JS, 
-   not just be decorative.
-
-5. CONTRACTORS DIRECTORY (searchable table)
-   Columns: Contractor name (linked, see below) + ID/task type subtext, 
-   Task Type, Risk Level (tag), Violation Frequency (small horizontal bar 
-   meter, not a number), Unresolved issue count, Flag column ("Frequent 
-   Violator" / "Restricted — Future Contracts" tag, or blank if clean), 
-   and a "+" button per row.
-   - A search input above the table filters rows by name/ID in real time 
-     via JS (no page reload).
-   - Contractor name links to a separate sample overview page (see below).
-   - The "+" button, on click, must: (a) set a <select> in the Quick 
-     Observation Logger section to that exact contractor, and (b) smooth-
-     scroll the page down to that logger section. Implement via JS, test 
-     that it actually works.
-
-6. QUICK OBSERVATION & ENVIRONMENT LOGGER
-   A form card: Contractor <select> (prefilled by the "+" button above), 
-   Category <select> (PPE / Dust / Effluent / Equipment), a 3-button 
-   Severity toggle (Low / Moderate / Critical — clicking one visually 
-   activates it and deactivates the others via JS class swap, colored 
-   emerald/amber/rose respectively), a textarea for observation details, 
-   a photo file input, an auto-captured GPS+timestamp line (JS: current 
-   date/time + a fixed zone string, set on page load), and a Submit button.
-
-7. ACTIVE COMPLIANCE & RED-FLAGGED OPERATIONS (live feed)
-   A list of open-observation cards, each in a soft rose container 
-   (#FEE2E2 bg / #FECACA border), showing: severity tag, contractor + 
-   observation ID, the observation text, and a status line ("Awaiting 
-   contractor proof" or "Proof submitted — pending review"). Each card has 
-   a "Review Evidence & Clear Flag" button. Clicking it must, via JS, flip 
-   that specific card to emerald/green, change all its text colors to the 
-   emerald palette, and change the button to a disabled "Cleared" state — 
-   scoped to that one card only, not all cards.
-
-8. LINKED SAMPLE CONTRACTOR OVERVIEW PAGES (build 2 separate HTML files)
-   Each is a SEPARATE, minimal page (not the full contractor self-service 
-   portal) — only what a Supervisor needs to check at a glance:
-   - Header: contractor name, ID, task type, overall status tag
-   - 3 stat cards: Unresolved Issues count, Workers Onsite count, Machines 
-     Due Maintenance count
-   - License Status list (license name + Up to Date/Expired/Due Soon tag)
-   - Machinery Maintenance list (machine name + Up to Date/Overdue/Due 
-     Soon tag)
-   - A "← Back to Supervisor Portal" link at the top
-   Build one variant as a flagged/high-risk contractor (multiple issues, 
-   an expired cert, overdue machinery) and one as a fully compliant 
-   contractor (zero issues, everything up to date) — same visual system, 
-   different data. Link them from 2-3 different rows in the main 
-   dashboard's Contractors Directory.
-
-### Technical Constraints
-- Tailwind CSS via CDN only — no other libraries, no build step, no 
-  charting library (build the risk bars/meters with plain divs + width 
-  percentages).
-- Plain vanilla JavaScript only, inline in a <script> tag — no frameworks.
-- Every interactive behavior described above (search filter, + button 
-  preselect+scroll, severity toggle, OCR demo, review&clear) must actually 
-  function, not just be styled to look clickable.
-- Self-contained files — each HTML file works standalone when opened 
-  directly in a browser (file:// is fine).
-- Output only the HTML files, no explanation text before/after unless asked.
+- Contractor Status Dashboard: searchable directory — task type, Risk Level, Violation Frequency
+  Meter (visual bar, not a number), unresolved count, Restricted/Blacklisted flag on repeat offenders
+- Quick Observation Logger: contractor select, category (PPE/Dust/Effluent/Equipment), severity
+  (Low/Moderate/Critical), photo, auto-captured GPS/timestamp -> instantly red-flags the contractor
+- Daily Yield & Environment Tracker: tonnage + environmental readings (dust/PM10, effluent/pH,
+  noise) vs. defined thresholds
+- Platform-Wide Warning System: any threshold breach anywhere fires a dashboard-wide flag —
+  this is what replaces a dedicated Compliance Officer role in the 2-role MVP
+- Closure Verification: reviews contractor-submitted proof, clears the red flag, writes an
+  audit trail entry
+- Contractor Overview Drill-Down: clicking a contractor name opens a separate, minimal page
+  (license status + machinery maintenance status + headcount only — not the full Contractor
+  Portal) — keeps the RBAC boundary honest
+- Document Upload / Smart OCR Ingestion: upload an environmental report -> extracts the reading,
+  flags vs. threshold, auto-updates the relevant widget + Total Mine Environmental Risk. Reference
+  build simulates extraction with a scripted delay — a real parser is still required, do not treat
+  the demo as a working parser.
 
 ## task_type field
 Set once at contractor onboarding, not per-login. Drives conditional rendering
 (e.g., explosives stock only for blasting). Don't build a login-time picker.
+Edge case: if a contractor genuinely spans multiple task types, make it multi-select,
+not single-select — decide this before building, not after.
 
 ## AI / Data Rules
 - No PII exposed across role boundaries (e.g. Contractor A never sees Contractor B's data)
-- Risk scores/alerts: deterministic, rule-based only. No LLM-generated scores or unexplained flags.
-- LLM use limited to: document field extraction (cert expiry dates from uploaded PDFs). Nothing else.
+- Risk scores/alerts/flags (incl. Risk Level, Violation Frequency, Restricted/Blacklisted status,
+  Platform-Wide Warnings): deterministic, rule-based only. No LLM-generated scores or unexplained
+  flags — every flag must trace back to an actual data point.
+- LLM use limited to: document field extraction (cert expiry dates, environmental reading values
+  from uploaded PDFs). Nothing else — never risk judgment, never a generated summary presented as fact.
+- Missing data shows as "Pending" / "Not Logged" — never invented or estimated.
 
 ## Code Rules
 - Modular, minimal deps. No new libraries without explicit ask.
-- No unrequested scope (IoT hardware, features outside the 3 roles above).
+- No unrequested scope (IoT hardware, a third role, features outside Contractor/Supervisor).
 - Snippets/diffs only — no prose explanation unless asked.
 - No restating requirements already in this file before coding — just build.
+
+---
+
+## Frontend Design Reference (for regenerating/extending the HTML mockups)
+
+This section is reference material for prompting UI generation — not a coding
+instruction to re-apply on every task. Use it when asked to build or extend a
+portal page; ignore it for backend/logic work.
+
+### Design System
+- Font: Inter (Google Fonts), fallback system-ui/sans-serif.
+- Background canvas: #F8FAFC. Primary text: #0F172A (ink). Secondary text:
+  #475569 (subink) and #64748B (muted).
+- Cards: white background, 1px border #E2E8F0, 14px rounded corners, no
+  drop shadows — flat, calm, corporate-safety aesthetic.
+- Status color system (used consistently everywhere — badges, borders, bars, backgrounds):
+  - Emerald (#DCFCE7 bg / #166534 text / #BBF7D0 border) = compliant/good
+  - Amber (#FEF3C7 bg / #92400E text / #FDE68A border) = moderate/warning
+  - Rose (#FEE2E2 bg / #991B1B text / #FECACA border) = critical/breach
+  - Sky (#E0F2FE bg / #075985 text / #BAE6FD border) = neutral/info tag
+- Small pill-shaped tags (rounded-full, ~12px font, bold) for every status label.
+- Zero generic filler metrics — every number ties to safety, compliance, environmental
+  risk, or active contractor status.
+- Tailwind CSS via CDN only, plain vanilla JS inline, no frameworks, no charting library
+  (build meters/bars with plain divs + width percentages).
+
+### Pages built so far (reference implementations, see blueprint.txt Sections 2A/3A)
+- `contractor_portal.html` — full Contractor Portal per blueprint.txt Section 2
+- `supervisor_portal.html` — full Supervisor Portal per blueprint.txt Section 3
+- `contractor_overview_flagged.html` / `contractor_overview_compliant.html` — the
+  Contractor Overview Drill-Down (3.6) sample pages, linked from the Supervisor's
+  Contractor Status Dashboard
+
+### Interaction requirements (must actually function, not just look clickable)
+- Contractor search filter (real-time, no page reload)
+- "+" button on a contractor row: preselects that contractor in the Observation Logger
+  and smooth-scrolls to it
+- Severity toggle: 3 buttons, one active at a time, color-coded by severity
+- OCR upload demo: file select -> "Analyzing..." -> reveals extracted value, updates the
+  matching widget and Total Risk bar/label live
+- "Review Evidence & Clear Flag": flips that specific card to the emerald palette and
+  disables the button — scoped to that one card only
