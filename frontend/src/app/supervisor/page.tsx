@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { auth } from "@/lib/auth";
 import {
   LayoutDashboard,
@@ -59,6 +60,7 @@ const generalItems = [
 ];
 
 export default function SupervisorPage() {
+  const router = useRouter();
   const [metrics, setMetrics] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [obligations, setObligations] = useState<any[]>([]);
