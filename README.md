@@ -57,20 +57,24 @@ MineSight is configured for a robust split-stack deployment using free-tier serv
 1. Create a free PostgreSQL database on [Supabase](https://supabase.com/) or [Neon](https://neon.tech/).
 2. Copy the connection string (`postgres://...`).
 
-### Step 2: Backend (Render.com)
-The backend is an Express API and is pre-configured with a `render.yaml` Blueprint.
-1. Create an account on [Render](https://render.com/).
-2. Go to **Blueprints** -> **New Blueprint Instance**.
-3. Connect your GitHub repository.
-4. Render will automatically detect the `render.yaml` and prompt you for the Environment Variables (`DATABASE_URL` and `GEMINI_API_KEY`).
-5. Once deployed, copy your backend URL (e.g., `https://minesight-backend.onrender.com`).
+### Step 2: Backend (Vercel)
+The backend is an Express API, but I have configured it to run on Vercel Serverless Functions natively!
+1. Go back to Vercel and click **Add New Project**.
+2. Import the repository again.
+3. **IMPORTANT**: In the "Root Directory" settings, click Edit and select `backend`.
+4. In the **Environment Variables** section, add:
+   - `DATABASE_URL`: Your Supabase/Neon connection string
+   - `GEMINI_API_KEY`: Your Gemini API key
+   - `JWT_SECRET`: A random string for secure logins (e.g. `my-super-secret-key-12345`)
+5. Click **Deploy**.
+6. Once deployed, copy your backend URL (e.g., `https://minesight-backend.vercel.app`).
 
 ### Step 3: Frontend (Vercel)
-1. Create a [Vercel](https://vercel.com/) account and click **Add New Project**.
-2. Import this repository.
-3. Vercel will automatically detect the **Next.js** framework in the `frontend` directory.
+1. Go back to Vercel and click **Add New Project**.
+2. Import the repository (this time leave the root directory as the default or select `frontend`).
+3. Vercel will automatically detect the **Next.js** framework.
 4. In the **Environment Variables** section, add:
-   - `NEXT_PUBLIC_API_URL`: Set this to your Render backend URL (e.g., `https://minesight-backend.onrender.com/api/v1`)
+   - `NEXT_PUBLIC_API_URL`: Set this to your Vercel backend URL (e.g., `https://minesight-backend.vercel.app/api/v1`)
 5. Click **Deploy**.
 
 ---
