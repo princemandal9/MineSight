@@ -155,7 +155,6 @@ export class RiskService {
       riskLevel,
       riskFactors,
       recommendedAction,
-      confidence: "HIGH",
     };
   }
 

@@ -8,59 +8,65 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  name         String
-  email        String   @unique
-  password     String
-  role         String   @default("CONTRACTOR") // CONTRACTOR, SUPERVISOR
-  phone        String?
-  companyName  String?
-  taskType     String? // blasting, transportation, excavation, maintenance
-  contractorId String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  password      String
+  role          String         @default("CONTRACTOR")
+  phone         String?
+  companyName   String?
+  taskType      String?
+  contractorId  String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  assignedMine  String?
+  notifications Notification[]
 }
 
 model Contractor {
-  id              String   @id @default(uuid())
-  contractorCode  String   @unique
-  name            String
-  email           String?
-  phone           String?
-  taskType        String // blasting, transportation, excavation, maintenance
-  riskLevel       String   @default("LOW") // LOW, MODERATE, HIGH, CRITICAL
-  violationCount  Int      @default(0)
-  isRestricted    Boolean  @default(false)
-  activeWorkers   Int      @default(0)
-  activeMachinery Int      @default(0)
-  complianceRate  Float    @default(100.0)
-  status          String   @default("ACTIVE") // ACTIVE, SUSPENDED, INACTIVE
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  observations         Observation[]
+  id                   String                @id @default(uuid())
+  contractorCode       String                @unique
+  name                 String
+  email                String?
+  phone                String?
+  taskType             String
+  riskLevel            String                @default("LOW")
+  violationCount       Int                   @default(0)
+  isRestricted         Boolean               @default(false)
+  activeWorkers        Int                   @default(0)
+  activeMachinery      Int                   @default(0)
+  complianceRate       Float                 @default(100.0)
+  status               String                @default("PENDING")
+  requestedMine        String?
+  assignedMine         String?
+  rejectionReason      String?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  AuditLog             AuditLog[]
+  dailyLogs            DailyLog[]
+  explosivesStock      ExplosivesStock[]
+  inspections          Inspection[]
   licenses             License[]
   machinery            Machinery[]
-  workers              Worker[]
-  explosivesStock      ExplosivesStock[]
-  dailyLogs            DailyLog[]
+  Notification         Notification[]
+  observations         Observation[]
   statutoryObligations StatutoryObligation[]
-  inspections          Inspection[]
+  workers              Worker[]
 }
 
 model Observation {
   id               String      @id @default(uuid())
   observationCode  String      @unique
   contractorId     String
-  contractor       Contractor  @relation(fields: [contractorId], references: [id], onDelete: Cascade)
   supervisorName   String
-  zone             String // e.g. "Pit A", "Haul Road 2", "Zone B"
-  category         String // PPE, DUST, EFFLUENT, EQUIPMENT, BLASTING, OTHER
-  severity         String // LOW, MODERATE, CRITICAL
+  supervisorId     String?
+  zone             String
+  category         String
+  severity         String
   description      String
   photoUrl         String?
   gpsCoordinates   String?
-  status           String      @default("OPEN") // OPEN, ACTION_SUBMITTED, EVIDENCE_SUBMITTED, RESOLVED
+  status           String      @default("OPEN")
   evidenceUrl      String?
   evidenceNotes    String?
   correctiveAction String?
@@ -69,124 +75,144 @@ model Observation {
   resolutionNotes  String?
   verifiedBy       String?
   inspectionId     String?
-  inspection       Inspection? @relation(fields: [inspectionId], references: [id], onDelete: SetNull)
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
-
-  auditLogs AuditLog[]
+  auditLogs        AuditLog[]
+  inspection       Inspection? @relation(fields: [inspectionId], references: [id])
+  contractor       Contractor  @relation(fields: [contractorId], references: [id], onDelete: Cascade)
 }
 
 model Inspection {
-  id               String      @id @default(uuid())
-  clientRefId      String?     @unique // For offline idempotency
+  id               String        @id @default(uuid())
+  clientRefId      String?       @unique
   mineId           String?
   zone             String?
   inspectorId      String
   contractorId     String?
-  contractor       Contractor? @relation(fields: [contractorId], references: [id], onDelete: SetNull)
   taskType         String?
   latitude         Float?
   longitude        Float?
   locationAccuracy Float?
-  startedAt        DateTime    @default(now())
+  startedAt        DateTime      @default(now())
   submittedAt      DateTime?
-  status           String      @default("SUBMITTED") // DRAFT, SUBMITTED
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
-
-  observations Observation[]
+  status           String        @default("SUBMITTED")
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  contractor       Contractor?   @relation(fields: [contractorId], references: [id])
+  observations     Observation[]
 }
 
 model License {
   id             String     @id @default(uuid())
   contractorId   String
-  contractor     Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
-  documentType   String // Contract Labour License, Blaster's Certificate (DGMS), Explosives License
+  documentType   String
   documentNumber String
   holder         String
   expiryDate     DateTime
-  status         String     @default("VALID") // VALID, EXPIRING_SOON, EXPIRED
+  status         String     @default("VALID")
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+  contractor     Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
 }
 
 model Machinery {
   id           String     @id @default(uuid())
   contractorId String
-  contractor   Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
   machineName  String
-  ownership    String // OWNED, RENTED, FINANCED
+  ownership    String
   lastServiced DateTime?
   nextDue      DateTime?
-  status       String     @default("ACTIVE") // ACTIVE, DUE_SOON, OVERDUE, UNDER_MAINTENANCE
+  status       String     @default("ACTIVE")
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  contractor   Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
 }
 
 model Worker {
   id             String     @id @default(uuid())
   contractorId   String
-  contractor     Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
   workerCode     String
   fullName       String?
   role           String?
-  trainingStatus String     @default("COMPLETE") // COMPLETE, MISSING
+  trainingStatus String     @default("COMPLETE")
   ppeIssued      Boolean    @default(true)
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+  contractor     Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
 }
 
 model ExplosivesStock {
   id            String     @id @default(uuid())
   contractorId  String
-  contractor    Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
-  explosiveType String // Site-mix emulsion, Detonators
+  explosiveType String
   procured      Float
   used          Float
   remaining     Float
-  unit          String // kg, units
+  unit          String
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+  contractor    Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
 }
 
 model DailyLog {
   id           String     @id @default(uuid())
   contractorId String
-  contractor   Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
   logText      String
   zone         String?
   loggedBy     String
   timestamp    DateTime   @default(now())
+  contractor   Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
 }
 
 model EnvironmentalLog {
   id           String   @id @default(uuid())
   date         DateTime @default(now())
   dailyTonnage Float
-  pm10Dust     Float // µg/m³
-  effluentPh   Float // pH
-  noiseDb      Float // dB
-  riskScore    Float // Deterministic 0 - 100%
-  riskLabel    String // Low, Moderate, Critical
+  pm10Dust     Float
+  effluentPh   Float
+  noiseDb      Float
+  riskScore    Float
+  riskLabel    String
   loggedBy     String
   notes        String?
   createdAt    DateTime @default(now())
+
+  environmentalReportId String? @unique
+  environmentalReport   EnvironmentalReport? @relation(fields: [environmentalReportId], references: [id])
+}
+
+model EnvironmentalReport {
+  id              String   @id @default(uuid())
+  documentType    String
+  reportId        String?
+  facilityName    String?
+  location        String?
+  samplingDate    DateTime?
+  provider        String?
+  uploadedBy      String
+  status          String   @default("PENDING_REVIEW")
+  documentUrl     String
+  extractedData   String
+  documentHash    String?  @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  environmentalLog EnvironmentalLog?
 }
 
 model StatutoryObligation {
-  id               String      @id @default(uuid())
+  id               String       @id @default(uuid())
   title            String
   description      String
-  domain           String // SAFETY, ENVIRONMENT, PRODUCTION, LABOUR
+  domain           String
   contractorId     String?
-  contractor       Contractor? @relation(fields: [contractorId], references: [id], onDelete: Cascade)
-  taskType         String? // Applicability based on task type
-  zone             String? // Applicability based on zone
-  frequency        String // ONCE, DAILY, WEEKLY, MONTHLY, QUARTERLY, ANNUAL, EVENT
+  taskType         String?
+  zone             String?
+  frequency        String
   dueDate          DateTime?
   nextDueDate      DateTime?
-  status           String      @default("PENDING") // COMPLIANT, DUE_SOON, OVERDUE, NON_COMPLIANT, PENDING_VERIFICATION, NOT_APPLICABLE
-  evidenceRequired Boolean     @default(true)
+  status           String       @default("PENDING")
+  evidenceRequired Boolean      @default(true)
   evidenceUrl      String?
   evidenceNotes    String?
   lastCompletedAt  DateTime?
@@ -194,36 +220,52 @@ model StatutoryObligation {
   verifiedAt       DateTime?
   notes            String?
   sourceReference  String?
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
-
-  auditLogs   AuditLog[]
-  escalations Escalation[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  auditLogs        AuditLog[]
+  escalations      Escalation[]
+  contractor       Contractor?  @relation(fields: [contractorId], references: [id], onDelete: Cascade)
 }
 
 model AuditLog {
   id            String               @id @default(uuid())
   observationId String?
-  observation   Observation?         @relation(fields: [observationId], references: [id], onDelete: SetNull)
   obligationId  String?
-  obligation    StatutoryObligation? @relation(fields: [obligationId], references: [id], onDelete: SetNull)
-  action        String // CREATED, EVIDENCE_SUBMITTED, VERIFIED_APPROVED, REJECTED, ESCALATED, STATUS_CHANGED
-  actorRole     String // SUPERVISOR, CONTRACTOR, SYSTEM
+  contractorId  String?
+  action        String
+  actorRole     String
   actorName     String
   details       String
   timestamp     DateTime             @default(now())
+  Contractor    Contractor?          @relation(fields: [contractorId], references: [id])
+  obligation    StatutoryObligation? @relation(fields: [obligationId], references: [id])
+  observation   Observation?         @relation(fields: [observationId], references: [id])
 }
 
-// Escalation chain: Contractor → Supervisor → Management
-// Each record is append-only and immutable (no update route exposed).
 model Escalation {
   id           String              @id @default(uuid())
   obligationId String
-  obligation   StatutoryObligation @relation(fields: [obligationId], references: [id], onDelete: Cascade)
-  level        String // SUPERVISOR, MANAGEMENT, CORPORATE (future)
+  level        String
   reason       String
-  triggeredBy  String // email or name of the supervisor who escalated
-  resolvedAt   DateTime? // set when escalation is closed
-  resolution   String? // resolution notes
+  triggeredBy  String
+  resolvedAt   DateTime?
+  resolution   String?
   createdAt    DateTime            @default(now())
+  obligation   StatutoryObligation @relation(fields: [obligationId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id           String      @id @default(uuid())
+  recipientId  String
+  type         String
+  title        String
+  message      String
+  isRead       Boolean     @default(false)
+  resourceType String?
+  resourceId   String?
+  contractorId String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  Contractor   Contractor? @relation(fields: [contractorId], references: [id])
+  recipient    User        @relation(fields: [recipientId], references: [id], onDelete: Cascade)
 }

@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api/v1";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5001/api/v1";
 
 export async function fetchApi<T = any>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE_URL}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
@@ -9,9 +9,12 @@ export async function fetchApi<T = any>(endpoint: string, options?: RequestInit)
   }
   
   const headers: any = {
-    "Content-Type": "application/json",
     ...options?.headers,
   };
+  
+  if (!(options?.body instanceof FormData) && !headers["Content-Type"]) {
+    headers["Content-Type"] = "application/json";
+  }
   
   if (token && !headers.Authorization) {
     headers.Authorization = `Bearer ${token}`;
@@ -45,6 +48,22 @@ export const api = {
     fetchApi("/auth/me", {
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     }),
+  updateProfile: (data: any, token?: string) =>
+    fetchApi("/auth/me", {
+      method: "PUT",
+      body: JSON.stringify(data),
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+  changePassword: (data: any, token?: string) =>
+    fetchApi("/auth/password", {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+  exportData: (token?: string) =>
+    fetchApi("/auth/export", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
   getAuthRecords: () => fetchApi("/auth/records"),
 
   // Health & Metrics
@@ -54,16 +73,25 @@ export const api = {
     fetchApi("/metrics/environmental", { method: "POST", body: JSON.stringify(data) }),
 
   // Contractors
-  getContractors: (params?: { taskType?: string; riskLevel?: string; search?: string }) => {
-    const query = new URLSearchParams(params as any).toString();
-    return fetchApi(`/contractors${query ? `?${query}` : ""}`);
+  getContractors: (params?: { taskType?: string; riskLevel?: string; status?: string; search?: string }) => {
+    const query = new URLSearchParams();
+    if (params?.taskType) query.append("taskType", params.taskType);
+    if (params?.riskLevel) query.append("riskLevel", params.riskLevel);
+    if (params?.status) query.append("status", params.status);
+    if (params?.search) query.append("search", params.search);
+    return fetchApi(`/contractors${query.toString() ? `?${query}` : ""}`);
   },
   getContractor: (idOrCode: string) => fetchApi(`/contractors/${idOrCode}`),
   createContractor: (data: any) =>
     fetchApi("/contractors", { method: "POST", body: JSON.stringify(data) }),
+  updateContractorStatus: (id: string, data: { status: "ACTIVE" | "REJECTED"; rejectionReason?: string }, token?: string) =>
+    fetchApi(`/contractors/${id}/status`, {
+      method: "PATCH",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      body: JSON.stringify(data),
+    }),
   updateContractor: (id: string, data: any) =>
     fetchApi(`/contractors/${id}`, { method: "PUT", body: JSON.stringify(data) }),
-
   // Observations
   getObservations: (params?: { status?: string; contractorId?: string; severity?: string }) => {
     const query = new URLSearchParams(params as any).toString();
@@ -113,7 +141,7 @@ export const api = {
     }),
   getObligationAuditLog: (id: string) => fetchApi(`/compliance/${id}/audit`),
   
-  // AI Risk Intelligence
+  // Risk Intelligence
   getRiskOverview: (token?: string) =>
     fetchApi("/risk/overview", {
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
@@ -140,6 +168,79 @@ export const api = {
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     });
   },
-};
 
+  // Notifications
+  getNotifications: (token?: string) =>
+    fetchApi("/notifications", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+  getUnreadNotificationCount: (token?: string) =>
+    fetchApi("/notifications/unread-count", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+  markNotificationRead: (id: string, token?: string) =>
+    fetchApi(`/notifications/${id}/read`, {
+      method: "PATCH",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+  markAllNotificationsRead: (token?: string) =>
+    fetchApi("/notifications/mark-all-read", {
+      method: "POST",
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+
+  // Resources
+  getLicenses: (token?: string) =>
+    fetchApi("/licenses", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+  getMachinery: (token?: string) =>
+    fetchApi("/machinery", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+  getWorkers: (token?: string) =>
+    fetchApi("/workers", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+  getExplosives: (token?: string) =>
+    fetchApi("/explosives", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+    
+  // Daily Logs
+  getDailyLogs: (token?: string) =>
+    fetchApi("/daily-logs", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+  createDailyLog: (data: any, token?: string) =>
+    fetchApi("/daily-logs", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+  
+  // Environmental Document Intelligence
+  analyzeDocument: (formData: FormData, token?: string) =>
+    fetchApi("/environmental-documents/analyze", {
+      method: "POST",
+      body: formData,
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+  confirmDocument: (data: { extractedData: string }, formData: FormData, token?: string) => {
+    formData.append("extractedData", data.extractedData);
+    return fetchApi("/environmental-documents/confirm", {
+      method: "POST",
+      body: formData,
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    });
+  },
+
+  // AI Governance Analysis
+  analyzeGovernance: (contractorId: string, token?: string) =>
+    fetchApi("/governance/analyze", {
+      method: "POST",
+      body: JSON.stringify({ contractorId }),
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }),
+};
 

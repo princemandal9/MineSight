@@ -1,10 +1,12 @@
 import { prisma } from "../models/prisma";
 import { AppError } from "../utils/appError";
 import { ContractorService } from "./contractor.service";
+import { NotificationService } from "./notification.service";
 
 export interface CreateObservationInput {
   contractorId: string;
   supervisorName: string;
+  supervisorId?: string;
   zone: string;
   category: string;
   severity: string;
@@ -67,6 +69,7 @@ export class ObservationService {
           observationCode,
           contractorId: data.contractorId,
           supervisorName: data.supervisorName,
+          supervisorId: data.supervisorId || null,
           zone: data.zone,
           category: data.category,
           severity: data.severity,
@@ -101,6 +104,19 @@ export class ObservationService {
 
     // 4. Recalculate deterministic risk and apply contractor red flag
     await ContractorService.recalculateRisk(data.contractorId);
+
+    // 5. Notify contractor users (Flow A)
+    const contractorUsers = await prisma.user.findMany({
+      where: { contractorId: data.contractorId, role: "CONTRACTOR" }
+    });
+    for (const u of contractorUsers) {
+      await NotificationService.create({
+        recipientId: u.id,
+        type: "Safety",
+        title: "New Observation Logged",
+        message: `A ${data.severity} severity observation was logged in ${data.zone}.`,
+      });
+    }
 
     return observation;
   }
@@ -208,6 +224,18 @@ export class ObservationService {
       return obs;
     });
 
+    // Notify Supervisor (Flow B)
+    if (observation.supervisorId) {
+      await NotificationService.create({
+        recipientId: observation.supervisorId,
+        type: "Inspection",
+        title: "Evidence Submitted",
+        message: `Contractor submitted evidence for observation ${observation.observationCode}.`,
+      });
+    } else {
+      console.warn(`[ObservationService] Skipping supervisor notification for ${observation.id} - no supervisorId linked.`);
+    }
+
     return updated;
   }
 
@@ -248,6 +276,20 @@ export class ObservationService {
       
       // Recalculate risk just in case
       await ContractorService.recalculateRisk(observation.contractorId);
+
+      // Notify Contractor users (Flow C - Rejected)
+      const contractorUsers = await prisma.user.findMany({
+        where: { contractorId: observation.contractorId, role: "CONTRACTOR" }
+      });
+      for (const u of contractorUsers) {
+        await NotificationService.create({
+          recipientId: u.id,
+          type: "Safety",
+          title: "Evidence Rejected",
+          message: `Evidence for observation ${observation.observationCode} was rejected.`,
+        });
+      }
+
       return updated;
     }
 
@@ -279,6 +321,19 @@ export class ObservationService {
 
     // Automatically recalculate risk to remove red flag if no other issues remain
     await ContractorService.recalculateRisk(observation.contractorId);
+
+    // Notify Contractor users (Flow C - Approved)
+    const contractorUsers = await prisma.user.findMany({
+      where: { contractorId: observation.contractorId, role: "CONTRACTOR" }
+    });
+    for (const u of contractorUsers) {
+      await NotificationService.create({
+        recipientId: u.id,
+        type: "Compliance",
+        title: "Observation Resolved",
+        message: `Observation ${observation.observationCode} was verified and resolved.`,
+      });
+    }
 
     return updated;
   }

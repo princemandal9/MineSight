@@ -50,9 +50,12 @@ export class MachineryService {
     };
   }
 
-  public static async getById(id: string) {
-    const machinery = await prisma.machinery.findUnique({
-      where: { id },
+  public static async getById(id: string, authorizedContractorId?: string) {
+    const where: any = { id };
+    if (authorizedContractorId) where.contractorId = authorizedContractorId;
+
+    const machinery = await prisma.machinery.findFirst({
+      where,
       include: {
         contractor: {
           select: { name: true, contractorCode: true },
@@ -67,8 +70,11 @@ export class MachineryService {
     return machinery;
   }
 
-  public static async update(id: string, data: any) {
-    const existing = await prisma.machinery.findUnique({ where: { id } });
+  public static async update(id: string, data: any, authorizedContractorId?: string) {
+    const where: any = { id };
+    if (authorizedContractorId) where.contractorId = authorizedContractorId;
+
+    const existing = await prisma.machinery.findFirst({ where });
     if (!existing) {
       throw new AppError("Machinery not found", 404);
     }
@@ -87,8 +93,11 @@ export class MachineryService {
     });
   }
 
-  public static async delete(id: string) {
-    const existing = await prisma.machinery.findUnique({ where: { id } });
+  public static async delete(id: string, authorizedContractorId?: string) {
+    const where: any = { id };
+    if (authorizedContractorId) where.contractorId = authorizedContractorId;
+
+    const existing = await prisma.machinery.findFirst({ where });
     if (!existing) {
       throw new AppError("Machinery not found", 404);
     }

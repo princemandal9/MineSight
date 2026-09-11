@@ -45,9 +45,12 @@ export class WorkerService {
     };
   }
 
-  public static async getById(id: string) {
-    const worker = await prisma.worker.findUnique({
-      where: { id },
+  public static async getById(id: string, authorizedContractorId?: string) {
+    const where: any = { id };
+    if (authorizedContractorId) where.contractorId = authorizedContractorId;
+
+    const worker = await prisma.worker.findFirst({
+      where,
       include: {
         contractor: {
           select: { name: true, contractorCode: true },
@@ -62,8 +65,11 @@ export class WorkerService {
     return worker;
   }
 
-  public static async update(id: string, data: any) {
-    const existing = await prisma.worker.findUnique({ where: { id } });
+  public static async update(id: string, data: any, authorizedContractorId?: string) {
+    const where: any = { id };
+    if (authorizedContractorId) where.contractorId = authorizedContractorId;
+
+    const existing = await prisma.worker.findFirst({ where });
     if (!existing) {
       throw new AppError("Worker not found", 404);
     }
@@ -74,8 +80,11 @@ export class WorkerService {
     });
   }
 
-  public static async delete(id: string) {
-    const existing = await prisma.worker.findUnique({ where: { id } });
+  public static async delete(id: string, authorizedContractorId?: string) {
+    const where: any = { id };
+    if (authorizedContractorId) where.contractorId = authorizedContractorId;
+
+    const existing = await prisma.worker.findFirst({ where });
     if (!existing) {
       throw new AppError("Worker not found", 404);
     }

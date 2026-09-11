@@ -131,6 +131,8 @@ export class AuthService {
         taskType: user.taskType,
         contractorId: user.contractorId,
         contractorCode: contractorId ? (await prisma.contractor.findUnique({ where: { id: contractorId } }))?.contractorCode : undefined,
+        contractorStatus: contractorId ? (await prisma.contractor.findUnique({ where: { id: contractorId } }))?.status : undefined,
+        rejectionReason: contractorId ? (await prisma.contractor.findUnique({ where: { id: contractorId } }))?.rejectionReason : undefined,
         createdAt: user.createdAt,
       },
       token,
@@ -187,6 +189,8 @@ export class AuthService {
         taskType: user.taskType,
         contractorId: user.contractorId,
         contractorCode: user.contractorId ? (await prisma.contractor.findUnique({ where: { id: user.contractorId } }))?.contractorCode : undefined,
+        contractorStatus: user.contractorId ? (await prisma.contractor.findUnique({ where: { id: user.contractorId } }))?.status : undefined,
+        rejectionReason: user.contractorId ? (await prisma.contractor.findUnique({ where: { id: user.contractorId } }))?.rejectionReason : undefined,
         createdAt: user.createdAt,
       },
       token,
@@ -218,12 +222,112 @@ export class AuthService {
     }
 
     let contractorCode = undefined;
+    let contractorStatus = undefined;
+    let rejectionReason = undefined;
     if (user.contractorId) {
       const contractor = await prisma.contractor.findUnique({ where: { id: user.contractorId } });
-      if (contractor) contractorCode = contractor.contractorCode;
+      if (contractor) {
+        contractorCode = contractor.contractorCode;
+        contractorStatus = contractor.status;
+        rejectionReason = contractor.rejectionReason;
+      }
     }
 
-    return { ...user, contractorCode };
+    return { ...user, contractorCode, contractorStatus, rejectionReason };
+  }
+
+  /**
+   * Update user profile by ID
+   */
+  public static async updateProfile(userId: string, data: { name?: string; phone?: string; companyName?: string }) {
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        name: data.name,
+        phone: data.phone,
+        companyName: data.companyName,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        phone: true,
+        companyName: true,
+        taskType: true,
+        contractorId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    
+    // Also update contractor if the user is linked to one and company name changed
+    if (user.contractorId && data.companyName) {
+       await prisma.contractor.update({
+         where: { id: user.contractorId },
+         data: { name: data.companyName }
+       });
+    }
+
+    return user;
+  }
+
+  /**
+   * Change user password securely
+   */
+  public static async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    if (newPassword.length < 8) {
+      throw new AppError("New password must be at least 8 characters long", 400);
+    }
+    
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new AppError("User not found", 404);
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      throw new AppError("Incorrect current password", 401);
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword }
+    });
+    
+    return true;
+  }
+
+  /**
+   * Export all user governance data
+   */
+  public static async exportData(userId: string, contractorId?: string | null) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, name: true, email: true, role: true, companyName: true, createdAt: true }
+    });
+    
+    let contractorData = null;
+    if (contractorId) {
+      contractorData = await prisma.contractor.findUnique({
+        where: { id: contractorId },
+        include: {
+          observations: true,
+          statutoryObligations: true,
+          inspections: true,
+          licenses: true,
+          machinery: true,
+          workers: true,
+          explosivesStock: true,
+          dailyLogs: true,
+        }
+      });
+    }
+    
+    return {
+      user,
+      contractor: contractorData,
+      exportedAt: new Date().toISOString()
+    };
   }
 }
 

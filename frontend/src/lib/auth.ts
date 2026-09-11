@@ -43,6 +43,10 @@ export const auth = {
     localStorage.removeItem(USER_KEY);
   },
 
+  logout(): void {
+    this.clearSession();
+  },
+
   isAuthenticated(): boolean {
     return !!this.getToken();
   },

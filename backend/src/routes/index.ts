@@ -10,6 +10,12 @@ import explosivesRoutes from "./explosives.routes";
 import complianceRoutes from "./compliance.routes";
 import riskRoutes from "./risk.routes";
 import inspectionRoutes from "./inspection.routes";
+import notificationRoutes from "./notification.routes";
+import dailyLogRoutes from "./dailyLog.routes";
+import environmentalReportRoutes from "./environmental-report.routes";
+import { authenticateToken, requireActiveContractor } from "../middleware/auth.middleware";
+
+import governanceRoutes from "./governance.routes";
 
 const router = Router();
 
@@ -27,15 +33,18 @@ router.get("/health", (_req, res) => {
 // Mount Resource Routes
 router.use("/auth", authRoutes);
 router.use("/contractors", contractorRoutes);
-router.use("/observations", observationRoutes);
+router.use("/observations", authenticateToken, requireActiveContractor, observationRoutes);
 router.use("/metrics", metricRoutes);
-router.use("/licenses", licenseRoutes);
-router.use("/machinery", machineryRoutes);
-router.use("/workers", workerRoutes);
-router.use("/explosives", explosivesRoutes);
-router.use("/compliance", complianceRoutes);
-router.use("/risk", riskRoutes);
+router.use("/licenses", authenticateToken, requireActiveContractor, licenseRoutes);
+router.use("/machinery", authenticateToken, requireActiveContractor, machineryRoutes);
+router.use("/workers", authenticateToken, requireActiveContractor, workerRoutes);
+router.use("/explosives", authenticateToken, requireActiveContractor, explosivesRoutes);
+router.use("/compliance", authenticateToken, requireActiveContractor, complianceRoutes);
+router.use("/risk", authenticateToken, requireActiveContractor, riskRoutes);
 router.use("/inspections", inspectionRoutes);
+router.use("/notifications", authenticateToken, requireActiveContractor, notificationRoutes);
+router.use("/daily-logs", authenticateToken, requireActiveContractor, dailyLogRoutes);
+router.use("/environmental-documents", environmentalReportRoutes);
+router.use("/governance", authenticateToken, requireActiveContractor, governanceRoutes);
 
 export default router;
-

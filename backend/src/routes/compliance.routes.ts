@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import { ComplianceService } from "../services/compliance.service";
+import { NotificationService } from "../services/notification.service";
 import { authenticateToken } from "../middleware/auth.middleware";
 
 const router = Router();
@@ -249,6 +250,20 @@ router.post("/:id/escalate", authenticateToken, async (req, res) => {
         details: `Escalated to ${level || "MANAGEMENT"}. Reason: ${reason || "Overdue/Non-compliant."}`,
       },
     });
+
+    if (obligation.contractorId) {
+      const contractorUsers = await prisma.user.findMany({
+        where: { contractorId: obligation.contractorId, role: "CONTRACTOR" }
+      });
+      for (const u of contractorUsers) {
+        await NotificationService.create({
+          recipientId: u.id,
+          type: "Compliance",
+          title: "Compliance Escalation",
+          message: `Obligation '${obligation.title}' has been escalated to ${level || "MANAGEMENT"}.`,
+        });
+      }
+    }
 
     res.status(201).json({ success: true, data: escalation });
   } catch (error: any) {

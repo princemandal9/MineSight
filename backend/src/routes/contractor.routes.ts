@@ -23,10 +23,19 @@ router.get(
 
 router.get("/:id", ContractorController.getById);
 
+import { authenticateToken, authorizeRole } from "../middleware/auth.middleware";
+
 router.put(
   "/:id",
   validate({ body: updateContractorSchema }),
   ContractorController.update
+);
+
+router.patch(
+  "/:id/status",
+  authenticateToken,
+  authorizeRole("SUPERVISOR"),
+  ContractorController.updateStatus
 );
 
 router.delete("/:id", ContractorController.delete);

@@ -8,7 +8,10 @@ export class ObservationController {
         res.status(403).json({ success: false, error: { message: "Only supervisors can create observations." } });
         return;
       }
-      const observation = await ObservationService.create(req.body);
+      const observation = await ObservationService.create({
+        ...req.body,
+        supervisorId: req.user.id
+      });
       res.status(201).json({
         success: true,
         data: observation,

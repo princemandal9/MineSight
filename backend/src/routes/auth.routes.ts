@@ -22,6 +22,9 @@ router.post(
 
 // Current User Profile
 router.get("/me", authenticateToken, AuthController.getMe);
+router.put("/me", authenticateToken, AuthController.updateProfile);
+router.patch("/password", authenticateToken, AuthController.changePassword);
+router.get("/export", authenticateToken, AuthController.exportData);
 
 // User Logout (records to file)
 router.post("/logout", authenticateToken, AuthController.logout);

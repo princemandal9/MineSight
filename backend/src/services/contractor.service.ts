@@ -229,6 +229,47 @@ export class ContractorService {
   }
 
   /**
+   * Update contractor approval status (strict transitions)
+   */
+  public static async updateStatus(id: string, status: "ACTIVE" | "REJECTED", rejectionReason?: string) {
+    const contractor = await this.getById(id);
+    
+    if (contractor.status !== "PENDING") {
+      throw new AppError(`Cannot change status from ${contractor.status}. Only PENDING contractors can be approved or rejected.`, 400);
+    }
+    
+    if (status === "REJECTED" && (!rejectionReason || rejectionReason.trim() === "")) {
+      throw new AppError("Rejection reason is required when rejecting a contractor.", 400);
+    }
+
+    const updated = await prisma.contractor.update({
+      where: { id },
+      data: {
+        status,
+        rejectionReason: status === "ACTIVE" ? null : rejectionReason,
+      },
+    });
+
+    // Notify the user(s) associated with this contractor
+    const users = await prisma.user.findMany({ where: { contractorId: id } });
+    for (const user of users) {
+      await prisma.notification.create({
+        data: {
+          recipientId: user.id,
+          type: "APPROVAL_STATUS",
+          title: status === "ACTIVE" ? "Registration Approved" : "Registration Rejected",
+          message: status === "ACTIVE" 
+            ? "Your contractor registration has been approved. You now have full access to MineSight." 
+            : `Your registration was rejected. Reason: ${rejectionReason}`,
+          contractorId: id
+        }
+      });
+    }
+
+    return updated;
+  }
+
+  /**
    * Delete or archive contractor
    */
   public static async delete(id: string) {

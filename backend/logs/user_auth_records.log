@@ -22,3 +22,46 @@
 [2026-09-07T20:33:47.621Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
 [2026-09-07T20:34:07.569Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | IP: ::1
 [2026-09-07T20:34:24.306Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-09T12:16:10.448Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::1
+[2026-09-09T12:25:25.663Z] [LOGOUT] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::1
+[2026-09-09T12:35:15.426Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-09T13:22:16.074Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-09T13:22:22.164Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-09T13:24:40.189Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-10T07:49:46.621Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::1
+[2026-09-10T13:14:35.692Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::1
+[2026-09-10T13:14:40.128Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-11T07:27:49.380Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::1
+[2026-09-11T08:16:41.521Z] [LOGOUT] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::1
+[2026-09-11T08:16:46.025Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::1
+[2026-09-11T08:18:02.907Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-11T08:51:03.094Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::1
+[2026-09-11T08:51:35.004Z] [REGISTRATION] User: "Contractor A" (testa1789116694927@abc.com) | Role: CONTRACTOR | Company: "Contractor A" | ContractorID: c1b78418-0d95-46d2-9800-7e10fc728118 | IP: ::1
+[2026-09-11T08:51:35.062Z] [REGISTRATION] User: "Contractor B" (testb1789116695007@abc.com) | Role: CONTRACTOR | Company: "Contractor B" | ContractorID: 025eda93-97d3-4d0a-ad2c-5dbf4c27a29f | IP: ::1
+[2026-09-11T08:54:53.201Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::1
+[2026-09-11T08:54:53.260Z] [LOGIN] User: "Northern Site Manager" (pending@northern.in) | Role: CONTRACTOR | Company: "Northern Excavations" | TaskType: excavation | ContractorID: 2f92c2c5-40db-4b2c-b652-17f4bae5688e | IP: ::1
+[2026-09-11T13:09:36.184Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-11T13:25:27.495Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::1
+[2026-09-11T14:35:31.173Z] [LOGOUT] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T14:36:05.423Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T14:41:13.292Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::ffff:127.0.0.1
+[2026-09-11T14:43:05.868Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::ffff:127.0.0.1
+[2026-09-11T14:43:51.162Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T15:31:46.899Z] [REGISTRATION] User: "Test Contractor One" (test.c1@minesight.com) | Role: CONTRACTOR | Company: "E2E Testing Corp" | TaskType: blasting | ContractorID: 2274cd71-a320-4717-97a0-54c9070d125d | IP: ::ffff:127.0.0.1
+[2026-09-11T15:33:38.580Z] [REGISTRATION] User: "Test Contractor One" (test.c1@minesight.com) | Role: CONTRACTOR | Company: "E2E Testing Corp" | TaskType: blasting | ContractorID: 75cd03b1-a705-4aa4-9ff2-9fc82df1e36d | IP: ::ffff:127.0.0.1
+[2026-09-11T15:33:38.647Z] [LOGIN] User: "Mine Supervisor" (supervisor@minesight.com) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T15:33:38.716Z] [REGISTRATION] User: "Test Contractor Two" (test.c2@minesight.com) | Role: CONTRACTOR | Company: "Rejected Testing Corp" | TaskType: transportation | ContractorID: d6efe304-843c-422d-942b-cb8ae52b6f59 | IP: ::ffff:127.0.0.1
+[2026-09-11T15:36:57.327Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T15:37:52.742Z] [LOGIN] User: "Apex Site Manager" (contractor@abc.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::ffff:127.0.0.1
+[2026-09-11T15:41:31.714Z] [REGISTRATION] User: "Anurag Singh" (anurag@gmail.com) | Role: CONTRACTOR | Company: "Mining ABC" | TaskType: transportation | ContractorID: 6404b385-0762-4e6f-9ceb-3c1d7a6c7087 | IP: ::ffff:127.0.0.1
+[2026-09-11T15:42:11.794Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T15:43:05.185Z] [LOGIN] User: "Anurag Singh" (anurag@gmail.com) | Role: CONTRACTOR | Company: "Mining ABC" | TaskType: transportation | ContractorID: 6404b385-0762-4e6f-9ceb-3c1d7a6c7087 | IP: ::ffff:127.0.0.1
+[2026-09-11T15:50:30.599Z] [LOGOUT] User: "Anurag Singh" (anurag@gmail.com) | Role: CONTRACTOR | Company: "Mining ABC" | TaskType: transportation | ContractorID: 6404b385-0762-4e6f-9ceb-3c1d7a6c7087 | IP: ::ffff:127.0.0.1
+[2026-09-11T15:50:39.398Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T15:52:42.192Z] [LOGIN] User: "Anurag Singh" (anurag@gmail.com) | Role: CONTRACTOR | Company: "Mining ABC" | TaskType: transportation | ContractorID: 6404b385-0762-4e6f-9ceb-3c1d7a6c7087 | IP: ::ffff:127.0.0.1
+[2026-09-11T15:54:43.032Z] [LOGIN] User: "Anurag Singh" (anurag@gmail.com) | Role: CONTRACTOR | Company: "Mining ABC" | TaskType: transportation | ContractorID: 6404b385-0762-4e6f-9ceb-3c1d7a6c7087 | IP: ::ffff:127.0.0.1
+[2026-09-11T15:55:14.826Z] [LOGIN] User: "Anurag Singh" (anurag@gmail.com) | Role: CONTRACTOR | Company: "Mining ABC" | TaskType: transportation | ContractorID: 6404b385-0762-4e6f-9ceb-3c1d7a6c7087 | IP: ::ffff:127.0.0.1
+[2026-09-11T15:55:36.078Z] [LOGOUT] User: "Anurag Singh" (anurag@gmail.com) | Role: CONTRACTOR | Company: "Mining ABC" | TaskType: transportation | ContractorID: 6404b385-0762-4e6f-9ceb-3c1d7a6c7087 | IP: ::ffff:127.0.0.1
+[2026-09-11T15:55:44.191Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T15:57:18.711Z] [LOGIN] User: "Anurag Singh" (anurag@gmail.com) | Role: CONTRACTOR | Company: "Mining ABC" | TaskType: transportation | ContractorID: 6404b385-0762-4e6f-9ceb-3c1d7a6c7087 | IP: ::ffff:127.0.0.1
+[2026-09-11T15:59:04.149Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1

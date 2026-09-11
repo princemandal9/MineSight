@@ -49,9 +49,12 @@ export class LicenseService {
     };
   }
 
-  public static async getById(id: string) {
-    const license = await prisma.license.findUnique({
-      where: { id },
+  public static async getById(id: string, authorizedContractorId?: string) {
+    const where: any = { id };
+    if (authorizedContractorId) where.contractorId = authorizedContractorId;
+    
+    const license = await prisma.license.findFirst({
+      where,
       include: {
         contractor: {
           select: { name: true, contractorCode: true },
@@ -66,8 +69,11 @@ export class LicenseService {
     return license;
   }
 
-  public static async update(id: string, data: any) {
-    const existing = await prisma.license.findUnique({ where: { id } });
+  public static async update(id: string, data: any, authorizedContractorId?: string) {
+    const where: any = { id };
+    if (authorizedContractorId) where.contractorId = authorizedContractorId;
+
+    const existing = await prisma.license.findFirst({ where });
     if (!existing) {
       throw new AppError("License not found", 404);
     }
@@ -83,8 +89,11 @@ export class LicenseService {
     });
   }
 
-  public static async delete(id: string) {
-    const existing = await prisma.license.findUnique({ where: { id } });
+  public static async delete(id: string, authorizedContractorId?: string) {
+    const where: any = { id };
+    if (authorizedContractorId) where.contractorId = authorizedContractorId;
+
+    const existing = await prisma.license.findFirst({ where });
     if (!existing) {
       throw new AppError("License not found", 404);
     }
