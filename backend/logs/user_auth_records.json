@@ -1,5 +1,158 @@
 [
   {
+    "id": "AUTH-1789148795857-73",
+    "type": "LOGIN",
+    "timestamp": "2026-09-11T17:46:35.857Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789148595738-357",
+    "type": "LOGIN",
+    "timestamp": "2026-09-11T17:43:15.738Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789148433247-601",
+    "type": "LOGIN",
+    "timestamp": "2026-09-11T17:40:33.247Z",
+    "user": {
+      "id": "61ded305-f2b9-451b-9bd3-e7db7710bd05",
+      "name": "Apex Blasting & Explosives Ltd.",
+      "email": "apex.contractor@minesight.com",
+      "role": "CONTRACTOR",
+      "companyName": "Apex Blasting & Explosives Ltd.",
+      "taskType": "blasting",
+      "phone": null,
+      "contractorId": "2c43f221-d333-435c-98b4-93f1f0e001a1"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789148403097-515",
+    "type": "LOGIN",
+    "timestamp": "2026-09-11T17:40:03.097Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789147993734-194",
+    "type": "LOGIN",
+    "timestamp": "2026-09-11T17:33:13.734Z",
+    "user": {
+      "id": "61ded305-f2b9-451b-9bd3-e7db7710bd05",
+      "name": "Apex Blasting & Explosives Ltd.",
+      "email": "apex.contractor@minesight.com",
+      "role": "CONTRACTOR",
+      "companyName": "Apex Blasting & Explosives Ltd.",
+      "taskType": "blasting",
+      "phone": null,
+      "contractorId": "2c43f221-d333-435c-98b4-93f1f0e001a1"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789147980883-996",
+    "type": "LOGOUT",
+    "timestamp": "2026-09-11T17:33:00.883Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789147711342-327",
+    "type": "LOGIN",
+    "timestamp": "2026-09-11T17:28:31.342Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789147655716-379",
+    "type": "LOGIN",
+    "timestamp": "2026-09-11T17:27:35.716Z",
+    "user": {
+      "id": "61ded305-f2b9-451b-9bd3-e7db7710bd05",
+      "name": "Apex Blasting & Explosives Ltd.",
+      "email": "apex.contractor@minesight.com",
+      "role": "CONTRACTOR",
+      "companyName": "Apex Blasting & Explosives Ltd.",
+      "taskType": "blasting",
+      "phone": null,
+      "contractorId": "2c43f221-d333-435c-98b4-93f1f0e001a1"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789147618985-825",
+    "type": "LOGOUT",
+    "timestamp": "2026-09-11T17:26:58.985Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
     "id": "AUTH-1789142344149-782",
     "type": "LOGIN",
     "timestamp": "2026-09-11T15:59:04.149Z",

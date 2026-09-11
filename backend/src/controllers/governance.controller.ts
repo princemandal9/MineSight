@@ -11,10 +11,8 @@ export const analyzeGovernance = async (req: Request, res: Response): Promise<vo
     }
 
     // Role guard — middleware enforces this, but belt-and-suspenders
-    if (req.user?.role !== "SUPERVISOR") {
-      res
-        .status(403)
-        .json({ success: false, error: "Forbidden: Only Supervisors can request AI Governance Analysis." });
+    if (req.user?.role !== "SUPERVISOR" && req.user?.role !== "ADMIN") {
+      res.status(403).json({ success: false, error: { message: "Only supervisors can run governance analysis." } });
       return;
     }
 

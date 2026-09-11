@@ -45,7 +45,7 @@ export const authorizeRole = (requiredRole: string) => {
     if (!req.user) {
       return next(new AppError("Authentication required.", 401));
     }
-    if (req.user.role !== requiredRole) {
+    if (req.user.role !== requiredRole && req.user.role !== "ADMIN") {
       return next(new AppError("You do not have permission to perform this action.", 403));
     }
     next();

@@ -10,7 +10,7 @@ export class DailyLogController {
       }
       
       const whereClause = req.user?.role === "CONTRACTOR" 
-        ? { contractorId: req.user.contractorId } 
+        ? { contractorId: req.user.contractorId as string } 
         : {};
 
       const logs = await prisma.dailyLog.findMany({

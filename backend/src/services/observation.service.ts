@@ -43,9 +43,8 @@ export class ObservationService {
    */
   private static async generateObservationCode(): Promise<string> {
     const year = new Date().getFullYear();
-    const count = await prisma.observation.count();
-    const padded = String(count + 1).padStart(4, "0");
-    return `OBS-${year}-${padded}`;
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    return `OBS-${year}-${randomSuffix}`;
   }
 
   /**

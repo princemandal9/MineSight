@@ -65,3 +65,12 @@
 [2026-09-11T15:55:44.191Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
 [2026-09-11T15:57:18.711Z] [LOGIN] User: "Anurag Singh" (anurag@gmail.com) | Role: CONTRACTOR | Company: "Mining ABC" | TaskType: transportation | ContractorID: 6404b385-0762-4e6f-9ceb-3c1d7a6c7087 | IP: ::ffff:127.0.0.1
 [2026-09-11T15:59:04.149Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T17:26:58.985Z] [LOGOUT] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T17:27:35.716Z] [LOGIN] User: "Apex Blasting & Explosives Ltd." (apex.contractor@minesight.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::ffff:127.0.0.1
+[2026-09-11T17:28:31.342Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T17:33:00.883Z] [LOGOUT] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T17:33:13.734Z] [LOGIN] User: "Apex Blasting & Explosives Ltd." (apex.contractor@minesight.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::ffff:127.0.0.1
+[2026-09-11T17:40:03.097Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T17:40:33.247Z] [LOGIN] User: "Apex Blasting & Explosives Ltd." (apex.contractor@minesight.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::ffff:127.0.0.1
+[2026-09-11T17:43:15.738Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-11T17:46:35.857Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1

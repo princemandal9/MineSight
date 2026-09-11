@@ -4,7 +4,7 @@ import { ObservationService } from "../services/observation.service";
 export class ObservationController {
   public static async create(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      if (req.user?.role !== "SUPERVISOR") {
+      if (req.user?.role !== "SUPERVISOR" && req.user?.role !== "ADMIN") {
         res.status(403).json({ success: false, error: { message: "Only supervisors can create observations." } });
         return;
       }
@@ -76,7 +76,7 @@ export class ObservationController {
 
   public static async verify(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      if (req.user?.role !== "SUPERVISOR") {
+      if (req.user?.role !== "SUPERVISOR" && req.user?.role !== "ADMIN") {
         res.status(403).json({ success: false, error: { message: "Only supervisors can verify observations." } });
         return;
       }
@@ -93,7 +93,7 @@ export class ObservationController {
 
   public static async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      if (req.user?.role !== "SUPERVISOR") {
+      if (req.user?.role !== "SUPERVISOR" && req.user?.role !== "ADMIN") {
         res.status(403).json({ success: false, error: { message: "Only supervisors can delete observations." } });
         return;
       }

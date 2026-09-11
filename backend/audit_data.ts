@@ -24,7 +24,7 @@ async function runAudit() {
         select: {
           observations: true,
           statutoryObligations: true,
-          notifications: true,
+          Notification: true,
         },
       },
     },
@@ -35,7 +35,7 @@ async function runAudit() {
     const risk = await RiskService.calculateContractorRisk(c.id);
     console.log(`\n- ${c.name} (ID: ${c.id})`);
     console.log(`  User: ${user?.email || "None"} | Status: ${c.status}`);
-    console.log(`  Counts: Obs(${c._count.observations}) Oblig(${c._count.statutoryObligations}) Notif(${c._count.notifications})`);
+    console.log(`  Counts: Obs(${c._count.observations}) Oblig(${c._count.statutoryObligations}) Notif(${c._count.Notification})`);
     console.log(`  Risk: Score=${risk.riskScore}, Level=${risk.riskLevel}`);
   }
 

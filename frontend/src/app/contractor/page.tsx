@@ -5,7 +5,9 @@ import {
   Search, Bell, Mail, Command, Plus, ArrowUpRight,
   LayoutDashboard, FileText, Settings, HelpCircle, LogOut,
   HardHat, FileSignature, Truck, Bomb, MessageSquare, Video, User, Pencil, X,
-  FileCheck, CheckCircle2
+  FileCheck, CheckCircle2,
+  ShieldAlert,
+  AlertTriangle
 } from "lucide-react";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/ThemeToggle";
