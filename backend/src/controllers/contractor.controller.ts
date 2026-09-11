@@ -52,6 +52,20 @@ export class ContractorController {
     }
   }
 
+  public static async updateStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { status, rejectionReason } = req.body;
+      const updated = await ContractorService.updateStatus(req.params.id, status, rejectionReason);
+      res.status(200).json({
+        success: true,
+        data: updated,
+        message: `Contractor is now ${status}`,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   public static async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       await ContractorService.delete(req.params.id);

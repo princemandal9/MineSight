@@ -1,6 +1,6 @@
 # MineSight — Backend API
 
-AI-Powered Smart Governance & Compliance Monitoring System for Coal Mines (SIH 2026).
+Data-Driven Smart Governance & Compliance Monitoring System for Coal Mines (SIH 2026 — PS-26024).
 
 ## Tech Stack
 - **Runtime**: Node.js v24 (LTS)

@@ -5,7 +5,9 @@ import {
   Search, Bell, Mail, Command, Plus, ArrowUpRight,
   LayoutDashboard, FileText, Settings, HelpCircle, LogOut,
   HardHat, FileSignature, Truck, Bomb, MessageSquare, Video, User, Pencil, X,
-  FileCheck, CheckCircle2
+  FileCheck, CheckCircle2,
+  ShieldAlert,
+  AlertTriangle
 } from "lucide-react";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -26,7 +28,6 @@ const menuItems = [
   { id: "daily_log", label: "Daily Work Log", icon: FileText },
   { id: "explosives", label: "Explosives Stock", icon: Bomb },
   { id: "roster", label: "Worker Roster", icon: HardHat },
-  { id: "requests", label: "Requests", icon: MessageSquare },
 ];
 
 const generalItems = [
@@ -36,35 +37,7 @@ const generalItems = [
   { id: "logout", label: "Logout", icon: LogOut },
 ];
 
-const initialProjectsData = [
-  { id: 1, title: "Blast Planning - Pit A", date: "Nov 26, 2026", icon: Bomb, colorClass: "text-blue-600 bg-blue-50 dark:bg-blue-900/30 dark:text-blue-400" },
-  { id: 2, title: "Haulage Optimization", date: "Nov 28, 2026", icon: Truck, colorClass: "text-mine-700 bg-mine-100 dark:bg-mine-800/50 dark:text-mine-300" },
-  { id: 3, title: "License Renewal", date: "Nov 30, 2026", icon: FileSignature, colorClass: "text-purple-600 bg-purple-50 dark:bg-purple-900/30 dark:text-purple-400" },
-  { id: 4, title: "Worker Induction", date: "Dec 5, 2026", icon: HardHat, colorClass: "text-orange-500 bg-orange-50 dark:bg-orange-900/30 dark:text-orange-400" },
-];
 
-const initialTeamData = [
-  {
-    id: 1, name: "Alexandra Deff", initials: "AD", task: "Explosives Inventory", status: "Completed",
-    avatarClass: "bg-pink-100 text-pink-700 border-pink-50 dark:bg-pink-900/30 dark:text-pink-400 dark:border-pink-900/50",
-    badgeClass: "bg-mine-100 text-mine-800 border-mine-300 dark:bg-mine-900/50 dark:text-mine-300 dark:border-mine-700"
-  },
-  {
-    id: 2, name: "Edwin Adenike", initials: "EA", task: "Machinery Servicing", status: "In Progress",
-    avatarClass: "bg-lime-100 text-lime-700 border-lime-50 dark:bg-lime-900/30 dark:text-lime-400 dark:border-lime-900/50",
-    badgeClass: "bg-amber-50 text-amber-600 border-amber-100/50 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50"
-  },
-  {
-    id: 3, name: "Isaac Oluwatemilorun", initials: "IO", task: "Safety Compliance Report", status: "Pending",
-    avatarClass: "bg-blue-100 text-blue-700 border-blue-50 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-900/50",
-    badgeClass: "bg-red-50 text-red-600 border-red-100/50 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800/50"
-  },
-  {
-    id: 4, name: "David Oshodi", initials: "DO", task: "Daily Work Log Entry", status: "In Progress",
-    avatarClass: "bg-orange-100 text-orange-700 border-orange-50 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-900/50",
-    badgeClass: "bg-amber-50 text-amber-600 border-amber-100/50 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50"
-  },
-];
 
 const initialLicensesData = [
   { id: 1, document: "Contract Labour License", holder: "CL-2026-0417", expiry: "30 Nov 2026", status: "Valid", statusClass: "bg-mine-100 text-mine-800 border-mine-300 dark:bg-mine-900/50 dark:text-mine-300 dark:border-mine-700" },
@@ -90,19 +63,14 @@ const initialWorkerRosterData = [
   { id: "Worker #0116", training: "Complete", trainingClass: "bg-mine-100 text-mine-800 border-mine-300 dark:bg-mine-900/50 dark:text-mine-300 dark:border-mine-700", ppe: "Pending", ppeClass: "bg-amber-50 text-amber-600 border-amber-200/50 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50" },
 ];
 
-const initialRequestsData = [
-  { id: 1, task: "Requesting water tanker refill, Zone B", time: "Today, 09:12", status: "Open", statusClass: "bg-amber-50 text-amber-600 border-amber-200/50 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50" },
-  { id: 2, task: "Extension request — 2 days, weather delay", time: "Yesterday", status: "Approved", statusClass: "bg-mine-100 text-mine-800 border-mine-300 dark:bg-mine-900/50 dark:text-mine-300 dark:border-mine-700" },
-];
-
 const initialDailyStats = [
   { value: "3", label: "Blasting rounds fired today" },
   { value: "1,240 m²", label: "Area covered today" }
 ];
 
 const initialDailyLogs = [
-  { id: 1, text: "Round #3 fired, Zone B", meta: "14:20 · Logged by R. Sharma" },
-  { id: 2, text: "Round #2 fired, Zone B", meta: "11:05 · Logged by R. Sharma" }
+  { id: 1, author: "R. Sharma", time: "14:20", desc: "Round #3 fired, Zone B" },
+  { id: 2, author: "R. Sharma", time: "11:05", desc: "Round #2 fired, Zone B" }
 ];
 
 export type Severity = 'CRITICAL' | 'WARNING' | 'INFO' | 'SYSTEM';
@@ -128,12 +96,7 @@ export interface AppMessage {
   read: boolean;
 }
 
-const initialNotifications: AppNotification[] = [
-  { id: "n1", type: "Safety", title: "High-risk safety violation detected", message: "Worker spotted without proper PPE near blasting zone.", severity: "CRITICAL", timestamp: "10 mins ago", read: false, actionTab: "requests", actionLabel: "Review Violation →" },
-  { id: "n2", type: "Compliance", title: "Safety certificate expires in 7 days", message: "Blaster's Certificate for R. Sharma is nearing expiration.", severity: "WARNING", timestamp: "2 hours ago", read: false, actionTab: "licenses", actionLabel: "View Document →" },
-  { id: "n3", type: "System", title: "Weekly Summary Available", message: "Your weekly performance and safety summary is ready to view.", severity: "INFO", timestamp: "Yesterday", read: true },
-  { id: "n4", type: "Inspection", title: "New inspection assigned", message: "Site inspector arrival scheduled for tomorrow 9 AM.", severity: "SYSTEM", timestamp: "Yesterday", read: true },
-];
+const initialNotifications: AppNotification[] = [];
 
 const initialMessages: AppMessage[] = [
   { id: "m1", sender: "Admin Office", subject: "Urgent: License Verification", preview: "Please submit the updated Contract Labour License by Friday.", timestamp: "10:30 AM", read: false },
@@ -146,14 +109,18 @@ export default function ContractorDashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("overview");
 
+  useEffect(() => {
+    if (typeof window !== "undefined" && !auth.isAuthenticated()) {
+      router.replace("/");
+    }
+  }, [router]);
+
   // --- COMPONENT STATES ---
-  const [projects, setProjects] = useState(initialProjectsData);
-  const [team, setTeam] = useState(initialTeamData);
   const [licenses, setLicenses] = useState(initialLicensesData);
   const [machinery, setMachinery] = useState(initialMachineryData);
   const [explosives, setExplosives] = useState(initialExplosivesData);
   const [workers, setWorkers] = useState(initialWorkerRosterData);
-  const [requests, setRequests] = useState(initialRequestsData);
+
   const [dailyLogs, setDailyLogs] = useState(initialDailyLogs);
   const [obligations, setObligations] = useState<any[]>([]);
   const [actionItems, setActionItems] = useState<any[]>([]);
@@ -161,25 +128,14 @@ export default function ContractorDashboard() {
   const [complianceRate, setComplianceRate] = useState<number>(100);
   const [riskData, setRiskData] = useState<any>(null);
 
-  // --- MODAL STATES ---
-  const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
-  const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
-  const [isUploadLicenseOpen, setIsUploadLicenseOpen] = useState(false);
-  const [isRegisterMachineOpen, setIsRegisterMachineOpen] = useState(false);
   const [isNewLogOpen, setIsNewLogOpen] = useState(false);
-  const [isUpdateStockOpen, setIsUpdateStockOpen] = useState(false);
-  const [isAddWorkerOpen, setIsAddWorkerOpen] = useState(false);
-  const [isNewRequestOpen, setIsNewRequestOpen] = useState(false);
-  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   // --- HEADER POPOVER STATES ---
-  const [isMailOpen, setIsMailOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  // --- NOTIFICATION & MESSAGE STATES ---
-  const [appNotifications, setAppNotifications] = useState(initialNotifications);
-  const [appMessages, setAppMessages] = useState(initialMessages);
+  // --- NOTIFICATION STATES ---
+  const [appNotifications, setAppNotifications] = useState<AppNotification[]>([]);
 
   // --- PROFILE & SETTINGS STATES ---
   const [currentUser, setCurrentUser] = useState<{
@@ -191,6 +147,8 @@ export default function ContractorDashboard() {
     taskType?: string;
     contractorId?: string;
     contractorCode?: string;
+    contractorStatus?: string;
+    rejectionReason?: string;
     createdAt?: string;
   } | null>(null);
 
@@ -202,9 +160,7 @@ export default function ContractorDashboard() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   const [toastMessage, setToastMessage] = useState("");
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
 
-  const [helpMessage, setHelpMessage] = useState("");
   const [settingsEmail, setSettingsEmail] = useState("abc@minesight.com");
   const [settingsPhone, setSettingsPhone] = useState("+1 234 567 8900");
   const [isChangeEmailOpen, setIsChangeEmailOpen] = useState(false);
@@ -220,52 +176,31 @@ export default function ContractorDashboard() {
   const [notifSystem, setNotifSystem] = useState({ email: true, sms: false });
 
   // --- FORM INPUT STATES ---
-  const [newProjectTitle, setNewProjectTitle] = useState("");
-  const [newProjectDate, setNewProjectDate] = useState("");
-
-  const [newMemberName, setNewMemberName] = useState("");
-  const [newMemberTask, setNewMemberTask] = useState("");
-
-  const [newLicenseDoc, setNewLicenseDoc] = useState("");
-  const [newLicenseHolder, setNewLicenseHolder] = useState("");
-  const [newLicenseExpiry, setNewLicenseExpiry] = useState("");
-
-  const [newMachineName, setNewMachineName] = useState("");
-  const [newMachineOwnership, setNewMachineOwnership] = useState("");
-  const [newMachineNextDue, setNewMachineNextDue] = useState("");
-
   const [newLogDesc, setNewLogDesc] = useState("");
-  const [newLogAuthor, setNewLogAuthor] = useState("");
-
-  const [newExplosiveType, setNewExplosiveType] = useState("");
-  const [newExplosiveProcured, setNewExplosiveProcured] = useState("");
-  const [newExplosiveUsed, setNewExplosiveUsed] = useState("");
-
-  const [newWorkerId, setNewWorkerId] = useState("");
-  const [newWorkerTraining, setNewWorkerTraining] = useState("");
-  const [newWorkerPPE, setNewWorkerPPE] = useState("");
-
-  const [newRequestTask, setNewRequestTask] = useState("");
 
   const closePopovers = () => {
-    setIsMailOpen(false);
     setIsNotifOpen(false);
     setIsProfileOpen(false);
   };
 
-  const unreadMailCount = appMessages.filter(m => !m.read).length;
   const unreadNotifCount = appNotifications.filter(n => !n.read).length;
   const actionCenterCount = actionItems.filter(a => a.status === 'OPEN').length;
 
   const loadData = async () => {
     try {
       const token = auth.getToken();
+      if (!token) return;
       
-      const [obsRes, obsObligations, riskRes, complianceRes] = await Promise.all([
-        api.getObservations({ contractorId: currentUser?.contractorId || undefined }),
-        api.getObligations({ contractorId: currentUser?.contractorId || undefined }),
-        api.getContractorRisk(currentUser?.contractorId || ""),
-        api.getComplianceReport() // Could just calculate from obligations, but let's try getting real stats
+      const [obsRes, obsObligations, riskRes, complianceRes, licRes, machRes, expRes, workRes, logsRes] = await Promise.all([
+        api.getObservations({ contractorId: currentUser?.contractorId || undefined }).catch(e => ({ data: [] })),
+        api.getObligations({ contractorId: currentUser?.contractorId || undefined }).catch(e => ({ data: [] })),
+        api.getContractorRisk(currentUser?.contractorId || "").catch(e => ({ data: null })),
+        api.getComplianceReport().catch(e => ({ data: null })),
+        api.getLicenses(token).catch(e => ({ data: [] })),
+        api.getMachinery(token).catch(e => ({ data: [] })),
+        api.getExplosives(token).catch(e => ({ data: [] })),
+        api.getWorkers(token).catch(e => ({ data: [] })),
+        api.getDailyLogs(token).catch(e => ({ data: [] }))
       ]);
       
       if (obsRes?.data) {
@@ -279,10 +214,58 @@ export default function ContractorDashboard() {
          setRiskData(riskRes.data);
       }
       if (currentUser?.contractorId) {
-        // Find the specific contractor's compliance if possible, or just default to 100
         const myCompliance = complianceRes?.data?.contractorBreakdown?.find((c: any) => c.contractorId === currentUser.contractorId);
         setComplianceRate(myCompliance ? myCompliance.complianceRate : 100);
       }
+      
+      if (licRes?.data) {
+        setLicenses(licRes.data.map((l: any) => ({
+          id: l.id,
+          document: `${l.documentType} - ${l.documentNumber}`,
+          holder: l.holder,
+          expiry: new Date(l.expiryDate).toLocaleDateString(),
+          status: l.status,
+          statusClass: l.status === "VALID" ? "bg-mine-100 text-mine-800" : "bg-red-50 text-red-600"
+        })));
+      }
+      if (machRes?.data) {
+        setMachinery(machRes.data.map((m: any) => ({
+          id: m.id,
+          machine: m.machineName,
+          ownership: m.ownership,
+          lastServiced: m.lastServiced ? new Date(m.lastServiced).toLocaleDateString() : "N/A",
+          nextDue: m.nextDue ? new Date(m.nextDue).toLocaleDateString() : "N/A",
+          status: m.status,
+          statusClass: m.status === "ACTIVE" ? "bg-mine-100 text-mine-800" : "bg-red-50 text-red-600"
+        })));
+      }
+      if (expRes?.data) {
+        setExplosives(expRes.data.map((e: any) => ({
+          id: e.id,
+          type: e.explosiveType,
+          procured: `${e.procured} ${e.unit}`,
+          used: `${e.used} ${e.unit}`,
+          remaining: `${e.remaining} ${e.unit}`
+        })));
+      }
+      if (workRes?.data) {
+        setWorkers(workRes.data.map((w: any) => ({
+          id: w.workerCode,
+          training: w.trainingStatus,
+          trainingClass: w.trainingStatus === "COMPLETE" ? "bg-mine-100 text-mine-800" : "bg-red-50 text-red-600",
+          ppe: w.ppeIssued ? "Yes" : "Pending",
+          ppeClass: w.ppeIssued ? "bg-mine-100 text-mine-800" : "bg-amber-50 text-amber-600"
+        })));
+      }
+      if (logsRes?.data) {
+        setDailyLogs(logsRes.data.map((l: any) => ({
+          id: l.id,
+          author: l.loggedBy,
+          time: new Date(l.timestamp).toLocaleString(),
+          desc: l.logText
+        })));
+      }
+      
     } catch (e) {
       console.error(e);
     }
@@ -290,16 +273,56 @@ export default function ContractorDashboard() {
 
   useEffect(() => {
     if (currentUser?.contractorId) {
-      loadData();
+      if (currentUser.contractorStatus !== "PENDING" && currentUser.contractorStatus !== "REJECTED") {
+        loadData();
+        fetchNotifications();
+      }
     }
   }, [currentUser]);
 
-  const markAllNotifsRead = () => {
-    setAppNotifications(appNotifications.map(n => ({ ...n, read: true })));
+  const fetchNotifications = async () => {
+    try {
+      const token = auth.getToken();
+      if (!token) return;
+      const res = await api.getNotifications(token);
+      if (res.success) {
+        const mapped = res.data.map((n: any) => ({
+          id: n.id,
+          type: n.type,
+          title: n.title,
+          message: n.message,
+          severity: n.type === 'Safety' ? 'CRITICAL' : 'INFO',
+          timestamp: new Date(n.createdAt).toLocaleDateString(),
+          read: n.isRead,
+          actionTab: n.referenceType === 'OBSERVATION' ? 'observations' : 'overview'
+        }));
+        setAppNotifications(mapped);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const markNotifRead = (id: string) => {
-    setAppNotifications(appNotifications.map(n => n.id === id ? { ...n, read: true } : n));
+  const markAllNotifsRead = async () => {
+    try {
+      const token = auth.getToken();
+      if (!token) return;
+      await api.markAllNotificationsRead(token);
+      setAppNotifications(appNotifications.map(n => ({ ...n, read: true })));
+    } catch(e) {
+      console.error(e);
+    }
+  };
+
+  const markNotifRead = async (id: string) => {
+    try {
+      const token = auth.getToken();
+      if (!token) return;
+      await api.markNotificationRead(id, token);
+      setAppNotifications(appNotifications.map(n => n.id === id ? { ...n, read: true } : n));
+    } catch(e) {
+      console.error(e);
+    }
   };
 
   useEffect(() => {
@@ -349,46 +372,46 @@ export default function ContractorDashboard() {
   const handleAction = async (actionName: string) => {
     closePopovers(); // Close popovers on any navigation
     switch (actionName) {
-      case "Add Project":
-      case "New Project":
-        setIsAddProjectOpen(true);
-        break;
-      case "Add Team Member":
-      case "Add Member":
-        setIsAddMemberOpen(true);
-        break;
-      case "Upload New License":
-      case "Upload":
-        setIsUploadLicenseOpen(true);
-        break;
-      case "Register Machine":
-        setIsRegisterMachineOpen(true);
-        break;
       case "New Log Entry":
         setIsNewLogOpen(true);
-        break;
-      case "Update Stock":
-        setIsUpdateStockOpen(true);
-        break;
-      case "Add Worker":
-        setIsAddWorkerOpen(true);
-        break;
-      case "New Request":
-        setIsNewRequestOpen(true);
         break;
       case "Logout":
         try {
           const token = auth.getToken();
-          if (token) await api.logout(token);
-        } catch (err) {
-          console.error("Logout API failed", err);
+          if (token) {
+            await api.logout(token);
+          }
+        } catch (e) {
+          console.error("Logout error", e);
         }
         auth.clearSession();
         router.push("/");
         break;
-      case "Help":
-        setIsHelpOpen(true);
+      case "Export Data":
+        try {
+          const token = auth.getToken();
+          if (!token) return;
+          const res = await api.exportData(token);
+          if (res.success && res.data) {
+            const blob = new Blob([JSON.stringify(res.data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'minesight-export.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Data exported successfully");
+          } else {
+            alert(res.error || "Failed to export data");
+          }
+        } catch (e) {
+          console.error(e);
+          alert("An error occurred while exporting data");
+        }
         break;
+      case "Import Data":
       case "User Profile":
       case "Profile":
         setActiveTab("profile");
@@ -397,139 +420,36 @@ export default function ContractorDashboard() {
         setActiveTab("settings");
         break;
       default:
-        alert(`${actionName} action triggered! (Dummy Data)`);
+        console.info(`[Unimplemented] ${actionName}`);
     }
   };
 
   // --- FORM SUBMIT HANDLERS ---
-  const submitAddProject = (e: React.FormEvent) => {
+  const submitNewLog = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newProjectTitle || !newProjectDate) return;
-    setProjects([
-      { id: Date.now(), title: newProjectTitle, date: newProjectDate, icon: LayoutDashboard, colorClass: "text-mine-700 bg-mine-100 dark:bg-mine-800/50 dark:text-mine-300" },
-      ...projects
-    ]);
-    setIsAddProjectOpen(false);
-    setNewProjectTitle("");
-    setNewProjectDate("");
-  };
-
-  const submitAddMember = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMemberName || !newMemberTask) return;
-    setTeam([
-      {
-        id: Date.now(), name: newMemberName, initials: newMemberName.substring(0, 2).toUpperCase(), task: newMemberTask, status: "Just Assigned",
-        avatarClass: "bg-mine-100 text-mine-700 border-mine-50 dark:bg-mine-900/30 dark:text-mine-400 dark:border-mine-900/50",
-        badgeClass: "bg-blue-50 text-blue-600 border-blue-100/50 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50"
-      },
-      ...team
-    ]);
-    setIsAddMemberOpen(false);
-    setNewMemberName("");
-    setNewMemberTask("");
-  };
-
-  const submitUploadLicense = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newLicenseDoc || !newLicenseHolder || !newLicenseExpiry) return;
-    setLicenses([
-      { id: Date.now(), document: newLicenseDoc, holder: newLicenseHolder, expiry: newLicenseExpiry, status: "Pending Review", statusClass: "bg-blue-50 text-blue-600 border-blue-200/50 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50" },
-      ...licenses
-    ]);
-    setIsUploadLicenseOpen(false);
-    setNewLicenseDoc("");
-    setNewLicenseHolder("");
-    setNewLicenseExpiry("");
-  };
-
-  const submitRegisterMachine = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMachineName || !newMachineOwnership || !newMachineNextDue) return;
-    setMachinery([
-      { id: Date.now(), machine: newMachineName, ownership: newMachineOwnership, lastServiced: "Today", nextDue: newMachineNextDue, status: "Active", statusClass: "bg-mine-100 text-mine-800 border-mine-300 dark:bg-mine-900/50 dark:text-mine-300 dark:border-mine-700" },
-      ...machinery
-    ]);
-    setIsRegisterMachineOpen(false);
-    setNewMachineName("");
-    setNewMachineOwnership("");
-    setNewMachineNextDue("");
-  };
-
-  const submitNewLog = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newLogDesc || !newLogAuthor) return;
-    const now = new Date();
-    const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-    setDailyLogs([
-      { id: Date.now(), text: newLogDesc, meta: `${timeString} · Logged by ${newLogAuthor}` },
-      ...dailyLogs
-    ]);
-    setIsNewLogOpen(false);
-    setNewLogDesc("");
-    setNewLogAuthor("");
-  };
-
-  const submitUpdateStock = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newExplosiveType || !newExplosiveProcured || !newExplosiveUsed) return;
-
-    // Attempt parsing for 'remaining' if numbers are provided
-    const procuredNum = parseFloat(newExplosiveProcured);
-    const usedNum = parseFloat(newExplosiveUsed);
-    let remaining = "N/A";
-    if (!isNaN(procuredNum) && !isNaN(usedNum)) {
-      remaining = (procuredNum - usedNum).toString() + (newExplosiveProcured.replace(/[0-9.]/g, ''));
+    if (!newLogDesc) return;
+    
+    try {
+      const token = auth.getToken();
+      if (!token) return;
+      
+      const payload = {
+        logText: newLogDesc
+      };
+      
+      const res = await api.createDailyLog(payload, token);
+      if (res.success && res.data) {
+        showToast("Daily log recorded successfully");
+        setIsNewLogOpen(false);
+        setNewLogDesc("");
+        loadData(); // reload to show the new log
+      } else {
+        alert("Failed to submit log.");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Error submitting log.");
     }
-
-    setExplosives([
-      { id: Date.now(), type: newExplosiveType, procured: newExplosiveProcured, used: newExplosiveUsed, remaining: remaining },
-      ...explosives
-    ]);
-    setIsUpdateStockOpen(false);
-    setNewExplosiveType("");
-    setNewExplosiveProcured("");
-    setNewExplosiveUsed("");
-  };
-
-  const submitAddWorker = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newWorkerId || !newWorkerTraining || !newWorkerPPE) return;
-
-    const getStatusClass = (status: string) => {
-      const lower = status.toLowerCase();
-      if (lower.includes("miss") || lower.includes("no") || lower.includes("fail")) return "bg-red-50 text-red-600 border-red-200/50 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800/50";
-      if (lower.includes("pend") || lower.includes("wait")) return "bg-amber-50 text-amber-600 border-amber-200/50 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50";
-      return "bg-mine-100 text-mine-800 border-mine-300 dark:bg-mine-900/50 dark:text-mine-300 dark:border-mine-700";
-    };
-
-    setWorkers([
-      { id: newWorkerId, training: newWorkerTraining, trainingClass: getStatusClass(newWorkerTraining), ppe: newWorkerPPE, ppeClass: getStatusClass(newWorkerPPE) },
-      ...workers
-    ]);
-    setIsAddWorkerOpen(false);
-    setNewWorkerId("");
-    setNewWorkerTraining("");
-    setNewWorkerPPE("");
-  };
-
-  const submitNewRequest = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newRequestTask) return;
-    setRequests([
-      { id: Date.now(), task: newRequestTask, time: "Just now", status: "Open", statusClass: "bg-amber-50 text-amber-600 border-amber-200/50 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50" },
-      ...requests
-    ]);
-    setIsNewRequestOpen(false);
-    setNewRequestTask("");
-  };
-
-  const submitHelpMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!helpMessage) return;
-    alert("Message sent to support! We will get back to you shortly.");
-    setIsHelpOpen(false);
-    setHelpMessage("");
   };
 
   const showToast = (message: string) => {
@@ -542,22 +462,46 @@ export default function ContractorDashboard() {
     showToast("Notification preferences updated");
   };
 
-  const saveProfile = (e: React.FormEvent) => {
+  const saveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    showToast("Action recorded (Backend pending)");
-    setIsEditingProfile(false);
+    try {
+      const token = auth.getToken();
+      if (!token) return;
+      const res = await api.updateProfile({ name: profileName, phone: settingsPhone }, token);
+      if (res.success) {
+        showToast("Profile updated successfully");
+        setIsEditingProfile(false);
+      } else {
+        alert(res.error || "Failed to update profile");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("An error occurred");
+    }
   };
 
-  const updatePassword = (e: React.FormEvent) => {
+  const updatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
       alert("Passwords do not match.");
       return;
     }
-    showToast("Action recorded (Backend pending)");
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+    try {
+      const token = auth.getToken();
+      if (!token) return;
+      const res = await api.changePassword({ currentPassword, newPassword }, token);
+      if (res.success) {
+        showToast("Password updated successfully");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      } else {
+        alert(res.error || "Failed to update password");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("An error occurred");
+    }
   };
 
   // ------------------------------------
@@ -898,19 +842,7 @@ export default function ContractorDashboard() {
               <p className="text-sm font-medium text-mine-950 dark:text-white">Export Account Data</p>
               <p className="text-xs text-neutral-500">Download your profile and account information.</p>
             </div>
-            <button type="button" className="uiverse-btn !w-auto !px-4 !h-8 !text-xs !line-height-8 !m-0 bg-white dark:bg-mine-900">Export Data</button>
-          </div>
-
-          <div className="pt-4 border-t border-red-100 dark:border-red-900/30">
-            <p className="text-xs font-semibold text-red-500 uppercase tracking-wider mb-4">Danger Zone</p>
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <p className="text-sm font-medium text-mine-950 dark:text-white">Delete Account</p>
-                <p className="text-xs text-neutral-500">Permanently delete your account and associated account data.</p>
-              </div>
-              <button type="button" onClick={() => setIsConfirmDeleteOpen(true)} className="px-4 py-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-xl text-xs font-semibold transition-colors">Delete Account</button>
-            </div>
+            <button type="button" onClick={() => handleAction("Export Data")} className="uiverse-btn !w-auto !px-4 !h-8 !text-xs !line-height-8 !m-0 bg-white dark:bg-mine-900">Export Data</button>
           </div>
         </div>
       </div>
@@ -1011,35 +943,6 @@ export default function ContractorDashboard() {
     );
   };
 
-  const renderMessages = () => (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-white dark:bg-mine-900 rounded-3xl p-8 border border-neutral-100 dark:border-mine-900 shadow-sm">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-mine-950 dark:text-white">Messages Inbox</h2>
-        </div>
-        <div className="flex flex-col gap-4">
-          {appMessages.map(msg => (
-            <div key={msg.id} className={`p-6 border rounded-2xl transition-all hover:shadow-md ${!msg.read ? 'bg-mine-50/50 border-mine-200 dark:bg-mine-900/20 dark:border-mine-800' : 'bg-white border-neutral-100 dark:bg-mine-900 dark:border-mine-900'}`}>
-              <div className="flex justify-between items-start mb-2">
-                <h3 className={`text-lg ${!msg.read ? 'font-bold text-mine-950 dark:text-white' : 'font-semibold text-neutral-800 dark:text-neutral-200'}`}>{msg.subject}</h3>
-                <span className="text-sm font-medium text-neutral-400">{msg.timestamp}</span>
-              </div>
-              <p className="text-sm font-medium text-mine-600 dark:text-mine-400 mb-4">From: {msg.sender}</p>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">{msg.preview}</p>
-
-              {!msg.read && (
-                <div className="mt-4 flex gap-3">
-                  <button onClick={() => setAppMessages(appMessages.map(m => m.id === msg.id ? { ...m, read: true } : m))} className="text-xs font-semibold text-mine-700 dark:text-mine-300 hover:underline">Mark as read</button>
-                </div>
-              )}
-            </div>
-          ))}
-          {appMessages.length === 0 && <p className="text-neutral-500 text-center py-10">Inbox is empty.</p>}
-        </div>
-      </div>
-    </div>
-  );
-
   const renderNotificationCenter = () => (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="bg-white dark:bg-mine-900 rounded-3xl p-8 border border-neutral-100 dark:border-mine-900 shadow-sm">
@@ -1093,8 +996,8 @@ export default function ContractorDashboard() {
           <div className="flex justify-between items-start mb-6">
             <h3 className="text-mine-950 dark:text-white font-semibold text-base">Compliance Rate</h3>
             <button
-              onClick={() => handleAction("View Compliance")}
-              className="w-8 h-8 rounded-full border border-neutral-200 dark:border-mine-800 flex items-center justify-center text-neutral-400 dark:text-mine-300 group-hover:bg-mine-100 dark:group-hover:bg-mine-800 group-hover:text-mine-800 dark:group-hover:text-white group-hover:border-mine-300 dark:group-hover:border-mine-700 transition-colors"
+              disabled title="Feature coming soon" 
+              className="w-8 h-8 rounded-full border border-neutral-200 dark:border-mine-800 flex items-center justify-center text-neutral-400 dark:text-mine-300 group-hover:bg-mine-100 dark:group-hover:bg-mine-800 group-hover:text-mine-800 dark:group-hover:text-white group-hover:border-mine-300 dark:group-hover:border-mine-700 transition-colors opacity-50 cursor-not-allowed"
             >
               <ArrowUpRight size={18} />
             </button>
@@ -1114,8 +1017,8 @@ export default function ContractorDashboard() {
           <div className="flex justify-between items-start mb-6">
             <h3 className="text-mine-950 dark:text-white font-semibold text-base">Risk Level</h3>
             <button
-              onClick={() => handleAction("View Risk")}
-              className="w-8 h-8 rounded-full border border-neutral-200 dark:border-mine-800 flex items-center justify-center text-neutral-400 dark:text-mine-300 group-hover:bg-mine-100 dark:group-hover:bg-mine-800 group-hover:text-mine-800 dark:group-hover:text-white group-hover:border-mine-300 dark:group-hover:border-mine-700 transition-colors"
+              disabled title="Feature coming soon" 
+              className="w-8 h-8 rounded-full border border-neutral-200 dark:border-mine-800 flex items-center justify-center text-neutral-400 dark:text-mine-300 group-hover:bg-mine-100 dark:group-hover:bg-mine-800 group-hover:text-mine-800 dark:group-hover:text-white group-hover:border-mine-300 dark:group-hover:border-mine-700 transition-colors opacity-50 cursor-not-allowed"
             >
               <ArrowUpRight size={18} />
             </button>
@@ -1158,27 +1061,27 @@ export default function ContractorDashboard() {
           <div className="h-44 flex items-end justify-between px-2 gap-3 mb-4">
             <div className="w-full relative h-[60%] rounded-t-full opacity-40 hover:opacity-70 transition-opacity cursor-pointer"
               style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 3px, #235347 3px, #235347 5px)' }}
-              onClick={() => handleAction("View Sunday Analytics")}>
+              >
             </div>
             <div className="w-full relative h-[80%] bg-mine-800 dark:bg-mine-700 hover:bg-mine-700 dark:hover:bg-mine-600 transition-colors cursor-pointer rounded-t-full"
-              onClick={() => handleAction("View Monday Analytics")}></div>
+              ></div>
             <div className="w-full relative h-[65%] bg-mine-300 hover:bg-[#a5c7b0] transition-colors cursor-pointer rounded-t-full flex justify-center"
-              onClick={() => handleAction("View Tuesday Analytics")}>
+              >
               <div className="absolute -top-8 bg-white dark:bg-mine-800 shadow-sm border border-neutral-100 dark:border-mine-700 text-[10px] font-bold px-2.5 py-1 rounded-full text-mine-800 dark:text-white">74%</div>
             </div>
             <div className="w-full relative h-[100%] bg-mine-950 dark:bg-white hover:bg-mine-900 dark:hover:bg-neutral-200 transition-colors cursor-pointer rounded-t-full"
-              onClick={() => handleAction("View Wednesday Analytics")}></div>
+              ></div>
             <div className="w-full relative h-[70%] rounded-t-full opacity-40 hover:opacity-70 transition-opacity cursor-pointer"
               style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 3px, #235347 3px, #235347 5px)' }}
-              onClick={() => handleAction("View Thursday Analytics")}>
+              >
             </div>
             <div className="w-full relative h-[50%] rounded-t-full opacity-40 hover:opacity-70 transition-opacity cursor-pointer"
               style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 3px, #235347 3px, #235347 5px)' }}
-              onClick={() => handleAction("View Friday Analytics")}>
+              >
             </div>
             <div className="w-full relative h-[65%] rounded-t-full opacity-40 hover:opacity-70 transition-opacity cursor-pointer"
               style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 3px, #235347 3px, #235347 5px)' }}
-              onClick={() => handleAction("View Saturday Analytics")}>
+              >
             </div>
           </div>
           <div className="flex justify-between px-3 text-xs font-bold text-neutral-300 dark:text-neutral-600">
@@ -1192,19 +1095,25 @@ export default function ContractorDashboard() {
           </div>
         </div>
 
-        {/* Reminders */}
+        {/* Governance Summary */}
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1 flex flex-col">
-          <h3 className="text-mine-950 dark:text-white font-semibold mb-6 text-base">Reminders</h3>
+          <h3 className="text-mine-950 dark:text-white font-semibold mb-6 text-base">Governance Summary</h3>
           <div className="flex-1 flex flex-col justify-center">
-            <h4 className="text-[22px] font-bold text-mine-900 dark:text-mine-100 mb-2 leading-tight">Safety Briefing<br />Meeting</h4>
-            <p className="text-xs text-neutral-400 dark:text-neutral-500 font-medium mb-8">Time : 02.00 pm - 04.00 pm</p>
-
-            <button
-              onClick={() => handleAction("Start Meeting")}
-              className="uiverse-btn w-full mt-auto"
-            >
-              <Video size={18} /> Start Meeting
-            </button>
+            <h4 className="text-[32px] font-bold text-mine-900 dark:text-mine-100 mb-2 leading-tight">
+              {complianceRate}%
+            </h4>
+            <p className="text-xs text-neutral-400 dark:text-neutral-500 font-medium mb-8">Overall Compliance Score</p>
+            
+            <div className="space-y-4 mt-auto border-t border-neutral-100 dark:border-mine-800 pt-4">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-neutral-500 font-medium">Active Obligations</span>
+                <span className="font-bold text-mine-900 dark:text-white">{obligations.length}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-neutral-500 font-medium">Open Observations</span>
+                <span className="font-bold text-mine-900 dark:text-white">{actionItems.length}</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1244,40 +1153,36 @@ export default function ContractorDashboard() {
 
       </div>
 
-      {/* BOTTOM ROW (Team Collaboration) */}
+      {/* BOTTOM ROW (Recent Work Logs) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 col-span-1">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-mine-950 dark:text-white font-semibold text-base">Team Collaboration</h3>
+            <h3 className="text-mine-950 dark:text-white font-semibold text-base">Recent Work Logs</h3>
             <button
-              onClick={() => handleAction("Add Team Member")}
+              onClick={() => setActiveTab("daily_log")}
               className="text-[11px] font-bold text-neutral-600 dark:text-neutral-400 border border-neutral-200 dark:border-mine-800 px-3 py-1 rounded-full flex items-center gap-1 hover:bg-mine-100 dark:hover:bg-mine-800 hover:text-mine-800 dark:hover:text-white hover:border-mine-300 dark:hover:border-mine-700 transition-colors uppercase tracking-wide"
             >
-              <Plus size={12} /> Add Member
+              <ArrowUpRight size={12} /> View All
             </button>
           </div>
 
-          <div className="space-y-2">
-            {team.map((member) => (
+          <div className="space-y-3">
+            {dailyLogs.slice(0, 4).map((log) => (
               <div
-                key={member.id}
-                onClick={() => handleAction(`View Member Profile: ${member.name}`)}
-                className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 p-2 hover:bg-neutral-50 dark:hover:bg-mine-900/50 rounded-xl transition-colors cursor-pointer group border border-transparent hover:border-neutral-100 dark:hover:border-mine-800"
+                key={log.id}
+                onClick={() => setActiveTab("daily_log")}
+                className="flex flex-col gap-1 p-3 hover:bg-neutral-50 dark:hover:bg-mine-900/50 rounded-xl transition-colors cursor-pointer group border border-transparent hover:border-neutral-100 dark:hover:border-mine-800"
               >
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0 shadow-sm border ${member.avatarClass} group-hover:scale-105 transition-transform`}>
-                    {member.initials}
-                  </div>
-                  <div>
-                    <h4 className="text-[13px] font-bold text-mine-950 dark:text-white mb-0.5 group-hover:text-mine-700 dark:group-hover:text-mine-300 transition-colors">{member.name}</h4>
-                    <p className="text-[11px] text-neutral-400 dark:text-neutral-500 font-medium">Working on <span className="font-bold text-mine-900 dark:text-mine-100 group-hover:text-mine-700 dark:group-hover:text-mine-300 transition-colors">{member.task}</span></p>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-[13px] font-bold text-mine-950 dark:text-white group-hover:text-mine-700 dark:group-hover:text-mine-300 transition-colors">{log.author}</h4>
+                  <span className="text-[10px] font-medium text-neutral-400 dark:text-neutral-500">{log.time}</span>
                 </div>
-                <span className={`px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded border ${member.badgeClass}`}>
-                  {member.status}
-                </span>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-1">{log.desc}</p>
               </div>
             ))}
+            {dailyLogs.length === 0 && (
+              <p className="text-sm text-neutral-500 py-4 text-center">No logs recorded yet.</p>
+            )}
           </div>
         </div>
       </div>
@@ -1291,9 +1196,6 @@ export default function ContractorDashboard() {
           <h3 className="text-mine-950 dark:text-white font-semibold text-xl mb-1">Licenses & Certificates</h3>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">Manage and track compliance documents for your contract.</p>
         </div>
-        <button onClick={() => handleAction("Upload New License")} className="uiverse-btn">
-          <Plus size={16} /> Upload
-        </button>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
@@ -1306,7 +1208,7 @@ export default function ContractorDashboard() {
           </thead>
           <tbody className="divide-y divide-neutral-50 dark:divide-mine-800/50">
             {licenses.map((item, idx) => (
-              <tr key={idx} className="hover:bg-neutral-50/50 dark:hover:bg-mine-900/30 cursor-pointer transition-colors" onClick={() => handleAction(`View License: ${item.document}`)}>
+              <tr key={idx} className="transition-colors" >
                 <td className="py-4 pr-4">
                   <div className="font-semibold text-mine-950 dark:text-white">{item.document}</div>
                   <div className="text-[12px] text-neutral-500 dark:text-neutral-400 mt-1">{item.holder}</div>
@@ -1330,11 +1232,8 @@ export default function ContractorDashboard() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h3 className="text-mine-950 dark:text-white font-semibold text-xl mb-1">Machinery Register</h3>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">Track all active machinery, ownership, and maintenance schedules.</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Track heavy equipment deployed at the site.</p>
         </div>
-        <button onClick={() => handleAction("Register Machine")} className="uiverse-btn">
-          <Plus size={16} /> Register
-        </button>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
@@ -1348,7 +1247,7 @@ export default function ContractorDashboard() {
           </thead>
           <tbody className="divide-y divide-neutral-50 dark:divide-mine-800/50">
             {machinery.map((item, idx) => (
-              <tr key={idx} className="hover:bg-neutral-50/50 dark:hover:bg-mine-900/30 cursor-pointer transition-colors" onClick={() => handleAction(`View Machine: ${item.machine}`)}>
+              <tr key={idx} className="transition-colors" >
                 <td className="py-4 pr-4 font-semibold text-mine-950 dark:text-white">{item.machine}</td>
                 <td className="py-4 text-neutral-600 dark:text-neutral-300 font-medium">{item.ownership}</td>
                 <td className="py-4">
@@ -1392,14 +1291,14 @@ export default function ContractorDashboard() {
       <div className="space-y-4">
         <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-2">Recent Logs</h4>
         {dailyLogs.map((log) => (
-          <div key={log.id} className="p-4 bg-neutral-50/50 dark:bg-mine-900/40 border border-neutral-100 dark:border-mine-800 rounded-[1rem] hover:bg-neutral-100 dark:hover:bg-mine-800/60 transition-colors cursor-pointer" onClick={() => handleAction(`View Log: ${log.text}`)}>
+          <div key={log.id} className="p-4 bg-neutral-50/50 dark:bg-mine-900/40 border border-neutral-100 dark:border-mine-800 rounded-[1rem] transition-colors cursor-pointer" >
             <div className="flex items-start gap-4">
               <div className="w-8 h-8 rounded-full bg-mine-100 dark:bg-mine-800 text-mine-700 dark:text-mine-300 flex items-center justify-center shrink-0">
                 <FileText size={14} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-mine-950 dark:text-white mb-1">{log.text}</p>
-                <p className="text-xs text-neutral-400 dark:text-neutral-500 font-medium">{log.meta}</p>
+                <p className="text-sm font-semibold text-mine-950 dark:text-white mb-1">{log.desc}</p>
+                <p className="text-xs text-neutral-400 dark:text-neutral-500 font-medium">{log.time} · {log.author}</p>
               </div>
             </div>
           </div>
@@ -1412,12 +1311,9 @@ export default function ContractorDashboard() {
     <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h3 className="text-mine-950 dark:text-white font-semibold text-xl mb-1">Explosives Stock Register</h3>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">Track explosives procured, used, and remaining in stock.</p>
+          <h3 className="text-mine-950 dark:text-white font-semibold text-xl mb-1">Explosives Stock</h3>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Monitor magazine stock and consumption logs.</p>
         </div>
-        <button onClick={() => handleAction("Update Stock")} className="uiverse-btn">
-          <Plus size={16} /> Update Stock
-        </button>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
@@ -1431,7 +1327,7 @@ export default function ContractorDashboard() {
           </thead>
           <tbody className="divide-y divide-neutral-50 dark:divide-mine-800/50">
             {explosives.map((item, idx) => (
-              <tr key={idx} className="hover:bg-neutral-50/50 dark:hover:bg-mine-900/30 cursor-pointer transition-colors" onClick={() => handleAction(`View Explosive: ${item.type}`)}>
+              <tr key={idx} className="transition-colors" >
                 <td className="py-4 pr-4 font-semibold text-mine-950 dark:text-white">{item.type}</td>
                 <td className="py-4 text-neutral-600 dark:text-neutral-300 font-medium">{item.procured}</td>
                 <td className="py-4 text-neutral-600 dark:text-neutral-300 font-medium">{item.used}</td>
@@ -1449,11 +1345,8 @@ export default function ContractorDashboard() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h3 className="text-mine-950 dark:text-white font-semibold text-xl mb-1">Worker Roster</h3>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">Monitor active workers, safety training, and PPE issuance.</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Manage site workers and safety clearances.</p>
         </div>
-        <button onClick={() => handleAction("Add Worker")} className="uiverse-btn">
-          <Plus size={16} /> Add Worker
-        </button>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
@@ -1466,7 +1359,7 @@ export default function ContractorDashboard() {
           </thead>
           <tbody className="divide-y divide-neutral-50 dark:divide-mine-800/50">
             {workers.map((item, idx) => (
-              <tr key={idx} className="hover:bg-neutral-50/50 dark:hover:bg-mine-900/30 cursor-pointer transition-colors" onClick={() => handleAction(`View Worker: ${item.id}`)}>
+              <tr key={idx} className="transition-colors" >
                 <td className="py-4 pr-4 font-semibold text-mine-950 dark:text-white">{item.id}</td>
                 <td className="py-4">
                   <span className={`px-2.5 py-1 text-[11px] font-bold rounded border uppercase tracking-wider ${item.trainingClass}`}>{item.training}</span>
@@ -1478,31 +1371,6 @@ export default function ContractorDashboard() {
             ))}
           </tbody>
         </table>
-      </div>
-    </div>
-  );
-
-  const renderRequests = () => (
-    <div className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-2 duration-300">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h3 className="text-mine-950 dark:text-white font-semibold text-xl mb-1">Supervisor Requests</h3>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">Track and respond to formal requests and approvals.</p>
-        </div>
-        <button onClick={() => handleAction("New Request")} className="uiverse-btn">
-          <Plus size={16} /> New Request
-        </button>
-      </div>
-      <div className="space-y-4">
-        {requests.map((req, idx) => (
-          <div key={idx} className="p-4 border border-neutral-100 dark:border-mine-800 rounded-xl hover:bg-neutral-50 dark:hover:bg-mine-900/30 cursor-pointer transition-colors" onClick={() => handleAction(`View Request: ${req.task}`)}>
-            <div className="flex justify-between items-start mb-2">
-              <p className="text-sm font-semibold text-mine-950 dark:text-white leading-tight">{req.task}</p>
-              <span className={`px-2.5 py-1 text-[10px] font-bold rounded uppercase tracking-wider border ${req.statusClass}`}>{req.status}</span>
-            </div>
-            <span className="text-xs text-neutral-400 dark:text-neutral-500 font-medium">{req.time}</span>
-          </div>
-        ))}
       </div>
     </div>
   );
@@ -1643,6 +1511,66 @@ export default function ContractorDashboard() {
   // MAIN COMPONENT RENDER
   // ------------------------------------
 
+  if (currentUser?.contractorStatus === "PENDING") {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-neutral-50 dark:bg-mine-950 font-sans text-mine-950 dark:text-white">
+        <div className="max-w-md w-full bg-white dark:bg-mine-900 rounded-3xl shadow-lg border border-neutral-200 dark:border-mine-800 p-8 text-center animate-in zoom-in-95 duration-300">
+          <div className="w-16 h-16 mx-auto bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center mb-6">
+            <HardHat size={32} />
+          </div>
+          <h1 className="text-2xl font-black mb-2">Registration Pending</h1>
+          <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6 leading-relaxed">
+            Your contractor registration has been submitted and is currently awaiting approval from the Mine Supervisor. 
+            You will be notified once your account is activated.
+          </p>
+          <div className="p-4 bg-neutral-50 dark:bg-mine-950 rounded-xl border border-neutral-100 dark:border-mine-800 text-left space-y-2 mb-8">
+            <p className="text-xs text-neutral-500">Contractor Name</p>
+            <p className="font-bold">{currentUser?.name || "N/A"}</p>
+            <p className="text-xs text-neutral-500 mt-2">Registration Code</p>
+            <p className="font-mono font-medium">{currentUser?.contractorCode || "Pending Assignment"}</p>
+          </div>
+          <button 
+            onClick={() => { auth.logout(); router.replace("/"); }}
+            className="w-full py-3 bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-200 text-white dark:text-mine-950 rounded-xl text-sm font-bold transition flex justify-center items-center gap-2"
+          >
+            <LogOut size={16} /> Sign Out
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentUser?.contractorStatus === "REJECTED") {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-neutral-50 dark:bg-mine-950 font-sans text-mine-950 dark:text-white">
+        <div className="max-w-md w-full bg-white dark:bg-mine-900 rounded-3xl shadow-lg border border-neutral-200 dark:border-mine-800 p-8 text-center animate-in zoom-in-95 duration-300">
+          <div className="w-16 h-16 mx-auto bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 rounded-full flex items-center justify-center mb-6">
+            <ShieldAlert size={32} />
+          </div>
+          <h1 className="text-2xl font-black mb-2">Registration Rejected</h1>
+          <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6 leading-relaxed">
+            Your contractor registration was reviewed and rejected by the Mine Supervisor.
+          </p>
+          
+          <div className="p-4 bg-rose-50 dark:bg-rose-950/30 rounded-xl border border-rose-200 dark:border-rose-900/50 text-left mb-8 flex items-start gap-3">
+            <AlertTriangle className="text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" size={16} />
+            <div>
+              <p className="text-xs font-bold text-rose-800 dark:text-rose-300 mb-1">Reason for Rejection</p>
+              <p className="text-sm text-rose-700 dark:text-rose-400">{currentUser?.rejectionReason || "No specific reason provided."}</p>
+            </div>
+          </div>
+
+          <button 
+            onClick={() => { auth.logout(); router.replace("/"); }}
+            className="w-full py-3 bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-200 text-white dark:text-mine-950 rounded-xl text-sm font-bold transition flex justify-center items-center gap-2"
+          >
+            <LogOut size={16} /> Sign Out
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-mine-950 transition-colors duration-300 flex font-sans text-neutral-900 dark:text-neutral-100">
       {/* Toast Notification */}
@@ -1715,8 +1643,8 @@ export default function ContractorDashboard() {
               className="w-full pl-10 pr-12 py-2.5 bg-white dark:bg-mine-900 border border-neutral-200/50 dark:border-mine-800 rounded-full text-sm font-medium text-mine-950 dark:text-white focus:outline-none focus:ring-2 focus:ring-mine-300 shadow-sm placeholder:text-neutral-400 dark:placeholder:text-mine-300/50 transition-colors"
             />
             <button
-              onClick={() => handleAction("Search")}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center gap-1 px-1.5 py-0.5 bg-neutral-100 dark:bg-mine-800 rounded text-xs text-neutral-400 dark:text-mine-300 font-bold border border-neutral-200 dark:border-mine-700 hover:bg-neutral-200 dark:hover:bg-mine-700 transition-colors"
+              disabled title="Feature coming soon" 
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center gap-1 px-1.5 py-0.5 bg-neutral-100 dark:bg-mine-800 rounded text-xs text-neutral-400 dark:text-mine-300 font-bold border border-neutral-200 dark:border-mine-700 hover:bg-neutral-200 dark:hover:bg-mine-700 transition-colors opacity-50 cursor-not-allowed"
             >
               <Command size={12} /> F
             </button>
@@ -1725,49 +1653,16 @@ export default function ContractorDashboard() {
           <div className="flex items-center gap-5 relative">
 
             {/* INVISIBLE OVERLAY TO CLOSE POPOVERS */}
-            {(isMailOpen || isNotifOpen || isProfileOpen) && (
+            {(isNotifOpen || isProfileOpen) && (
               <div className="fixed inset-0 z-40" onClick={closePopovers}></div>
             )}
 
             <ThemeToggle />
 
-            {/* MAIL POPOVER CONTAINER */}
-            <div className="relative z-50">
-              <button
-                onClick={(e) => { e.stopPropagation(); setIsNotifOpen(false); setIsProfileOpen(false); setIsMailOpen(!isMailOpen); }}
-                className={`relative p-2.5 rounded-full shadow-sm border border-neutral-200/50 dark:border-mine-800 transition-colors ${isMailOpen ? 'bg-mine-100 dark:bg-mine-800 text-mine-800 dark:text-white' : 'bg-white dark:bg-mine-900 text-neutral-500 dark:text-mine-300 hover:text-mine-700 dark:hover:text-white'}`}
-              >
-                <Mail size={18} />
-                {unreadMailCount > 0 && <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-mine-900"></span>}
-              </button>
-
-              {isMailOpen && (
-                <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-mine-900 border border-neutral-200 dark:border-mine-800 rounded-2xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="flex items-center justify-between p-4 border-b border-neutral-100 dark:border-mine-800">
-                    <h3 className="font-bold text-sm text-mine-950 dark:text-white">Messages</h3>
-                    <button onClick={() => { closePopovers(); setActiveTab("messages"); }} className="text-xs font-semibold text-mine-700 dark:text-mine-300 hover:underline">View all</button>
-                  </div>
-                  <div className="max-h-80 overflow-y-auto divide-y divide-neutral-50 dark:divide-mine-900/50">
-                    {appMessages.slice(0, 4).map((msg) => (
-                      <button key={msg.id} onClick={() => { closePopovers(); setActiveTab("messages"); }} className={`w-full text-left p-4 hover:bg-neutral-50 dark:hover:bg-mine-900/30 transition-colors ${!msg.read ? 'bg-mine-50/50 dark:bg-mine-900/20' : ''}`}>
-                        <div className="flex justify-between items-start mb-1">
-                          <p className={`text-sm ${!msg.read ? 'font-bold text-mine-950 dark:text-white' : 'font-medium text-neutral-700 dark:text-neutral-300'}`}>{msg.sender}</p>
-                          <span className="text-[10px] font-medium text-neutral-400">{msg.timestamp}</span>
-                        </div>
-                        <p className={`text-xs truncate ${!msg.read ? 'font-semibold text-mine-800 dark:text-mine-100' : 'text-neutral-500 dark:text-neutral-400'}`}>{msg.subject}</p>
-                        <p className="text-xs text-neutral-400 dark:text-neutral-500 truncate mt-1">{msg.preview}</p>
-                      </button>
-                    ))}
-                    {appMessages.length === 0 && <div className="p-8 text-center text-sm text-neutral-500">No messages</div>}
-                  </div>
-                </div>
-              )}
-            </div>
-
             {/* NOTIFICATIONS POPOVER CONTAINER */}
             <div className="relative z-50">
               <button
-                onClick={(e) => { e.stopPropagation(); setIsMailOpen(false); setIsProfileOpen(false); setIsNotifOpen(!isNotifOpen); }}
+                onClick={(e) => { e.stopPropagation(); setIsProfileOpen(false); setIsNotifOpen(!isNotifOpen); }}
                 className={`relative p-2.5 rounded-full shadow-sm border border-neutral-200/50 dark:border-mine-800 transition-colors ${isNotifOpen ? 'bg-mine-100 dark:bg-mine-800 text-mine-800 dark:text-white' : 'bg-white dark:bg-mine-900 text-neutral-500 dark:text-mine-300 hover:text-mine-700 dark:hover:text-white'}`}
               >
                 <Bell size={18} />
@@ -1820,7 +1715,7 @@ export default function ContractorDashboard() {
             {/* PROFILE MENU POPOVER CONTAINER */}
             <div className="relative z-50">
               <button
-                onClick={(e) => { e.stopPropagation(); setIsMailOpen(false); setIsNotifOpen(false); setIsProfileOpen(!isProfileOpen); }}
+                onClick={(e) => { e.stopPropagation(); setIsNotifOpen(false); setIsProfileOpen(!isProfileOpen); }}
                 className="flex items-center gap-3 pl-2 hover:opacity-80 transition-opacity text-left"
               >
                 <div className="w-10 h-10 rounded-full bg-mine-100 dark:bg-mine-800 border-2 border-white dark:border-mine-900 shadow-sm overflow-hidden flex items-center justify-center text-mine-800 dark:text-mine-100 font-bold uppercase">
@@ -1867,14 +1762,14 @@ export default function ContractorDashboard() {
               </div>
               <div className="flex items-center gap-3 mt-4 sm:mt-0">
                 <button
-                  onClick={() => handleAction("Add Project")}
-                  className="uiverse-btn"
+                  disabled title="Feature coming soon" 
+                  className="uiverse-btn opacity-50 cursor-not-allowed"
                 >
                   <Plus size={16} /> Add Project
                 </button>
                 <button
-                  onClick={() => handleAction("Import Data")}
-                  className="uiverse-btn"
+                  disabled title="Feature coming soon" 
+                  className="uiverse-btn opacity-50 cursor-not-allowed"
                 >
                   Import Data
                 </button>
@@ -1888,14 +1783,12 @@ export default function ContractorDashboard() {
           {activeTab === "compliance" && renderCompliance()}
           {activeTab === "observations" && renderObservations()}
           {activeTab === "risk" && renderRisk()}
-          {activeTab === "messages" && renderMessages()}
           {activeTab === "notification_center" && renderNotificationCenter()}
           {activeTab === "licenses" && renderLicenses()}
           {activeTab === "machinery" && renderMachinery()}
           {activeTab === "daily_log" && renderDailyLog()}
           {activeTab === "explosives" && renderExplosives()}
           {activeTab === "roster" && renderRoster()}
-          {activeTab === "requests" && renderRequests()}
           {activeTab === "profile" && renderProfile()}
           {activeTab === "settings" && renderSettings()}
 
@@ -1903,116 +1796,6 @@ export default function ContractorDashboard() {
       </main>
 
       {/* MODALS */}
-
-      {/* 1. ADD PROJECT MODAL */}
-      {isAddProjectOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
-            <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">Add New Project</h2>
-            <form onSubmit={submitAddProject}>
-              <div className="uiverse-input-container">
-                <input type="text" required value={newProjectTitle} onChange={(e) => setNewProjectTitle(e.target.value)} />
-                <label className="label">Project Title</label>
-                <div className="underline"></div>
-              </div>
-              <div className="uiverse-input-container mt-8">
-                <input type="text" required value={newProjectDate} onChange={(e) => setNewProjectDate(e.target.value)} />
-                <label className="label">Expected Due Date</label>
-                <div className="underline"></div>
-              </div>
-              <div className="flex items-center justify-end gap-3 mt-10">
-                <button type="button" onClick={() => setIsAddProjectOpen(false)} className="px-4 py-2 text-sm text-neutral-500 font-semibold hover:text-mine-950 dark:hover:text-white transition-colors">Cancel</button>
-                <button type="submit" className="uiverse-btn !w-auto !px-6 !text-sm !h-10 !line-height-10 !m-0">Add Project</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* 2. ADD MEMBER MODAL */}
-      {isAddMemberOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
-            <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">Add Team Member</h2>
-            <form onSubmit={submitAddMember}>
-              <div className="uiverse-input-container">
-                <input type="text" required value={newMemberName} onChange={(e) => setNewMemberName(e.target.value)} />
-                <label className="label">Full Name</label>
-                <div className="underline"></div>
-              </div>
-              <div className="uiverse-input-container mt-8">
-                <input type="text" required value={newMemberTask} onChange={(e) => setNewMemberTask(e.target.value)} />
-                <label className="label">Assigned Task</label>
-                <div className="underline"></div>
-              </div>
-              <div className="flex items-center justify-end gap-3 mt-10">
-                <button type="button" onClick={() => setIsAddMemberOpen(false)} className="px-4 py-2 text-sm text-neutral-500 font-semibold hover:text-mine-950 dark:hover:text-white transition-colors">Cancel</button>
-                <button type="submit" className="uiverse-btn !w-auto !px-6 !text-sm !h-10 !line-height-10 !m-0">Add Member</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* 3. UPLOAD LICENSE MODAL */}
-      {isUploadLicenseOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
-            <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">Upload License</h2>
-            <form onSubmit={submitUploadLicense}>
-              <div className="uiverse-input-container">
-                <input type="text" required value={newLicenseDoc} onChange={(e) => setNewLicenseDoc(e.target.value)} />
-                <label className="label">Document Type/Name</label>
-                <div className="underline"></div>
-              </div>
-              <div className="uiverse-input-container mt-8">
-                <input type="text" required value={newLicenseHolder} onChange={(e) => setNewLicenseHolder(e.target.value)} />
-                <label className="label">Holder Details (Name / ID)</label>
-                <div className="underline"></div>
-              </div>
-              <div className="uiverse-input-container mt-8">
-                <input type="text" required value={newLicenseExpiry} onChange={(e) => setNewLicenseExpiry(e.target.value)} />
-                <label className="label">Expiry Date</label>
-                <div className="underline"></div>
-              </div>
-              <div className="flex items-center justify-end gap-3 mt-10">
-                <button type="button" onClick={() => setIsUploadLicenseOpen(false)} className="px-4 py-2 text-sm text-neutral-500 font-semibold hover:text-mine-950 dark:hover:text-white transition-colors">Cancel</button>
-                <button type="submit" className="uiverse-btn !w-auto !px-6 !text-sm !h-10 !line-height-10 !m-0">Upload</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* 4. REGISTER MACHINE MODAL */}
-      {isRegisterMachineOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
-            <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">Register Machine</h2>
-            <form onSubmit={submitRegisterMachine}>
-              <div className="uiverse-input-container">
-                <input type="text" required value={newMachineName} onChange={(e) => setNewMachineName(e.target.value)} />
-                <label className="label">Machine Name/Type</label>
-                <div className="underline"></div>
-              </div>
-              <div className="uiverse-input-container mt-8">
-                <input type="text" required value={newMachineOwnership} onChange={(e) => setNewMachineOwnership(e.target.value)} />
-                <label className="label">Ownership (Owned/Rented)</label>
-                <div className="underline"></div>
-              </div>
-              <div className="uiverse-input-container mt-8">
-                <input type="text" required value={newMachineNextDue} onChange={(e) => setNewMachineNextDue(e.target.value)} />
-                <label className="label">Next Service Due</label>
-                <div className="underline"></div>
-              </div>
-              <div className="flex items-center justify-end gap-3 mt-10">
-                <button type="button" onClick={() => setIsRegisterMachineOpen(false)} className="px-4 py-2 text-sm text-neutral-500 font-semibold hover:text-mine-950 dark:hover:text-white transition-colors">Cancel</button>
-                <button type="submit" className="uiverse-btn !w-auto !px-6 !text-sm !h-10 !line-height-10 !m-0">Register</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* 5. NEW LOG ENTRY MODAL */}
       {isNewLogOpen && (
@@ -2025,152 +1808,11 @@ export default function ContractorDashboard() {
                 <label className="label">Activity Description</label>
                 <div className="underline"></div>
               </div>
-              <div className="uiverse-input-container mt-8">
-                <input type="text" required value={newLogAuthor} onChange={(e) => setNewLogAuthor(e.target.value)} />
-                <label className="label">Your Name</label>
-                <div className="underline"></div>
-              </div>
               <div className="flex items-center justify-end gap-3 mt-10">
                 <button type="button" onClick={() => setIsNewLogOpen(false)} className="px-4 py-2 text-sm text-neutral-500 font-semibold hover:text-mine-950 dark:hover:text-white transition-colors">Cancel</button>
                 <button type="submit" className="uiverse-btn !w-auto !px-6 !text-sm !h-10 !line-height-10 !m-0">Log Activity</button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
-
-      {/* 6. UPDATE STOCK MODAL */}
-      {isUpdateStockOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
-            <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">Update Explosives Stock</h2>
-            <form onSubmit={submitUpdateStock}>
-              <div className="uiverse-input-container">
-                <input type="text" required value={newExplosiveType} onChange={(e) => setNewExplosiveType(e.target.value)} />
-                <label className="label">Explosive Type</label>
-                <div className="underline"></div>
-              </div>
-              <div className="uiverse-input-container mt-8">
-                <input type="text" required value={newExplosiveProcured} onChange={(e) => setNewExplosiveProcured(e.target.value)} />
-                <label className="label">Total Procured (e.g. 1000 kg)</label>
-                <div className="underline"></div>
-              </div>
-              <div className="uiverse-input-container mt-8">
-                <input type="text" required value={newExplosiveUsed} onChange={(e) => setNewExplosiveUsed(e.target.value)} />
-                <label className="label">Total Used (e.g. 200 kg)</label>
-                <div className="underline"></div>
-              </div>
-              <div className="flex items-center justify-end gap-3 mt-10">
-                <button type="button" onClick={() => setIsUpdateStockOpen(false)} className="px-4 py-2 text-sm text-neutral-500 font-semibold hover:text-mine-950 dark:hover:text-white transition-colors">Cancel</button>
-                <button type="submit" className="uiverse-btn !w-auto !px-6 !text-sm !h-10 !line-height-10 !m-0">Update Stock</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* 7. ADD WORKER MODAL */}
-      {isAddWorkerOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
-            <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">Add Worker to Roster</h2>
-            <form onSubmit={submitAddWorker}>
-              <div className="uiverse-input-container">
-                <input type="text" required value={newWorkerId} onChange={(e) => setNewWorkerId(e.target.value)} />
-                <label className="label">Worker ID / Name</label>
-                <div className="underline"></div>
-              </div>
-              <div className="uiverse-input-container mt-8">
-                <input type="text" required value={newWorkerTraining} onChange={(e) => setNewWorkerTraining(e.target.value)} />
-                <label className="label">Training (Complete/Missing)</label>
-                <div className="underline"></div>
-              </div>
-              <div className="uiverse-input-container mt-8">
-                <input type="text" required value={newWorkerPPE} onChange={(e) => setNewWorkerPPE(e.target.value)} />
-                <label className="label">PPE (Yes/Pending)</label>
-                <div className="underline"></div>
-              </div>
-              <div className="flex items-center justify-end gap-3 mt-10">
-                <button type="button" onClick={() => setIsAddWorkerOpen(false)} className="px-4 py-2 text-sm text-neutral-500 font-semibold hover:text-mine-950 dark:hover:text-white transition-colors">Cancel</button>
-                <button type="submit" className="uiverse-btn !w-auto !px-6 !text-sm !h-10 !line-height-10 !m-0">Add Worker</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* 8. NEW REQUEST MODAL */}
-      {isNewRequestOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200">
-            <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-6 tracking-tight">New Supervisor Request</h2>
-            <form onSubmit={submitNewRequest}>
-              <div className="uiverse-input-container">
-                <input type="text" required value={newRequestTask} onChange={(e) => setNewRequestTask(e.target.value)} />
-                <label className="label">Request Description</label>
-                <div className="underline"></div>
-              </div>
-              <div className="flex items-center justify-end gap-3 mt-10">
-                <button type="button" onClick={() => setIsNewRequestOpen(false)} className="px-4 py-2 text-sm text-neutral-500 font-semibold hover:text-mine-950 dark:hover:text-white transition-colors">Cancel</button>
-                <button type="submit" className="uiverse-btn !w-auto !px-6 !text-sm !h-10 !line-height-10 !m-0">Submit Request</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* 9. HELP MODAL */}
-      {isHelpOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-lg shadow-xl border border-neutral-200 dark:border-mine-800 animate-in zoom-in-95 duration-200 overflow-y-auto max-h-[90vh]">
-            <h2 className="text-2xl font-bold text-mine-950 dark:text-white mb-2 tracking-tight">Help & Support</h2>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6">Find answers or contact the administrative team.</p>
-
-            <div className="space-y-4 mb-8">
-              <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider border-b border-neutral-100 dark:border-mine-800 pb-2">Common FAQs</h4>
-
-              <div className="bg-neutral-50 dark:bg-mine-900/30 p-4 rounded-xl border border-neutral-100 dark:border-mine-800">
-                <p className="font-bold text-sm text-mine-950 dark:text-white mb-1">How do I renew a license?</p>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400">Navigate to the 'Licenses &amp; Certs' tab, click 'Upload', and submit the updated document for admin approval.</p>
-              </div>
-
-              <div className="bg-neutral-50 dark:bg-mine-900/30 p-4 rounded-xl border border-neutral-100 dark:border-mine-800">
-                <p className="font-bold text-sm text-mine-950 dark:text-white mb-1">My machinery shows 'Overdue'</p>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400">Please contact the maintenance bay to log a service record. The status will update once they sign off.</p>
-              </div>
-            </div>
-
-            <form onSubmit={submitHelpMessage}>
-              <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-200 uppercase tracking-wider mb-4 border-b border-neutral-100 dark:border-mine-800 pb-2">Contact Support</h4>
-              <div className="uiverse-input-container">
-                <input type="text" required value={helpMessage} onChange={(e) => setHelpMessage(e.target.value)} />
-                <label className="label">How can we help you?</label>
-                <div className="underline"></div>
-              </div>
-              <div className="flex items-center justify-end gap-3 mt-8">
-                <button type="button" onClick={() => setIsHelpOpen(false)} className="px-4 py-2 text-sm text-neutral-500 font-semibold hover:text-mine-950 dark:hover:text-white transition-colors">Close</button>
-                <button type="submit" className="uiverse-btn !w-auto !px-6 !text-sm !h-10 !line-height-10 !m-0">Send Message</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-
-
-      {/* 11. CONFIRM DELETE MODAL */}
-      {isConfirmDeleteOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-mine-900 p-8 rounded-[1.5rem] w-full max-w-sm shadow-xl border border-red-200 dark:border-red-900/50 animate-in zoom-in-95 duration-200 text-center">
-            <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="font-bold text-xl">!</span>
-            </div>
-            <h2 className="text-xl font-bold text-mine-950 dark:text-white mb-2">Delete Account?</h2>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-8">This action is permanent and cannot be undone. All your data will be erased.</p>
-            <div className="flex flex-col gap-3">
-              <button type="button" onClick={() => { setIsConfirmDeleteOpen(false); showToast("Account deleted (Backend pending)"); }} className="px-4 py-3 bg-red-600 text-white hover:bg-red-700 rounded-xl text-sm font-semibold transition-colors">Yes, permanently delete</button>
-              <button type="button" onClick={() => setIsConfirmDeleteOpen(false)} className="px-4 py-3 text-sm text-neutral-500 font-semibold hover:text-mine-950 dark:hover:text-white transition-colors">Cancel</button>
-            </div>
           </div>
         </div>
       )}

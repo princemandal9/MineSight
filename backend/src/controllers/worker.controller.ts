@@ -4,7 +4,11 @@ import { WorkerService } from "../services/worker.service";
 export class WorkerController {
   public static async create(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const worker = await WorkerService.create(req.body);
+      const data = { ...req.body };
+      if (req.user?.role === "CONTRACTOR" && req.user.contractorId) {
+        data.contractorId = req.user.contractorId;
+      }
+      const worker = await WorkerService.create(data);
       res.status(201).json({
         success: true,
         data: worker,
@@ -17,6 +21,9 @@ export class WorkerController {
 
   public static async list(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      if (req.user?.role === "CONTRACTOR" && req.user.contractorId) {
+        req.query.contractorId = req.user.contractorId;
+      }
       const result = await WorkerService.list(req.query);
       res.status(200).json({
         success: true,
@@ -29,7 +36,8 @@ export class WorkerController {
 
   public static async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const worker = await WorkerService.getById(req.params.id);
+      const authorizedContractorId = req.user?.role === "CONTRACTOR" ? req.user.contractorId || undefined : undefined;
+      const worker = await WorkerService.getById(req.params.id, authorizedContractorId);
       res.status(200).json({
         success: true,
         data: worker,
@@ -41,7 +49,8 @@ export class WorkerController {
 
   public static async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const updated = await WorkerService.update(req.params.id, req.body);
+      const authorizedContractorId = req.user?.role === "CONTRACTOR" ? req.user.contractorId || undefined : undefined;
+      const updated = await WorkerService.update(req.params.id, req.body, authorizedContractorId);
       res.status(200).json({
         success: true,
         data: updated,
@@ -54,7 +63,8 @@ export class WorkerController {
 
   public static async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      await WorkerService.delete(req.params.id);
+      const authorizedContractorId = req.user?.role === "CONTRACTOR" ? req.user.contractorId || undefined : undefined;
+      await WorkerService.delete(req.params.id, authorizedContractorId);
       res.status(200).json({
         success: true,
         message: "Worker deleted successfully",

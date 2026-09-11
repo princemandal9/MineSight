@@ -96,5 +96,50 @@ export class AuthController {
       next(error);
     }
   }
+
+  public static async updateProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (!req.user?.id) {
+        res.status(401).json({ success: false, error: { message: "Unauthorized" } });
+        return;
+      }
+      const user = await AuthService.updateProfile(req.user.id, req.body);
+      res.status(200).json({ success: true, data: user });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public static async changePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (!req.user?.id) {
+        res.status(401).json({ success: false, error: { message: "Unauthorized" } });
+        return;
+      }
+      const { currentPassword, newPassword } = req.body;
+      if (!currentPassword || !newPassword) {
+        res.status(400).json({ success: false, error: { message: "Missing passwords" } });
+        return;
+      }
+      
+      await AuthService.changePassword(req.user.id, currentPassword, newPassword);
+      res.status(200).json({ success: true, message: "Password updated successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public static async exportData(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (!req.user?.id) {
+        res.status(401).json({ success: false, error: { message: "Unauthorized" } });
+        return;
+      }
+      const data = await AuthService.exportData(req.user.id, req.user.contractorId);
+      res.status(200).json({ success: true, data });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 

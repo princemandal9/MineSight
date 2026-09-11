@@ -28,19 +28,6 @@ export const authenticateToken = (
   const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
 
   if (!token) {
-    // Check fallback dev header
-    const mockRole = req.headers["x-user-role"] as string;
-    const mockId = req.headers["x-user-id"] as string;
-    const mockContractorId = req.headers["x-contractor-id"] as string;
-    if (mockRole && mockId) {
-      req.user = {
-        id: mockId,
-        email: "dev@minesight.in",
-        role: mockRole.toUpperCase(),
-        contractorId: mockContractorId || null,
-      };
-      return next();
-    }
     return next(new AppError("Authentication required. Please provide a valid Bearer token.", 401));
   }
 
@@ -53,3 +40,64 @@ export const authenticateToken = (
   }
 };
 
+export const authorizeRole = (requiredRole: string) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return next(new AppError("Authentication required.", 401));
+    }
+    if (req.user.role !== requiredRole && req.user.role !== "ADMIN") {
+      return next(new AppError("You do not have permission to perform this action.", 403));
+    }
+    next();
+  };
+};
+
+import { prisma } from "../models/prisma";
+
+export const requireActiveContractor = async (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): Promise<void> => {
+  if (!req.user) {
+    return next(new AppError("Authentication required.", 401));
+  }
+  
+  if (req.user.role === "SUPERVISOR" || req.user.role === "ADMIN") {
+    return next();
+  }
+  
+  if (req.user.role === "CONTRACTOR") {
+    if (!req.user.contractorId) {
+       return next(new AppError("Contractor profile not found.", 403));
+    }
+    
+    try {
+      const contractor = await prisma.contractor.findUnique({
+        where: { id: req.user.contractorId }
+      });
+      
+      if (!contractor) {
+        return next(new AppError("Contractor profile not found.", 403));
+      }
+      
+      if (contractor.status === "PENDING") {
+        return next(new AppError("Your contractor profile is pending supervisor approval.", 403));
+      }
+      
+      if (contractor.status === "REJECTED") {
+        return next(new AppError(`Your contractor registration was rejected: ${contractor.rejectionReason || "No reason provided"}`, 403));
+      }
+      
+      if (contractor.status !== "ACTIVE") {
+        return next(new AppError(`Contractor account is ${contractor.status}`, 403));
+      }
+      
+      next();
+    } catch (error) {
+      return next(new AppError("Failed to verify contractor status.", 500));
+    }
+  } else {
+    next();
+  }
+};

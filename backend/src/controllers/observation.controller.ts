@@ -4,11 +4,14 @@ import { ObservationService } from "../services/observation.service";
 export class ObservationController {
   public static async create(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      if (req.user?.role !== "SUPERVISOR") {
+      if (req.user?.role !== "SUPERVISOR" && req.user?.role !== "ADMIN") {
         res.status(403).json({ success: false, error: { message: "Only supervisors can create observations." } });
         return;
       }
-      const observation = await ObservationService.create(req.body);
+      const observation = await ObservationService.create({
+        ...req.body,
+        supervisorId: req.user.id
+      });
       res.status(201).json({
         success: true,
         data: observation,
@@ -73,7 +76,7 @@ export class ObservationController {
 
   public static async verify(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      if (req.user?.role !== "SUPERVISOR") {
+      if (req.user?.role !== "SUPERVISOR" && req.user?.role !== "ADMIN") {
         res.status(403).json({ success: false, error: { message: "Only supervisors can verify observations." } });
         return;
       }
@@ -90,7 +93,7 @@ export class ObservationController {
 
   public static async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      if (req.user?.role !== "SUPERVISOR") {
+      if (req.user?.role !== "SUPERVISOR" && req.user?.role !== "ADMIN") {
         res.status(403).json({ success: false, error: { message: "Only supervisors can delete observations." } });
         return;
       }

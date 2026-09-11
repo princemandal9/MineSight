@@ -32,20 +32,23 @@ import {
   Wind,
   Volume2,
   ArrowLeft,
+  ArrowUpRight,
   FileCheck,
 } from "lucide-react";
 import Image from "next/image";
 
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { api } from "@/lib/api";
-
+import { EnvironmentalIntelligenceModal } from "@/components/EnvironmentalIntelligenceModal";
+import { AIGovernanceAnalysis } from "@/components/AIGovernanceAnalysis";
 
 import { FieldInspectionModal } from "@/components/FieldInspectionModal";
 import { BrainCircuit } from "lucide-react";
 
 const menuItems = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "risk", label: "AI Risk Intelligence", icon: BrainCircuit },
+  { id: "pending_approvals", label: "Pending Approvals", icon: FileSignature },
+  { id: "risk", label: "Risk Intelligence", icon: BrainCircuit },
   { id: "compliance", label: "Statutory Compliance", icon: FileCheckIcon },
   { id: "inspections", label: "Inspections", icon: FileText },
   { id: "contractors", label: "Contractors Directory", icon: HardHat },
@@ -85,10 +88,25 @@ export default function SupervisorPage() {
   
   // Field Inspection State
   const [isInspectionModalOpen, setIsInspectionModalOpen] = useState(false);
+  const [isContractorDetailsOpen, setIsContractorDetailsOpen] = useState(false);
+  const [isEnvIntelligenceOpen, setIsEnvIntelligenceOpen] = useState(false);
 
   const sessionUser = typeof window !== "undefined" ? auth.getUser() : null;
   const sessionToken = typeof window !== "undefined" ? auth.getToken() : null;
   const supervisorName = sessionUser?.name || "Inspector R. Verma";
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (!auth.isAuthenticated()) {
+        router.replace("/");
+      } else {
+        const u = auth.getUser();
+        if (u && u.role !== "SUPERVISOR") {
+          router.replace("/contractor");
+        }
+      }
+    }
+  }, [router]);
 
   const loadObligations = async () => {
     try {
@@ -137,6 +155,7 @@ export default function SupervisorPage() {
   };
 
   const [contractors, setContractors] = useState<any[]>([]);
+  const [pendingContractors, setPendingContractors] = useState<any[]>([]);
   const [observations, setObservations] = useState<any[]>([]);
   const [authRecords, setAuthRecords] = useState<any[]>([]);
   const [storageFiles, setStorageFiles] = useState<any>(null);
@@ -173,25 +192,27 @@ export default function SupervisorPage() {
         console.warn("Offline sync check failed:", err);
       }
 
-      const [metricsRes, contractorsRes, observationsRes, authRes, riskRes] = await Promise.all([
+      const [metricsRes, contractorsRes, pendingRes, observationsRes, authRes, riskRes] = await Promise.all([
         api.getMetricsOverview().catch((err) => {
           throw new Error(`Metrics API error: ${err.message}`);
         }),
-        api.getContractors().catch((err) => {
+        api.getContractors({ status: "ACTIVE" }).catch((err) => {
           throw new Error(`Contractors API error: ${err.message}`);
         }),
+        api.getContractors({ status: "PENDING" }).catch(() => ({ data: [] })),
         api.getObservations().catch((err) => {
           throw new Error(`Observations API error: ${err.message}`);
         }),
         api.getAuthRecords().catch(() => ({ data: [], storageFiles: null })),
         api.getRiskOverview(sessionToken || undefined).catch((err) => {
           console.error("Risk API error:", err);
-          return null; // Fallback so we don't break the whole app if risk fails
+          return null;
         }),
       ]);
 
       setMetrics(metricsRes.data);
       setContractors(contractorsRes.data || []);
+      setPendingContractors(pendingRes.data || []);
       setObservations(observationsRes.data || []);
       setAuthRecords(authRes?.data || []);
       setStorageFiles(authRes?.storageFiles || null);
@@ -341,12 +362,21 @@ export default function SupervisorPage() {
         </section>
       {/* 2. ENVIRONMENTAL & YIELD LOG */}
         <section className="bg-white dark:bg-mine-900 p-6 rounded-2xl border border-neutral-200 dark:border-mine-800 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold flex items-center gap-2">
-              <Activity className="text-blue-600" size={20} />
-              Daily Yield & Environmental Sensors
-            </h2>
-            <span className="text-xs text-neutral-500">Auto-synced with latest statutory telemetry</span>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-bold flex items-center gap-2">
+                <Activity className="text-blue-600" size={20} />
+                Daily Yield & Environmental Sensors
+              </h2>
+              <span className="text-xs text-neutral-500">Auto-synced with latest statutory telemetry</span>
+            </div>
+            <button 
+              onClick={() => setIsEnvIntelligenceOpen(true)}
+              className="px-4 py-2 bg-teal-50 hover:bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:hover:bg-teal-900/50 dark:text-teal-400 rounded-xl text-sm font-bold flex items-center gap-2 transition-colors border border-teal-200 dark:border-teal-800"
+            >
+              <BrainCircuit size={16} />
+              AI Document Intelligence
+            </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -397,11 +427,41 @@ export default function SupervisorPage() {
     </div>
   );
 
+  // ── Governance Follow-Up Navigation ──────────────────────────────────────
+  // Routes server-approved follow-up action IDs to existing supervisor UI.
+  // This is NOT an AI prompt — it navigates existing MineSight sections.
+  const handleGovernanceFollowUp = (actionId: string) => {
+    switch (actionId) {
+      case "REVIEW_CRITICAL_OBSERVATIONS":
+        // Navigate to the inspections tab which shows the active observation feed
+        setSelectedRiskContractor(null);
+        setActiveTab("inspections");
+        break;
+      case "REVIEW_OVERDUE_OBLIGATIONS":
+        // Navigate to compliance tab and pre-filter to OVERDUE
+        setSelectedRiskContractor(null);
+        setComplianceStatusFilter("OVERDUE");
+        setActiveTab("compliance");
+        break;
+      case "REVIEW_ENVIRONMENTAL_FINDINGS":
+        // Open the existing Environmental Intelligence modal
+        setSelectedRiskContractor(null);
+        setIsEnvIntelligenceOpen(true);
+        break;
+      case "REVIEW_RISK_FACTORS":
+        // Already on risk tab with the detail modal open — nothing to navigate
+        // (the risk factors are visible in the modal itself above this component)
+        break;
+      default:
+        console.warn("[GovernanceFollowUp] Unknown action ID:", actionId);
+    }
+  };
+
   const renderRiskIntelligence = () => {
     if (!riskOverview) {
       return (
         <div className="flex justify-center py-20 text-neutral-400">
-          Loading AI Risk Intelligence...
+          Loading Risk Intelligence...
         </div>
       );
     }
@@ -542,8 +602,15 @@ export default function SupervisorPage() {
                   </div>
                 </div>
 
+                {/* AI Governance Analysis Section */}
+                <AIGovernanceAnalysis
+                  contractorId={selectedRiskContractor.contractorId}
+                  contractorName={selectedRiskContractor.contractorName}
+                  onFollowUpAction={handleGovernanceFollowUp}
+                />
+
                 <div>
-                  <h4 className="text-sm font-bold text-neutral-500 uppercase tracking-wider mb-3">AI Recommended Action</h4>
+                  <h4 className="text-sm font-bold text-neutral-500 uppercase tracking-wider mb-3">System Recommendation</h4>
                   <div className="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
                     <p className="text-sm font-semibold text-purple-900 dark:text-purple-300">"{selectedRiskContractor.recommendedAction}"</p>
                   </div>
@@ -848,21 +915,66 @@ export default function SupervisorPage() {
                       <p className="text-sm font-medium text-neutral-900 dark:text-mine-100">{obs.description}</p>
                       <div className="text-xs text-neutral-400">
                         Zone: {obs.zone} · Status:{" "}
-                        <strong className={isResolved ? "text-emerald-600" : "text-rose-600"}>
+                        <strong className={isResolved ? "text-emerald-600" : obs.status === "EVIDENCE_SUBMITTED" ? "text-blue-600 dark:text-blue-400" : "text-rose-600"}>
                           {obs.status}
                         </strong>
-                        {obs.evidenceNotes && (
-                          <span className="ml-2 italic text-neutral-600 dark:text-mine-300">
-                            (Remediation: "{obs.evidenceNotes}")
-                          </span>
-                        )}
                       </div>
+
+                      {/* Evidence Panel — shown when contractor has submitted evidence */}
+                      {(obs.status === "EVIDENCE_SUBMITTED" || obs.evidenceNotes || obs.correctiveAction || obs.evidenceUrl) && (
+                        <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 rounded-lg space-y-2">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-blue-700 dark:text-blue-400 flex items-center gap-1">
+                            <FileText size={11} /> Contractor Evidence Submitted
+                          </p>
+                          {obs.correctiveAction && (
+                            <div>
+                              <p className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 mb-0.5">Corrective Action Taken</p>
+                              <p className="text-xs text-neutral-800 dark:text-mine-100">{obs.correctiveAction}</p>
+                            </div>
+                          )}
+                          {obs.evidenceNotes && (
+                            <div>
+                              <p className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 mb-0.5">Evidence Notes</p>
+                              <p className="text-xs text-neutral-800 dark:text-mine-100 italic">{obs.evidenceNotes}</p>
+                            </div>
+                          )}
+                          {obs.evidenceUrl && (
+                            <div>
+                              <p className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 mb-0.5">Evidence Document / Photo</p>
+                              {obs.evidenceUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                                <a href={obs.evidenceUrl} target="_blank" rel="noopener noreferrer" className="block">
+                                  <img
+                                    src={obs.evidenceUrl}
+                                    alt="Field Evidence"
+                                    className="h-24 w-24 object-cover rounded-lg border border-blue-300 dark:border-blue-800 hover:opacity-80 transition"
+                                  />
+                                </a>
+                              ) : (
+                                <a
+                                  href={obs.evidenceUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 dark:text-blue-400 hover:underline"
+                                >
+                                  <ArrowUpRight size={12} /> View Evidence Link
+                                </a>
+                              )}
+                            </div>
+                          )}
+                          {obs.submittedAt && (
+                            <p className="text-[10px] text-neutral-400">
+                              Submitted: {new Date(obs.submittedAt).toLocaleString()}
+                            </p>
+                          )}
+                        </div>
+                      )}
+
                       {obs.photoUrl && (
                         <div className="mt-3">
                           <a href={`http://localhost:5001${obs.photoUrl}`} target="_blank" rel="noopener noreferrer">
-                            <img 
-                              src={`http://localhost:5001${obs.photoUrl}`} 
-                              alt="Field Evidence" 
+                            <img
+                              src={`http://localhost:5001${obs.photoUrl}`}
+                              alt="Field Evidence"
                               className="h-20 w-20 object-cover rounded-lg border border-neutral-300 dark:border-mine-700 hover:opacity-80 transition"
                             />
                           </a>
@@ -879,7 +991,7 @@ export default function SupervisorPage() {
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleVerifyObservation(obs.id, true)}
-                            className="btn-hover-effect-red px-3 py-1 text-[9px] font-bold rounded-lg bg-transparent text-emerald-700 dark:text-emerald-400 transition"
+                            className="btn-hover-effect px-3 py-1 text-[9px] font-bold rounded-lg bg-transparent text-emerald-700 dark:text-emerald-400 transition"
                           >
                             Approve Evidence & Clear Flag
                           </button>
@@ -1019,6 +1131,8 @@ export default function SupervisorPage() {
     </div>
   );
 
+  const [aiAnalysisContractorId, setAiAnalysisContractorId] = useState<string | null>(null);
+
   const renderContractors = () => (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
       {/* 3. CONTRACTORS DIRECTORY */}
@@ -1050,72 +1164,190 @@ export default function SupervisorPage() {
                   <th className="py-3 px-2">Compliance Rate</th>
                   <th className="py-3 px-2">Unresolved Issues</th>
                   <th className="py-3 px-2">Action</th>
+                  <th className="py-3 px-2">AI Analysis</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-100 dark:divide-mine-800">
                 {filteredContractors.map((c) => (
-                  <tr key={c.id} className="hover:bg-neutral-50/60 dark:hover:bg-mine-800/40 transition">
-                    <td className="py-3 px-2 font-medium">
-                      <div>{c.name}</div>
-                      <div className="text-xs text-neutral-400 font-mono">{c.contractorCode}</div>
-                    </td>
-                    <td className="py-3 px-2 capitalize">
-                      <span className="inline-flex items-center gap-1.5">
-                        {c.taskType === "blasting" && <Bomb size={14} className="text-rose-500" />}
-                        {c.taskType === "transportation" && <Truck size={14} className="text-blue-500" />}
-                        {c.taskType === "excavation" && <Pickaxe size={14} className="text-amber-500" />}
-                        {c.taskType}
-                      </span>
-                    </td>
-                    <td className="py-3 px-2">
-                      <span
-                        className={`text-xs font-bold px-2.5 py-1 rounded-full ${c.riskLevel === "CRITICAL"
-                            ? "bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300"
-                            : c.riskLevel === "MODERATE"
-                              ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
-                              : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
-                          }`}
-                      >
-                        {c.riskLevel}
-                      </span>
-                    </td>
-                    <td className="py-3 px-2 font-semibold">
-                      <div className="flex items-center gap-2">
-                        <div className="w-16 bg-neutral-100 dark:bg-mine-800 h-2 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${c.complianceRate > 80 ? "bg-emerald-500" : c.complianceRate > 50 ? "bg-amber-500" : "bg-rose-500"
-                              }`}
-                            style={{ width: `${c.complianceRate}%` }}
-                          />
-                        </div>
-                        <span className="text-xs">{c.complianceRate}%</span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-2">
-                      <span className="font-bold">{c.unresolvedObservationsCount ?? 0}</span>
-                      {c.isRestricted && (
-                        <span className="ml-2 text-xs font-bold text-rose-600 dark:text-rose-400">
-                          (Restricted)
+                  <React.Fragment key={c.id}>
+                    <tr className="hover:bg-neutral-50/60 dark:hover:bg-mine-800/40 transition">
+                      <td className="py-3 px-2 font-medium">
+                        <div>{c.name}</div>
+                        <div className="text-xs text-neutral-400 font-mono">{c.contractorCode}</div>
+                      </td>
+                      <td className="py-3 px-2 capitalize">
+                        <span className="inline-flex items-center gap-1.5">
+                          {c.taskType === "blasting" && <Bomb size={14} className="text-rose-500" />}
+                          {c.taskType === "transportation" && <Truck size={14} className="text-blue-500" />}
+                          {c.taskType === "excavation" && <Pickaxe size={14} className="text-amber-500" />}
+                          {c.taskType}
                         </span>
-                      )}
-                    </td>
-                    <td className="py-3 px-2">
-                      <button
-                        onClick={() => {
-                          setSelectedContractorId(c.id);
-                          loggerRef.current?.scrollIntoView({ behavior: "smooth" });
-                        }}
-                        className="btn-hover-effect inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold bg-transparent text-mine-800 dark:text-mine-300"
-                      >
-                        <Plus size={12} /> Log Remark
-                      </button>
-                    </td>
-                  </tr>
+                      </td>
+                      <td className="py-3 px-2">
+                        <span
+                          className={`text-xs font-bold px-2.5 py-1 rounded-full ${c.riskLevel === "CRITICAL"
+                              ? "bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300"
+                              : c.riskLevel === "MODERATE"
+                                ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+                                : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+                            }`}
+                        >
+                          {c.riskLevel}
+                        </span>
+                      </td>
+                      <td className="py-3 px-2 font-semibold">
+                        <div className="flex items-center gap-2">
+                          <div className="w-16 bg-neutral-100 dark:bg-mine-800 h-2 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full ${c.complianceRate > 80 ? "bg-emerald-500" : c.complianceRate > 50 ? "bg-amber-500" : "bg-rose-500"
+                                }`}
+                              style={{ width: `${c.complianceRate}%` }}
+                            />
+                          </div>
+                          <span className="text-xs">{c.complianceRate}%</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-2">
+                        <span className="font-bold">{c.unresolvedObservationsCount ?? 0}</span>
+                        {c.isRestricted && (
+                          <span className="ml-2 text-xs font-bold text-rose-600 dark:text-rose-400">
+                            (Restricted)
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-2">
+                        <button
+                          onClick={() => {
+                            setSelectedContractorId(c.id);
+                            loggerRef.current?.scrollIntoView({ behavior: "smooth" });
+                          }}
+                          className="btn-hover-effect inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold bg-transparent text-mine-800 dark:text-mine-300"
+                        >
+                          <Plus size={12} /> Log Remark
+                        </button>
+                      </td>
+                      <td className="py-3 px-2">
+                        <button
+                          onClick={() => setAiAnalysisContractorId(aiAnalysisContractorId === c.id ? null : c.id)}
+                          className={`inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-lg transition ${
+                            aiAnalysisContractorId === c.id
+                              ? "bg-indigo-600 text-white"
+                              : "bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50"
+                          }`}
+                        >
+                          <BrainCircuit size={12} /> {aiAnalysisContractorId === c.id ? "Close" : "Analyze"}
+                        </button>
+                      </td>
+                    </tr>
+                    {aiAnalysisContractorId === c.id && (
+                      <tr>
+                        <td colSpan={7} className="pb-4 px-2">
+                          <AIGovernanceAnalysis
+                            contractorId={c.id}
+                            contractorName={c.name}
+                            onFollowUpAction={handleGovernanceFollowUp}
+                          />
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>
           </div>
         </section>
+    </div>
+  );
+
+  const handleContractorApproval = async (id: string, status: "ACTIVE" | "REJECTED", reason?: string) => {
+    try {
+      await api.updateContractorStatus(id, { status, rejectionReason: reason }, sessionToken || undefined);
+      setRejectingId(null);
+      setRejectReason("");
+      loadData();
+    } catch (e: any) {
+      alert(`Approval failed: ${e.message}`);
+    }
+  };
+
+  const renderPendingApprovals = () => (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+      <section className="bg-white dark:bg-mine-900 p-6 rounded-2xl border border-neutral-200 dark:border-mine-800 space-y-4">
+        <div>
+          <h2 className="text-lg font-bold">Pending Contractor Approvals</h2>
+          <p className="text-xs text-neutral-500">Review newly registered contractors before granting platform access</p>
+        </div>
+
+        {pendingContractors.length === 0 ? (
+          <div className="text-center py-10 text-neutral-500 text-sm">
+            No pending contractor registrations at this time.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {pendingContractors.map(c => (
+              <div key={c.id} className="p-4 border border-neutral-200 dark:border-mine-800 rounded-xl bg-neutral-50 dark:bg-mine-900/50">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 className="font-bold text-mine-950 dark:text-white">{c.name}</h3>
+                    <p className="text-xs text-neutral-500 font-mono">{c.contractorCode}</p>
+                  </div>
+                  <span className="text-[10px] uppercase font-bold px-2 py-1 bg-amber-100 text-amber-800 rounded border border-amber-200">
+                    Pending Review
+                  </span>
+                </div>
+                
+                <div className="space-y-1 text-xs text-neutral-600 dark:text-neutral-400 mb-4">
+                  <p><strong>Email:</strong> {c.email || 'N/A'}</p>
+                  <p><strong>Phone:</strong> {c.phone || 'N/A'}</p>
+                  <p><strong>Task Type:</strong> <span className="capitalize">{c.taskType}</span></p>
+                  <p><strong>Registered:</strong> {new Date(c.createdAt).toLocaleDateString()}</p>
+                </div>
+
+                {rejectingId === c.id ? (
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      placeholder="Reason for rejection (required)..."
+                      value={rejectReason}
+                      onChange={e => setRejectReason(e.target.value)}
+                      className="w-full text-xs px-2 py-1.5 rounded border border-red-300 dark:border-red-800 bg-white dark:bg-mine-950"
+                    />
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => handleContractorApproval(c.id, "REJECTED", rejectReason)}
+                        className="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-1.5 rounded text-xs font-bold transition"
+                      >
+                        Confirm Reject
+                      </button>
+                      <button 
+                        onClick={() => { setRejectingId(null); setRejectReason(""); }}
+                        className="flex-1 bg-neutral-200 dark:bg-mine-800 text-neutral-700 dark:text-neutral-300 py-1.5 rounded text-xs font-bold transition"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex gap-2 mt-4">
+                    <button 
+                      onClick={() => handleContractorApproval(c.id, "ACTIVE")}
+                      className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-xs font-bold transition flex justify-center items-center gap-1"
+                    >
+                      <CheckCircle2 size={14} /> Approve
+                    </button>
+                    <button 
+                      onClick={() => setRejectingId(c.id)}
+                      className="flex-1 bg-transparent border border-rose-200 hover:border-rose-400 text-rose-600 dark:border-rose-900/50 dark:hover:border-rose-700 dark:text-rose-400 py-2 rounded-lg text-xs font-bold transition flex justify-center items-center gap-1"
+                    >
+                      <LogOut size={14} className="rotate-180" /> Reject
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 
@@ -1399,6 +1631,7 @@ return (
           </div>
         )}
           {activeTab === "overview" && renderOverview()}
+          {activeTab === "pending_approvals" && renderPendingApprovals()}
           {activeTab === "risk" && renderRiskIntelligence()}
           {activeTab === "compliance" && renderCompliance()}
           {activeTab === "inspections" && renderInspections()}
@@ -1411,6 +1644,15 @@ return (
         onClose={() => setIsInspectionModalOpen(false)}
         contractors={contractors}
         supervisorName={supervisorName}
+      />
+
+      
+      <EnvironmentalIntelligenceModal
+        isOpen={isEnvIntelligenceOpen}
+        onClose={() => setIsEnvIntelligenceOpen(false)}
+        onSuccess={() => {
+          loadData();
+        }}
       />
     </main>
   </div>

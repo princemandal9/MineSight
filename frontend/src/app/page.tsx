@@ -28,13 +28,8 @@ export default function LoginPage() {
   const handleRoleToggle = (newRole: "contractor" | "supervisor") => {
     setLoginRole(newRole);
     setErrorMessage(null);
-    if (newRole === "supervisor") {
-      setEmail("supervisor@minesight.in");
-      setPassword("admin123");
-    } else {
-      setEmail("");
-      setPassword("");
-    }
+    setEmail("");
+    setPassword("");
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -49,20 +44,18 @@ export default function LoginPage() {
       const res = await api.login({ email, password });
       if (res.data?.user && res.data?.token) {
         auth.setSession(res.data.user, res.data.token);
-        if (res.data.user.role === "SUPERVISOR" || loginRole === "supervisor") {
+        if (res.data.user.role === "SUPERVISOR") {
           router.push("/supervisor");
         } else {
           router.push(`/contractor?task=${res.data.user.taskType || "blasting"}`);
         }
+      } else {
+        setErrorMessage("Invalid login response from server");
       }
     } catch (err: any) {
       console.warn("API Login failed:", err.message);
       if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
-        setErrorMessage("Notice: Backend server at :5000 is not running. Logging in with client session...");
-        setTimeout(() => {
-          if (loginRole === "contractor") router.push("/contractor?task=blasting");
-          else router.push("/supervisor");
-        }, 1200);
+        setErrorMessage("Network Error: Could not reach the authentication server. Please try again later.");
       } else {
         setErrorMessage(err.message || "Invalid email or password");
       }

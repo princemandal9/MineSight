@@ -9,7 +9,7 @@ export const TaskTypeEnum = z.enum([
 
 export const RiskLevelEnum = z.enum(["LOW", "MODERATE", "HIGH", "CRITICAL"]);
 
-export const ContractorStatusEnum = z.enum(["ACTIVE", "SUSPENDED", "INACTIVE"]);
+export const ContractorStatusEnum = z.enum(["PENDING", "ACTIVE", "REJECTED", "SUSPENDED", "INACTIVE"]);
 
 export const createContractorSchema = z.object({
   contractorCode: z.string().trim().min(2).optional(),
