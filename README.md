@@ -3,7 +3,7 @@
 >
 > _SIH Problem Statement: AI-Based Smart Governance and Compliance Monitoring System for Coal Mines (PS-26024)_
 
-## 🚀 Getting Started
+## 🚀 Getting Started (Local Development)
 
 Follow these instructions to set up and run MineSight on your local machine.
 
@@ -11,6 +11,7 @@ Follow these instructions to set up and run MineSight on your local machine.
 
 - **Node.js**: v18.0.0 or higher recommended
 - **NPM**: v9.0.0 or higher
+- **PostgreSQL Database**: (Local or Cloud like Supabase/Neon)
 
 ### 1. Clone the Repository
 
@@ -21,61 +22,62 @@ cd minesight
 
 ### 2. Backend Setup
 
-The backend is built with Express, Prisma, and Gemini AI.
-
 ```bash
-# Navigate to the backend directory
 cd backend
-
-# Install dependencies
 npm install
-
-# Set up environment variables
 cp .env.example .env
 ```
 
-**Important**: Open the newly created `backend/.env` file and ensure you have a valid Gemini API key set for `GEMINI_API_KEY`.
+**Important**: Open `backend/.env` and ensure you have a valid `GEMINI_API_KEY` and a valid `DATABASE_URL` pointing to your PostgreSQL instance.
 
 ```bash
-# Generate Prisma Client
 npx prisma generate
-
-# Push the schema to create the local SQLite database
 npx prisma db push
-
-# Seed the database with the required demo data
 npx tsx scripts/clean_demo_data.ts
-
-# Start the backend development server
 npm run dev
 ```
-
-The backend API will now be running on `http://localhost:5001`.
 
 ### 3. Frontend Setup
 
-The frontend is a modern web application built with Next.js 14 and Tailwind CSS.
-
-Open a **new terminal tab/window** and run:
+Open a **new terminal tab/window**:
 
 ```bash
-# Navigate to the frontend directory from the project root
 cd frontend
-
-# Install dependencies
 npm install
-
-# Start the frontend development server
 npm run dev
 ```
 
-The web application will now be running on `http://localhost:3000`.
+---
+
+## 🌍 Production Deployment
+
+MineSight is configured for a robust split-stack deployment using free-tier services. 
+
+### Step 1: Database (Supabase / Neon)
+1. Create a free PostgreSQL database on [Supabase](https://supabase.com/) or [Neon](https://neon.tech/).
+2. Copy the connection string (`postgres://...`).
+
+### Step 2: Backend (Render.com)
+The backend is an Express API and is pre-configured with a `render.yaml` Blueprint.
+1. Create an account on [Render](https://render.com/).
+2. Go to **Blueprints** -> **New Blueprint Instance**.
+3. Connect your GitHub repository.
+4. Render will automatically detect the `render.yaml` and prompt you for the Environment Variables (`DATABASE_URL` and `GEMINI_API_KEY`).
+5. Once deployed, copy your backend URL (e.g., `https://minesight-backend.onrender.com`).
+
+### Step 3: Frontend (Vercel)
+1. Create a [Vercel](https://vercel.com/) account and click **Add New Project**.
+2. Import this repository.
+3. Vercel will automatically detect the **Next.js** framework in the `frontend` directory.
+4. In the **Environment Variables** section, add:
+   - `NEXT_PUBLIC_API_URL`: Set this to your Render backend URL (e.g., `https://minesight-backend.onrender.com/api/v1`)
+5. Click **Deploy**.
 
 ---
 
 ## 🔑 Demo Credentials
 
-Once both servers are running, you can log in to `http://localhost:3000` using the following seeded demo accounts:
+Once deployed, log in using the following seeded demo accounts:
 
 ### Mine Supervisor (Admin)
 - **Email**: `supervisor@minesight.com`
@@ -84,10 +86,4 @@ Once both servers are running, you can log in to `http://localhost:3000` using t
 ### Contractors
 - **Apex Blasting & Explosives Ltd.** (Critical Risk)
   - **Email**: `apex.contractor@minesight.com`
-  - **Password**: `Demo@123`
-- **Northwest Mining Services Ltd.** (Moderate Risk)
-  - **Email**: `northwest.contractor@minesight.com`
-  - **Password**: `Demo@123`
-- **Eastern Coal Logistics Pvt. Ltd.** (Low Risk)
-  - **Email**: `eastern.contractor@minesight.com`
   - **Password**: `Demo@123`
