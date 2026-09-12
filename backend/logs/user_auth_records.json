@@ -1,5 +1,209 @@
 [
   {
+    "id": "AUTH-1789189608322-836",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T05:06:48.322Z",
+    "user": {
+      "id": "61ded305-f2b9-451b-9bd3-e7db7710bd05",
+      "name": "Apex Blasting & Explosives Ltd.",
+      "email": "apex.contractor@minesight.com",
+      "role": "CONTRACTOR",
+      "companyName": "Apex Blasting & Explosives Ltd.",
+      "taskType": "blasting",
+      "phone": null,
+      "contractorId": "2c43f221-d333-435c-98b4-93f1f0e001a1"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789189599537-809",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T05:06:39.537Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789189394147-880",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T05:03:14.147Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789189129086-162",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T04:58:49.086Z",
+    "user": {
+      "id": "3a54ba31-1144-4fda-9143-e2947ab47c0d",
+      "name": "Anurag",
+      "email": "anurag@gmail.com",
+      "role": "CONTRACTOR",
+      "companyName": "Mining ABC",
+      "taskType": "transportation",
+      "phone": null,
+      "contractorId": "3e03246a-f60a-4c0d-89d7-5dc38f58a22e"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789186661785-382",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T04:17:41.785Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789186645885-437",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T04:17:25.885Z",
+    "user": {
+      "id": "3a54ba31-1144-4fda-9143-e2947ab47c0d",
+      "name": "Anurag",
+      "email": "anurag@gmail.com",
+      "role": "CONTRACTOR",
+      "companyName": "Mining ABC",
+      "taskType": "transportation",
+      "phone": null,
+      "contractorId": "3e03246a-f60a-4c0d-89d7-5dc38f58a22e"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789186642874-612",
+    "type": "REGISTRATION",
+    "timestamp": "2026-09-12T04:17:22.874Z",
+    "user": {
+      "id": "3a54ba31-1144-4fda-9143-e2947ab47c0d",
+      "name": "Anurag",
+      "email": "anurag@gmail.com",
+      "role": "CONTRACTOR",
+      "companyName": "Mining ABC",
+      "taskType": "transportation",
+      "phone": null,
+      "contractorId": "3e03246a-f60a-4c0d-89d7-5dc38f58a22e"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789186564755-766",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T04:16:04.755Z",
+    "user": {
+      "id": "324fd1fa-6953-4c2f-b27f-bc09cbd061b6",
+      "name": "Eastern Coal Logistics Pvt. Ltd.",
+      "email": "eastern.contractor@minesight.com",
+      "role": "CONTRACTOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": "648f529c-ffbd-48ba-8d29-636b7ef4a843"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789186469756-80",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T04:14:29.756Z",
+    "user": {
+      "id": "324fd1fa-6953-4c2f-b27f-bc09cbd061b6",
+      "name": "Eastern Coal Logistics Pvt. Ltd.",
+      "email": "eastern.contractor@minesight.com",
+      "role": "CONTRACTOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": "648f529c-ffbd-48ba-8d29-636b7ef4a843"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "node"
+  },
+  {
+    "id": "AUTH-1789186469702-902",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T04:14:29.702Z",
+    "user": {
+      "id": "f231c60a-a20d-4e22-b06d-6183ed27198b",
+      "name": "Northwest Mining Services Ltd.",
+      "email": "northwest.contractor@minesight.com",
+      "role": "CONTRACTOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": "767c7ea2-fd71-403e-9057-77c92ca2a319"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "node"
+  },
+  {
+    "id": "AUTH-1789186469646-57",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T04:14:29.646Z",
+    "user": {
+      "id": "61ded305-f2b9-451b-9bd3-e7db7710bd05",
+      "name": "Apex Blasting & Explosives Ltd.",
+      "email": "apex.contractor@minesight.com",
+      "role": "CONTRACTOR",
+      "companyName": "Apex Blasting & Explosives Ltd.",
+      "taskType": "blasting",
+      "phone": null,
+      "contractorId": "2c43f221-d333-435c-98b4-93f1f0e001a1"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "node"
+  },
+  {
+    "id": "AUTH-1789186469587-427",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T04:14:29.587Z",
+    "user": {
+      "id": "54eb981f-fc77-479d-a10e-31fafa2d5139",
+      "name": "Mine Supervisor",
+      "email": "supervisor@minesight.com",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "node"
+  },
+  {
     "id": "AUTH-1789186313357-539",
     "type": "LOGOUT",
     "timestamp": "2026-09-12T04:11:53.357Z",
