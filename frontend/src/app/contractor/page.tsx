@@ -23,10 +23,6 @@ const menuItems = [
   { id: "compliance", label: "Statutory Compliance", icon: FileCheck },
   { id: "observations", label: "Observations", icon: CheckCircle2 },
   { id: "risk", label: "Risk Intelligence", icon: FileText },
-  { id: "licenses", label: "Licenses & Certs", icon: FileSignature },
-  { id: "machinery", label: "Machinery Register", icon: Truck },
-  { id: "daily_log", label: "Daily Work Log", icon: FileText },
-  { id: "explosives", label: "Explosives Stock", icon: Bomb },
   { id: "roster", label: "Worker Roster", icon: HardHat },
 ];
 
@@ -1185,6 +1181,39 @@ export default function ContractorDashboard() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* QUICK ACCESS / OPERATIONS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { id: "licenses", label: "Licenses & Certs", icon: FileSignature, desc: "Manage operational permits" },
+          { id: "machinery", label: "Machinery Register", icon: Truck, desc: "Track heavy equipment" },
+          { id: "daily_log", label: "Daily Work Log", icon: FileText, desc: "Submit daily shift reports" },
+          { id: "explosives", label: "Explosives Stock", icon: Bomb, desc: "Monitor magazine inventory" },
+        ].map((item) => (
+          <div 
+            key={item.id}
+            onClick={() => setActiveTab(item.id)}
+            className="bg-white dark:bg-mine-900 rounded-[1.5rem] p-6 shadow-sm border border-neutral-100 dark:border-mine-800 flex flex-col justify-between group hover:border-mine-300 dark:hover:border-mine-700 hover:shadow-md transition-all cursor-pointer overflow-hidden relative"
+          >
+            {/* Background Accent */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-mine-50 dark:bg-mine-800/20 rounded-bl-full -mr-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            
+            <div className="flex justify-between items-start mb-6 relative z-10">
+              <div className="w-12 h-12 rounded-xl bg-mine-50 dark:bg-mine-800 text-mine-600 dark:text-mine-300 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <item.icon size={24} />
+              </div>
+              <div className="w-8 h-8 rounded-full border border-neutral-200 dark:border-mine-700 flex items-center justify-center text-neutral-400 group-hover:bg-mine-600 group-hover:border-mine-600 group-hover:text-white transition-colors">
+                <ArrowUpRight size={18} />
+              </div>
+            </div>
+            
+            <div className="relative z-10">
+              <h3 className="text-mine-950 dark:text-white font-bold text-lg mb-1">{item.label}</h3>
+              <p className="text-neutral-500 dark:text-neutral-400 text-xs font-medium">{item.desc}</p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

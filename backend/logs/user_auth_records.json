@@ -1,5 +1,124 @@
 [
   {
+    "id": "AUTH-1789196824036-736",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T07:07:04.036Z",
+    "user": {
+      "id": "611c3120-6019-4651-8736-9943dae20f1a",
+      "name": "Naitik Mini",
+      "email": "aryan@gmail.com",
+      "role": "CONTRACTOR",
+      "companyName": "Mini Mine ABC",
+      "taskType": "excavation",
+      "phone": null,
+      "contractorId": "67de49dd-6883-4c1d-90ef-6878e4e36f78"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789196801797-567",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T07:06:41.797Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789196795142-760",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T07:06:35.142Z",
+    "user": {
+      "id": "611c3120-6019-4651-8736-9943dae20f1a",
+      "name": "Naitik Mini",
+      "email": "aryan@gmail.com",
+      "role": "CONTRACTOR",
+      "companyName": "Mini Mine ABC",
+      "taskType": "excavation",
+      "phone": null,
+      "contractorId": "67de49dd-6883-4c1d-90ef-6878e4e36f78"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789196773676-538",
+    "type": "REGISTRATION",
+    "timestamp": "2026-09-12T07:06:13.676Z",
+    "user": {
+      "id": "611c3120-6019-4651-8736-9943dae20f1a",
+      "name": "Naitik Mini",
+      "email": "aryan@gmail.com",
+      "role": "CONTRACTOR",
+      "companyName": "Mini Mine ABC",
+      "taskType": "excavation",
+      "phone": null,
+      "contractorId": "67de49dd-6883-4c1d-90ef-6878e4e36f78"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789196689171-644",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T07:04:49.171Z",
+    "user": {
+      "id": "3a54ba31-1144-4fda-9143-e2947ab47c0d",
+      "name": "Anurag",
+      "email": "anurag@gmail.com",
+      "role": "CONTRACTOR",
+      "companyName": "Mining ABC",
+      "taskType": "transportation",
+      "phone": null,
+      "contractorId": "3e03246a-f60a-4c0d-89d7-5dc38f58a22e"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789190353463-631",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T05:19:13.463Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789190277959-229",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T05:17:57.959Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
     "id": "AUTH-1789189608322-836",
     "type": "LOGIN",
     "timestamp": "2026-09-12T05:06:48.322Z",

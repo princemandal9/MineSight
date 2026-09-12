@@ -90,3 +90,10 @@
 [2026-09-12T05:03:14.147Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
 [2026-09-12T05:06:39.537Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
 [2026-09-12T05:06:48.322Z] [LOGIN] User: "Apex Blasting & Explosives Ltd." (apex.contractor@minesight.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::ffff:127.0.0.1
+[2026-09-12T05:17:57.959Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-12T05:19:13.463Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-12T07:04:49.171Z] [LOGIN] User: "Anurag" (anurag@gmail.com) | Role: CONTRACTOR | Company: "Mining ABC" | TaskType: transportation | ContractorID: 3e03246a-f60a-4c0d-89d7-5dc38f58a22e | IP: ::ffff:127.0.0.1
+[2026-09-12T07:06:13.676Z] [REGISTRATION] User: "Naitik Mini" (aryan@gmail.com) | Role: CONTRACTOR | Company: "Mini Mine ABC" | TaskType: excavation | ContractorID: 67de49dd-6883-4c1d-90ef-6878e4e36f78 | IP: ::ffff:127.0.0.1
+[2026-09-12T07:06:35.142Z] [LOGIN] User: "Naitik Mini" (aryan@gmail.com) | Role: CONTRACTOR | Company: "Mini Mine ABC" | TaskType: excavation | ContractorID: 67de49dd-6883-4c1d-90ef-6878e4e36f78 | IP: ::ffff:127.0.0.1
+[2026-09-12T07:06:41.797Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-12T07:07:04.036Z] [LOGIN] User: "Naitik Mini" (aryan@gmail.com) | Role: CONTRACTOR | Company: "Mini Mine ABC" | TaskType: excavation | ContractorID: 67de49dd-6883-4c1d-90ef-6878e4e36f78 | IP: ::ffff:127.0.0.1
