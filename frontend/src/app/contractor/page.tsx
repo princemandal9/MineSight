@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Search, Bell, Mail, Command, Plus, ArrowUpRight,
   LayoutDashboard, FileText, Settings, HelpCircle, LogOut,
@@ -267,13 +267,47 @@ export default function ContractorDashboard() {
     }
   };
 
+  const prevNotifCountRef = useRef<number>(0);
+
   useEffect(() => {
+    let interval: NodeJS.Timeout;
     if (currentUser?.contractorId) {
       if (currentUser.contractorStatus !== "PENDING" && currentUser.contractorStatus !== "REJECTED") {
         loadData();
         fetchNotifications();
+
+        interval = setInterval(async () => {
+          try {
+            const token = auth.getToken();
+            if (!token) return;
+            const res = await api.getNotifications(token);
+            if (res.success) {
+              const currentCount = res.data.length;
+              if (currentCount > prevNotifCountRef.current && prevNotifCountRef.current > 0) {
+                // A new notification arrived! Refresh data silently
+                loadData();
+              }
+              prevNotifCountRef.current = currentCount;
+              
+              const mapped = res.data.map((n: any) => ({
+                id: n.id,
+                type: n.type,
+                title: n.title,
+                message: n.message,
+                severity: n.type === 'Safety' ? 'CRITICAL' : 'INFO',
+                timestamp: new Date(n.createdAt).toLocaleDateString(),
+                read: n.isRead,
+                actionTab: n.referenceType === 'OBSERVATION' ? 'observations' : 'overview'
+              }));
+              setAppNotifications(mapped);
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        }, 10000); // Check every 10 seconds
       }
     }
+    return () => clearInterval(interval);
   }, [currentUser]);
 
   const fetchNotifications = async () => {
@@ -292,6 +326,7 @@ export default function ContractorDashboard() {
           read: n.isRead,
           actionTab: n.referenceType === 'OBSERVATION' ? 'observations' : 'overview'
         }));
+        prevNotifCountRef.current = res.data.length;
         setAppNotifications(mapped);
       }
     } catch (e) {
