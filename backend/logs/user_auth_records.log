@@ -100,3 +100,6 @@
 [2026-09-12T07:16:47.142Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
 [2026-09-12T07:50:11.893Z] [LOGIN] User: "Naitik Mini" (aryan@gmail.com) | Role: CONTRACTOR | Company: "Mini Mine ABC" | TaskType: excavation | ContractorID: 67de49dd-6883-4c1d-90ef-6878e4e36f78 | IP: ::ffff:127.0.0.1
 [2026-09-12T08:04:25.395Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-12T08:10:48.088Z] [LOGOUT] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-12T08:10:54.279Z] [LOGIN] User: "Naitik Mini" (aryan@gmail.com) | Role: CONTRACTOR | Company: "Mini Mine ABC" | TaskType: excavation | ContractorID: 67de49dd-6883-4c1d-90ef-6878e4e36f78 | IP: ::ffff:127.0.0.1
+[2026-09-12T08:13:40.713Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1

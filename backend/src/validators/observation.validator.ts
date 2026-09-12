@@ -38,6 +38,7 @@ export const submitEvidenceSchema = z.object({
 export const verifyObservationSchema = z.object({
   verifiedBy: z.string().trim().min(2, "verifiedBy supervisor name is required"),
   resolutionNotes: z.string().trim().optional(),
+  isApproved: z.boolean().optional(),
 });
 
 export const queryObservationSchema = z.object({

@@ -1,5 +1,56 @@
 [
   {
+    "id": "AUTH-1789200820713-266",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T08:13:40.713Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789200654279-980",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T08:10:54.279Z",
+    "user": {
+      "id": "611c3120-6019-4651-8736-9943dae20f1a",
+      "name": "Naitik Mini",
+      "email": "aryan@gmail.com",
+      "role": "CONTRACTOR",
+      "companyName": "Mini Mine ABC",
+      "taskType": "excavation",
+      "phone": null,
+      "contractorId": "67de49dd-6883-4c1d-90ef-6878e4e36f78"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789200648088-849",
+    "type": "LOGOUT",
+    "timestamp": "2026-09-12T08:10:48.088Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
     "id": "AUTH-1789200265395-499",
     "type": "LOGIN",
     "timestamp": "2026-09-12T08:04:25.395Z",
