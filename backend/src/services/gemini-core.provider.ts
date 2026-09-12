@@ -84,6 +84,7 @@ async function attemptExecution(
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: schema,
+      maxOutputTokens: 8192,
     },
   });
 
