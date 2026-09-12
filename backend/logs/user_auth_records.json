@@ -1,5 +1,73 @@
 [
   {
+    "id": "AUTH-1789186313357-539",
+    "type": "LOGOUT",
+    "timestamp": "2026-09-12T04:11:53.357Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789185989117-774",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T04:06:29.117Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789179943906-375",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T02:25:43.906Z",
+    "user": {
+      "id": "61ded305-f2b9-451b-9bd3-e7db7710bd05",
+      "name": "Apex Blasting & Explosives Ltd.",
+      "email": "apex.contractor@minesight.com",
+      "role": "CONTRACTOR",
+      "companyName": "Apex Blasting & Explosives Ltd.",
+      "taskType": "blasting",
+      "phone": null,
+      "contractorId": "2c43f221-d333-435c-98b4-93f1f0e001a1"
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
+    "id": "AUTH-1789179900572-439",
+    "type": "LOGIN",
+    "timestamp": "2026-09-12T02:25:00.572Z",
+    "user": {
+      "id": "e6f80c6a-fccf-4773-8f06-18cf403d6465",
+      "name": "Inspector R. Verma",
+      "email": "supervisor@minesight.in",
+      "role": "SUPERVISOR",
+      "companyName": null,
+      "taskType": null,
+      "phone": null,
+      "contractorId": null
+    },
+    "clientIp": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Safari/605.1.15"
+  },
+  {
     "id": "AUTH-1789148795857-73",
     "type": "LOGIN",
     "timestamp": "2026-09-11T17:46:35.857Z",

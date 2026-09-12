@@ -74,3 +74,7 @@
 [2026-09-11T17:40:33.247Z] [LOGIN] User: "Apex Blasting & Explosives Ltd." (apex.contractor@minesight.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::ffff:127.0.0.1
 [2026-09-11T17:43:15.738Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
 [2026-09-11T17:46:35.857Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-12T02:25:00.572Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-12T02:25:43.906Z] [LOGIN] User: "Apex Blasting & Explosives Ltd." (apex.contractor@minesight.com) | Role: CONTRACTOR | Company: "Apex Blasting & Explosives Ltd." | TaskType: blasting | ContractorID: 2c43f221-d333-435c-98b4-93f1f0e001a1 | IP: ::ffff:127.0.0.1
+[2026-09-12T04:06:29.117Z] [LOGIN] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1
+[2026-09-12T04:11:53.357Z] [LOGOUT] User: "Inspector R. Verma" (supervisor@minesight.in) | Role: SUPERVISOR | IP: ::ffff:127.0.0.1

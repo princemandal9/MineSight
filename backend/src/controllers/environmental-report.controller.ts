@@ -57,17 +57,19 @@ export class EnvironmentalReportController {
         const httpStatus = error.code === "AI_INVALID_API_KEY" ? 503 : 503;
         res.status(httpStatus).json({
           success: false,
-          code: error.code,
-          message:
-            error.code === "AI_PROVIDER_UNAVAILABLE"
-              ? "AI extraction service is temporarily unavailable. Please retry."
-              : error.code === "AI_PROVIDER_TIMEOUT"
-              ? "AI extraction timed out. Please try again."
-              : error.code === "AI_INVALID_API_KEY"
-              ? "AI service is misconfigured. Contact administrator."
-              : error.code === "AI_MALFORMED_RESPONSE"
-              ? "AI returned an invalid response. Please retry."
-              : "AI extraction failed. Please retry.",
+          error: {
+            code: error.code,
+            message:
+              error.code === "AI_PROVIDER_UNAVAILABLE"
+                ? "AI extraction service is temporarily unavailable. Please retry."
+                : error.code === "AI_PROVIDER_TIMEOUT"
+                ? "AI extraction timed out. Please try again."
+                : error.code === "AI_INVALID_API_KEY"
+                ? "AI service is misconfigured. Contact administrator."
+                : error.code === "AI_MALFORMED_RESPONSE"
+                ? "AI returned an invalid response. Please retry."
+                : "AI extraction failed. Please retry.",
+          },
           provider: "gemini",
           retryable: error.retryable,
         });

@@ -39,8 +39,10 @@ export const analyzeGovernance = async (req: Request, res: Response): Promise<vo
 
       res.status(httpStatus).json({
         success: false,
-        error: "AI Governance Analysis is temporarily unavailable. Please try again.",
-        code: error.code,
+        error: {
+          message: "AI Governance Analysis is temporarily unavailable. Please try again.",
+          code: error.code,
+        }
       });
       return;
     }
